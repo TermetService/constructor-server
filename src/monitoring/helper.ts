@@ -25,13 +25,21 @@ export const createTableIfNotExists = async (
 
     // Создаем таблицу
     await entityManager.query(`
-        CREATE TABLE IF NOT EXISTS "${tableName}" (
-          id SERIAL PRIMARY KEY,
-          code VARCHAR(255) UNIQUE,
-          box_number INT,
-          pallet_number INT
-        )
-      `);
+  CREATE TABLE IF NOT EXISTS "${tableName}" (
+    "id" SERIAL PRIMARY KEY,
+    "code" VARCHAR NOT NULL,
+    "box_number" INTEGER,
+    "box_label" VARCHAR,
+    "pallet_label" VARCHAR,
+    "pallet_number" INTEGER,
+    "camera_name" VARCHAR,
+    "weight" INTEGER,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT "UQ_${tableName}_code" UNIQUE ("code")
+  );
+
+  CREATE INDEX IF NOT EXISTS "IDX_${tableName}_code" ON "${tableName}" ("code");
+`);
 
     // Создаем индексы с обработкой ошибок
     try {
@@ -187,7 +195,7 @@ export const isValidCode = async (
   }
   if (deps.isCodeTask) {
     const inTask = deps.isCodeTask(task?.codes, code);
-    if (inTask) {
+    if (!inTask) {
       logger?.error?.(`Код: код ${code} не найден в списке допустимых кодов`);
       return {
         isValid: false,

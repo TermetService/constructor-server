@@ -50,9 +50,13 @@ export class PrinterController {
 
   @Post('print-box')
   async printBox(
-    @Body() body: { boxNumber: number; countInBox: number },
+    @Body() body: { boxNumber: number; countInBox: number; cameraName: string },
   ): Promise<void> {
-    await this.printerService.printBoxLabel(body.boxNumber, body.countInBox);
+    await this.printerService.printBoxLabel(
+      body.boxNumber,
+      body.countInBox,
+      body.cameraName,
+    );
   }
 
   @Post('print-pallet')

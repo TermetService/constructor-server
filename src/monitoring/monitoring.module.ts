@@ -12,6 +12,7 @@ import { MonitoringHelperService } from './monitoring-helper.service';
 import { TrialPeriodService } from 'src/trail-period/trial-period.service';
 import { TrialModule } from 'src/trail-period/trial-period.module';
 import { FTPModule } from 'src/ftp/ftp.module';
+import { GatewayModule } from 'src/gateway.moduel';
 
 @Module({
   imports: [
@@ -22,14 +23,15 @@ import { FTPModule } from 'src/ftp/ftp.module';
     FTPModule,
     CustomEventEmitterModule,
     forwardRef(() => CodeModule),
+    GatewayModule,
   ],
   controllers: [MonitoringController],
   providers: [
     MonitoringService,
     MonitoringHelperService,
-    AppGateway,
+
     { provide: 'winston', useValue: monitoringLogger },
   ],
   exports: [MonitoringService, MonitoringHelperService],
 })
-export class MonitoringModule { }
+export class MonitoringModule {}

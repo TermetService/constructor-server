@@ -1,0 +1,20 @@
+﻿require('dotenv').config();
+const { Client } = require('pg');
+const TABLE = 'test-2026_11_11_09_42_10';
+(async () => {
+  const c = new Client({ host: process.env.DB_HOST, port: +process.env.DB_PORT, user: process.env.DB_USERNAME, password: process.env.DB_PASSWORD, database: process.env.DB_DATABASE });
+  await c.connect();
+  const cols = await c.query(`select column_name, data_type from information_schema.columns where table_name=$1 order by ordinal_position`, [TABLE]);
+  console.log('COLUMNS:'); console.table(cols.rows);
+  const sample = await c.query(`select id, code, box_number, pallet_number from "${TABLE}" order by id limit 3`);
+  console.log('SAMPLE:'); console.table(sample.rows.map(r => ({ id: r.id, box: r.box_number, pallet: r.pallet_number, code: r.code.slice(0, 24) + '…' })));
+  const last = await c.query(`select id, box_number, pallet_number from "${TABLE}" where box_number = 37 order by id`);
+  console.log('BOX 37: ' + last.rowCount + ' строк'); console.table(last.rows);
+  const ce = await c.query(`select count(*)::int c, count(box_number)::int with_box, count(pallet_number)::int with_pallet from code_entity`);
+  console.log('code_entity:'); console.table(ce.rows);
+  const nulls = await c.query(`select count(*)::int c from "${TABLE}" where pallet_number is null`);
+  console.log('pallet_number IS NULL:', nulls.rows[0].c);
+  const tasks = await c.query(`select table_name from information_schema.tables where table_schema='public' and table_name like 'test-%' order by 1`);
+  console.log('test-таблицы:'); console.log(tasks.rows.map(r => r.table_name).join('\n'));
+  await c.end();
+})().catch(e => { console.error(e.message); process.exit(1); });

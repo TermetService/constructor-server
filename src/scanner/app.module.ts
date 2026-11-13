@@ -3,10 +3,11 @@ import { ScannerService } from './scanner.service';
 import { CodeModule } from 'src/code/code.module';
 import { ScanerController } from './scanner.controller';
 import { AppGateway } from 'src/app.gateway';
+import { GatewayModule } from 'src/gateway.moduel';
 
 @Module({
-  imports: [CodeModule],
-  providers: [ScannerService, AppGateway],
+  imports: [CodeModule, GatewayModule],
+  providers: [ScannerService],
   exports: [ScannerService],
   controllers: [ScanerController],
 })

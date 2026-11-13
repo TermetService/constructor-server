@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { CameraService } from './camera.service';
-import { CameraLabels, CameraNames } from 'src/printers/types';
+import { CameraLabels } from 'src/printers/types';
+import { CameraNames } from './types';
 
 @Controller('camera')
 export class CameraController {

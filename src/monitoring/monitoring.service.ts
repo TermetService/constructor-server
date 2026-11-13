@@ -45,6 +45,7 @@ import { CodeRepository } from 'src/code/code.repository';
 import { MonitoringHelperService } from './monitoring-helper.service';
 import { TrialPeriodService } from 'src/trail-period/trial-period.service';
 import { FTPService } from 'src/ftp/ftp.service';
+import { CodeService } from 'src/code/code.service';
 
 dotenv.config();
 
@@ -69,11 +70,12 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
     private readonly ftpService: FTPService,
     private readonly printerService: PrinterService,
     private readonly tasksService: TasksService,
+    private readonly codeService: CodeService,
     private readonly codeHelperService: CodeHelperService,
     @Inject('GLOBAL_MONITORING_VARIABLES')
     private readonly globalMonVar: IMonitoringVariables,
     @Inject('winston') private readonly logger: Logger = monitoringLogger,
-  ) { }
+  ) {}
 
   private readonly recordsJsonDirectory = getRecordsJsonDirectory();
   private readonly reserveJsonDirectory = getReserveFilesDirectory();
@@ -128,6 +130,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
   }
 
   async startMonitoring(taskName: string) {
+    this.codeService.setLastUsedBoxNumber(0);
     if (!this.globalMonVar.isMonitoring) {
       this.globalMonVar.isMonitoring = true;
       this.startMonitoringDate = new Date().toLocaleString();
@@ -146,15 +149,26 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
         this.globalMonVar.currentPalletNumber = +task.startPallet || 1;
         this.globalMonVar.limitProductInBox = +task.pieces_per_package;
         this.globalMonVar.limitBoxInPallet = +task.packaging_per_pallet;
+
+        if (!this.isUnfinishedTask) {
+          this.globalMonVar.productCount = 0;
+          this.globalMonVar.boxCount = 0;
+          this.globalMonVar.palletCount = 0;
+          this.globalMonVar.productsInCurrentBox = 0;
+          this.globalMonVar.boxesInCurrentPallet = 0;
+        }
+
+        // таблица задания должна существовать до первого кода
+        await this.codeHelperService.initializeTables();
       }
       if (isPrintZero) {
         this.printerService.printBoxLabel(0, 0);
       }
       // Запрос задержек ПЛК для сброса контуров
-      await this.monitoringHelperService.addPLCDelay()
+      await this.monitoringHelperService.addPLCDelay();
 
       if (this.isUnfinishedTask) {
-        this.codeHelperService.sendDBDataToFrontend();
+        await this.codeHelperService.sendDBDataToFrontend();
         // назначение правильных последних коробок и паллет
         await this.codeHelperService.getLastBoxAndPalletInfo();
       }
@@ -243,7 +257,13 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
           };
           this.logger.info(finalReport);
 
-          console.log('===+++===', this.recordsJsonDirectory, '-', this.record1SFileDirectory, this.reserveJsonDirectory);
+          console.log(
+            '===+++===',
+            this.recordsJsonDirectory,
+            '-',
+            this.record1SFileDirectory,
+            this.reserveJsonDirectory,
+          );
 
           const filePath1 = path.join(
             this.recordsJsonDirectory[0],
@@ -269,7 +289,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
               console.log(`Сохраняем на FTP сервер`);
               await this.ftpService.uploadFile(
                 finalReport,
-                `${this.globalMonVar.tableName}_records.json`
+                `${this.globalMonVar.tableName}_records.json`,
               );
             } else {
               console.log(`Сохраняем в папку ${filePath1S}`);
@@ -297,7 +317,10 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async writeRecordsSafe(finalReport: any, filePath: string): Promise<void> {
+  private async writeRecordsSafe(
+    finalReport: any,
+    filePath: string,
+  ): Promise<void> {
     try {
       await this.writeToRecordsFile(finalReport, filePath);
     } catch (err) {
@@ -370,9 +393,9 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
     const finalReport = {
       TaskMarks: [
         {
-          Barcodes: barcodesArray
-        }
-      ]
+          Barcodes: barcodesArray,
+        },
+      ],
     };
 
     return finalReport;
@@ -431,7 +454,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
 
     this.logger.info('Мониторинг: Продолжение сортировки начато.');
     // Запрос задержок ПЛК для сброса контуров
-    await this.monitoringHelperService.addPLCDelay()
+    await this.monitoringHelperService.addPLCDelay();
 
     this.monitorKontur(); // Запускаем мониторинг
 
@@ -497,7 +520,9 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
       return;
     }
     try {
-      const plc = await this.modbusService.readRegistersEnron(allAddresses.controlWord1);
+      const plc = await this.modbusService.readRegistersEnron(
+        allAddresses.controlWord1,
+      );
       const currentKontur = plc.data[0];
       if (lastKontur !== currentKontur) {
         this.updateKontur(currentKontur);
@@ -590,7 +615,8 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async resetKontur(konturNumber: number) {
-    const resetAddress = this.monitoringHelperService.getResetAddress(konturNumber);
+    const resetAddress =
+      this.monitoringHelperService.getResetAddress(konturNumber);
 
     if (resetAddress) {
       try {
@@ -604,8 +630,6 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
       }
     }
   }
-
-
 
   // private async updateKontur(currentKontur: number) {
   //     this.logger.info(`Мониторинг: Контур изменился: ${currentKontur}`);

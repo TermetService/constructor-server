@@ -1,0 +1,22 @@
+﻿require('dotenv').config();
+const { Client } = require('pg');
+(async () => {
+  const c = new Client({ host: process.env.DB_HOST, port: +process.env.DB_PORT, user: process.env.DB_USERNAME, password: process.env.DB_PASSWORD, database: process.env.DB_DATABASE });
+  await c.connect();
+  const t = await c.query(`select table_name from information_schema.tables where table_schema='public' and table_name like 'test-%' and table_name not like '%_task' order by 1 desc limit 1`);
+  const TABLE = t.rows[0].table_name;
+  console.log('таблица:', TABLE);
+  const total = await c.query(`select count(*)::int c from "${TABLE}"`);
+  const boxes = await c.query(`select count(distinct box_number)::int b, max(box_number)::int maxb from "${TABLE}"`);
+  const perBox = await c.query(`select box_number, pallet_number, count(*)::int codes from "${TABLE}" group by 1,2 order by 1`);
+  const perPallet = await c.query(`select pallet_number, count(distinct box_number)::int boxes, count(*)::int codes from "${TABLE}" group by 1 order by 1`);
+  console.log('строк:', total.rows[0].c, '| коробок с кодами:', boxes.rows[0].b, '| макс. номер коробки:', boxes.rows[0].maxb);
+  console.log('\nкоробки:');
+  console.log(perBox.rows.map(r => `${r.box_number}\tpallet ${r.pallet_number ?? 'null'}\t${r.codes}`).join('\n'));
+  console.log('\nпаллеты:');
+  console.log(perPallet.rows.map(r => `${r.pallet_number ?? 'null'}\tboxes ${r.boxes}\tcodes ${r.codes}`).join('\n'));
+  console.log('\ncode_entity:', (await c.query('select count(*)::int c from code_entity')).rows[0].c);
+  const ete = await c.query('select "BoxNumber","PalletNumber" from number_box_ete order by id desc limit 1');
+  console.log('number_box_ete:', JSON.stringify(ete.rows[0]));
+  await c.end();
+})().catch(e => { console.error(e.message); process.exit(1); });

@@ -23,6 +23,8 @@ import { AppGateway } from 'src/app.gateway';
 import { CodeHelperService } from './code-helper.service';
 import { CodeRepository } from './code.repository';
 import { NumberBoxETEService } from 'src/NumberBoxETE/numberBoxETE.service';
+import { CodeLayersService } from './helpers/code-layers.service';
+import { CameraNames } from 'src/camera/types';
 
 type cameraData = {
   currectProductInBox: number;
@@ -33,7 +35,9 @@ type cameraData = {
   WeightPallet: number;
 };
 
-const flagInpallet = true; //флаг кторый будет отвечать за фасуем в общую паллету или в разные true - в разные
+const flagInpallet = false; //флаг кторый будет отвечать за фасуем в общую паллету или в разные false - в разные true в общую
+
+const flagInBoxLable = false; //флаг кторый будет отвечать за коробоки идет с label и закртыая или нет
 
 @Injectable()
 export class CodeService {
@@ -44,6 +48,7 @@ export class CodeService {
     private readonly appGateway: AppGateway,
     private readonly codeHelperService: CodeHelperService,
     private readonly numberBoxETEService: NumberBoxETEService,
+    private readonly codeLayersService: CodeLayersService,
     @Inject('GLOBAL_MONITORING_VARIABLES')
     private readonly globalMonVar: IMonitoringVariables,
     @Inject('winston') private readonly logger: Logger = codeLogger,
@@ -51,7 +56,8 @@ export class CodeService {
     // this.initializeCleanupSystem();
   }
 
-  private isDatabaseInitialized = false;
+  /** Таблица, для которой уже выполнено создание (по имени) */
+  private initializedTableName: string | null = null;
 
   private saveQueue: Promise<any> = Promise.resolve();
 
@@ -64,6 +70,7 @@ export class CodeService {
   private countBox;
 
   private currectBoxInPalletGlobal;
+
   private WeightInPalletGlobal;
 
   getLastUsedBoxNumber(): number | null {
@@ -96,7 +103,7 @@ export class CodeService {
       this.cameraStates[name].currectProductInBox >
       this.globalMonVar.limitProductInBox
     ) {
-      if (flagInpallet) {
+      if (!flagInpallet) {
         this.cameraStates[name].WeightPallet +=
           +this.cameraStates[name].WeightBox;
       }
@@ -112,7 +119,7 @@ export class CodeService {
 
       this.cameraStates[name].UsedBoxNumber = boxNum;
 
-      if (flagInpallet) this.cameraStates[name].currectBoxInPallet++;
+      if (!flagInpallet) this.cameraStates[name].currectBoxInPallet++;
       else {
         this.currectBoxInPalletGlobal++;
       }
@@ -122,9 +129,10 @@ export class CodeService {
         this.globalMonVar.task.date_manufacture,
       );
     }
+    console.log(this.cameraStates[name].currectBoxInPallet);
     if (
       this.cameraStates[name].currectBoxInPallet === this.countBox + 1 &&
-      flagInpallet
+      !flagInpallet
     ) {
       this.cameraStates[name].UsedPalletNumber++;
       this.cameraStates[name].currectBoxInPallet = 1;
@@ -132,6 +140,11 @@ export class CodeService {
   }
 
   async closeBox(name) {
+    console.log(
+      '1422222222',
+      this.cameraStates[name].currectProductInBox,
+      this.globalMonVar.limitProductInBox,
+    );
     if (
       this.cameraStates[name].currectProductInBox ===
       this.globalMonVar.limitProductInBox
@@ -151,7 +164,7 @@ export class CodeService {
     if (!cameraState) {
       const b = ++this.lastUsedBoxNumber;
       let p;
-      if (flagInpallet) p = ++this.lastUsedPalletNumber;
+      if (!flagInpallet) p = ++this.lastUsedPalletNumber;
       else p = this.lastUsedPalletNumber;
       this.cameraStates[name] = {
         currectProductInBox: 0,
@@ -159,7 +172,7 @@ export class CodeService {
         UsedPalletNumber: p,
         WeightBox: 0,
         WeightPallet: 0,
-        currectBoxInPallet: 0,
+        currectBoxInPallet: 1,
       };
 
       await this.numberBoxETEService.UpdateBoxNumber(
@@ -170,7 +183,50 @@ export class CodeService {
     }
   }
 
-  async validateAndSaveCode(code: string, name: string): Promise<IAllCounts> {
+  hasValidCoordinates(productCoords: string[][]): boolean {
+    return (
+      productCoords.length > 0 &&
+      productCoords.some((coords) => coords.length > 0)
+    );
+  }
+
+  async ParseLayer(codes: string[], name: string): Promise<any> {
+    const UnValidateCodes = [];
+    const valideCodes = [];
+    // TODO: разбор кодов по слоям для камеры
+    const { productCodes, productCoords } =
+      this.codeLayersService.extractProductCodesWithCoords(codes);
+    for (let i = 0; i < productCodes.length; i++) {
+      const element = productCodes[i];
+      const validation = await this.validateCode(element);
+      if (!validation.isValid) {
+        UnValidateCodes.push({
+          reason: validation.message,
+          code: element,
+        });
+      } else {
+        valideCodes.push(element);
+      }
+    }
+
+    if (productCodes.length !== this.globalMonVar.task.codesInLayer) {
+      this.appGateway.sendCoordinates(productCoords);
+    }
+
+    if (UnValidateCodes.length > 0) {
+      return {
+        isValid: false,
+        codes: UnValidateCodes,
+      };
+    }
+
+    return {
+      isValid: true,
+      codes: valideCodes,
+    };
+  }
+
+  async validateAndSaveCode(code: string, name: string): Promise<any> {
     this.logger.info(`Код: Валидация и сохранение кода: ${code}`);
     const codeStatusUpdateTime = Date.now();
     const timeDifference = codeStatusUpdateTime - this.globalMonVar.konturTime;
@@ -192,19 +248,27 @@ export class CodeService {
           return;
         }
 
-        if (this.globalMonVar.productCount === 0) {
+        // Таблица создаётся при первом коде для конкретного задания,
+        // даже если счётчик productCount остался с прошлого задания.
+        if (this.initializedTableName !== this.globalMonVar.tableName) {
           await this.codeHelperService.initializeTables();
-          this.isDatabaseInitialized = true;
+          this.initializedTableName = this.globalMonVar.tableName;
         }
+        //insert code
+        await this.initCamera('Camera1');
+        await this.UpdateStateCamera('Camera1', 0);
+        await this.saveCode(code);
+        if (flagInBoxLable) await this.closeBox('Camera1');
 
-        await this.saveCodeAndUpdateState(code);
         const codeStatusUpdateTime2 = Date.now();
         const timeDifference2 =
           codeStatusUpdateTime2 - this.globalMonVar.konturTime;
         this.logger.info(
           `Код: Время, прошедшее с момента изменения контура до начала валидации 2: ${timeDifference2} мс`,
         );
-        return this.codeHelperService.getCurrentCounts();
+        this.codeHelperService.getCurrentCounts();
+        const result = { isAddCode: true };
+        return result;
       });
     } catch (err) {
       this.logger.error(`Код: Ошибка при сохранении кода: ${err.message}`);
@@ -213,7 +277,7 @@ export class CodeService {
   }
 
   /** Все проверки кода собраны в isValidCode, здесь только передаём зависимости */
-  private validateCode(code: string): Promise<ICodeValidationResult> {
+  validateCode(code: string): Promise<ICodeValidationResult> {
     return isValidCode(code, this.globalMonVar.task, this.logger, {
       isDuplicate: (candidate) =>
         this.codeRepository.isDuplicateCode(candidate),
@@ -221,9 +285,18 @@ export class CodeService {
         this.codeHelperService.isCodeTask(codes, code),
     });
   }
+  private a = /^01\d{14}21(?:.{8}|.{6})[\x1D]9[123]/;
 
-  private async saveCodeAndUpdateState(code: string): Promise<void> {
-    const saved = await this.codeHelperService.saveCodeAndAdvanceState(code);
+  private async BindAgregateCode(codes, agregatCode) {}
+
+  private async saveCode(code: string): Promise<void> {
+    const saved = await this.codeHelperService.saveCode(
+      this.globalMonVar.tableName,
+      code,
+      this.lastUsedBoxNumber,
+      'Camera1',
+      flagInpallet ? null : this.cameraStates['Camera1'].UsedPalletNumber,
+    );
 
     if (!saved) {
       this.codeHelperService.handleValidationError(

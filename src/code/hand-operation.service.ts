@@ -6,13 +6,18 @@ import {
   getLastLogMessages,
 } from 'src/logger-winston/winston.config';
 import { CodeRepository } from './code.repository';
-import { IMonitoringVariables } from 'src/globalTypes';
+import { IMonitoringVariables, MonitoringStatusActions } from 'src/globalTypes';
+import { CodeService } from './code.service';
+import { CodeValidationReason } from 'src/monitoring/helper';
+import { AppGateway } from 'src/app.gateway';
 
 @Injectable()
 export class HandOperation {
   constructor(
     private readonly codeHelperService: CodeHelperService,
     private readonly codeRepository: CodeRepository,
+    private readonly codeService: CodeService,
+    private readonly appGateway: AppGateway,
     @Inject('GLOBAL_MONITORING_VARIABLES')
     private readonly globalMonVar: IMonitoringVariables,
     @Inject('winston') private readonly logger: Logger = codeLogger,
@@ -28,7 +33,7 @@ export class HandOperation {
 
     await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
 
-    const validation = await this.validateCode(code);
+    const validation = await this.codeService.validateCode(code);
 
     if (!validation.isValid) {
       if (validation.reason === CodeValidationReason.Duplicate) {

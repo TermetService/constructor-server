@@ -48,10 +48,64 @@ export class AppGateway implements OnGatewayInit {
   sendLogData(logData: any): void {
     this.server.emit(AppGatewayNames.LogData, logData);
   }
-  
 
   sendRootMessage(RootMessage: RootMessage): void {
     this.server.emit(AppGatewayNames.RootMessage, RootMessage);
+  }
+
+  sendRootMessage2(rootMessage: RootMessage, targetClientIp?: string): void {
+    // if (targetClientIp) {
+    //   this.sendToClient(
+    //     targetClientIp,
+    //     AppGatewayNames.RootMessage,
+    //     rootMessage,
+    //   );
+    //   console.log(rootMessage.status, RootStatus.Success);
+    //   if (rootMessage.status === RootStatus.Success) {
+    //     // ✅ правильное сравнение
+    //     if (targetClientIp !== '3000')
+    //       this.gpioSerise.setHttpGreen(`${Addresses[targetClientIp]}:3000`);
+    //     else this.gpioSerise.setGreenTimer();
+    //   }
+    //   if (rootMessage.status === RootStatus.Error) {
+    //     console.log(21414);
+    //     if (targetClientIp !== '3000')
+    //       this.gpioSerise.setHttpRed(`${Addresses[targetClientIp]}:3000`);
+    //     else this.gpioSerise.setGreenTimer();
+    //   }
+    // } else {
+    //   this.server.emit(AppGatewayNames.RootMessage, rootMessage);
+    // }
+  }
+
+  sendCoordinates(coordinates: string[][], targetClientIp?: string): void {
+    //   if (targetClientIp) {
+    //     // Отправка конкретному клиенту
+    //     const sent = this.sendToClient(
+    //       targetClientIp,
+    //       AppGatewayNames.Coordinates,
+    //       coordinates,
+    //     );
+    //     console.log(
+    //       '-------------sendCoordinates to client:',
+    //       targetClientIp,
+    //       'success:',
+    //       sent,
+    //       coordinates,
+    //     );
+    //   } else {
+    //     // Отправка всем клиентам (обратная совместимость)
+    //     this.server.emit(AppGatewayNames.Coordinates, coordinates);
+    //     console.log('-------------sendCoordinates to all clients:', coordinates);
+    //   }
+    // }
+    // sendStatus(status, taskname, isOld?) {
+    //   this.server.emit(AppGatewayNames.SendStatus, { status, taskname, isOld });
+    // }
+    // sendStatusSecondDB(massege: string): any {
+    //   console.log({ massege }, '[[[[]]][asfasf');
+    //   this.server.emit(AppGatewayNames.sendStatusSecondDB, { massege });
+    // }
   }
 
   sendRootStatuses(RootStatuses: RootStatuses): void {

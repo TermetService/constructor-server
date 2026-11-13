@@ -1,19 +1,23 @@
 /**
- * Unit-тесты для CodeController: проверяем только проксирование в сервисы
+ * Unit-тесты CodeController: проверяем только проксирование в сервисы
  * и обработку ответов (реальные сервисы замоканы).
  *
  * Запуск: npx jest --runInBand src/code/code.controller.spec.ts
  */
 jest.mock('./code.service', () => ({ CodeService: class {} }));
+jest.mock('./hand-operation.service', () => ({ HandOperation: class {} }));
 jest.mock('./code-helper.service', () => ({ CodeHelperService: class {} }));
 jest.mock('./code-search.service', () => ({ CodeSearchService: class {} }));
-jest.mock('./code-migration.service', () => ({ CodeMigrationService: class {} }));
+jest.mock('./code-migration.service', () => ({
+  CodeMigrationService: class {},
+}));
 
 import { CodeController } from './code.controller';
 
 describe('CodeController', () => {
   let controller: CodeController;
   let codeService: any;
+  let handOper: any;
   let codeHelperService: any;
   let codeSearchService: any;
   let codeMigrationService: any;
@@ -27,16 +31,17 @@ describe('CodeController', () => {
     jest.resetAllMocks();
 
     codeService = {
-      handValidateAndSaveCode: jest.fn(),
       validateAndSaveCode: jest.fn(),
       deleteCodes: jest.fn(),
+      deleteTablesStartingWithNumber: jest.fn(),
+      getLogs: jest.fn(),
+    };
+    handOper = {
       addCodeToBox: jest.fn(),
       deleteBox: jest.fn(),
       removeBoxFromPallet: jest.fn(),
       deletePallet: jest.fn(),
-      deleteTablesStartingWithNumber: jest.fn(),
       moveBoxToPallet: jest.fn(),
-      getLogs: jest.fn(),
     };
     codeHelperService = { sendDBDataToFrontend: jest.fn() };
     codeSearchService = {
@@ -51,6 +56,7 @@ describe('CodeController', () => {
 
     controller = new CodeController(
       codeService,
+      handOper,
       codeHelperService,
       codeMigrationService,
       codeSearchService,
@@ -63,23 +69,22 @@ describe('CodeController', () => {
 
   describe('handSaveCode', () => {
     it('заменяет @ на GS и отдаёт success=true', async () => {
-      codeService.handValidateAndSaveCode.mockResolvedValue({
-        isAddCode: true,
-      });
+      codeService.validateAndSaveCode.mockResolvedValue({ isAddCode: true });
       const res = makeRes();
 
-      await controller.handSaveCode({ code: 'a@b' }, res);
+      await controller.handSaveCode({ code: 'a@b', name: 'Camera1' }, res);
 
-      expect(codeService.handValidateAndSaveCode).toHaveBeenCalledWith('a\x1Db');
+      expect(codeService.validateAndSaveCode).toHaveBeenCalledWith(
+        'a\x1Db',
+        'Camera1',
+      );
       expect(res.send).toHaveBeenCalledWith(
         expect.objectContaining({ success: true }),
       );
     });
 
     it('отдаёт success=false, если код не добавлен', async () => {
-      codeService.handValidateAndSaveCode.mockResolvedValue({
-        isAddCode: false,
-      });
+      codeService.validateAndSaveCode.mockResolvedValue({ isAddCode: false });
       const res = makeRes();
 
       await controller.handSaveCode({ code: 'a' }, res);
@@ -91,7 +96,7 @@ describe('CodeController', () => {
 
     it('отвечает 500 при ошибке сервиса', async () => {
       jest.spyOn(console, 'error').mockImplementation(() => undefined);
-      codeService.handValidateAndSaveCode.mockRejectedValue(new Error('boom'));
+      codeService.validateAndSaveCode.mockRejectedValue(new Error('boom'));
       const res = makeRes();
 
       await controller.handSaveCode({ code: 'a' }, res);
@@ -120,5 +125,30 @@ describe('CodeController', () => {
     await controller.deleteTables();
 
     expect(codeService.deleteTablesStartingWithNumber).toHaveBeenCalledTimes(1);
+  });
+
+  it('addCodeToBox проксирует в HandOperation', async () => {
+    handOper.addCodeToBox.mockResolvedValue({ id: 1 });
+
+    const result = await controller.addCodeToBox({
+      code: 'CODE',
+      boxNumber: 2,
+      palletNumber: 1,
+    });
+
+    expect(handOper.addCodeToBox).toHaveBeenCalledWith('CODE', 2, 1);
+    expect(result).toEqual({ id: 1 });
+  });
+
+  it('moveBoxToPallet проксирует в HandOperation', async () => {
+    handOper.moveBoxToPallet.mockResolvedValue(undefined);
+    const res = makeRes();
+
+    await controller.moveBoxToPallet(4, 9, res);
+
+    expect(handOper.moveBoxToPallet).toHaveBeenCalledWith(4, 9);
+    expect(res.send).toHaveBeenCalledWith({
+      message: 'Коробка 4 успешно перемещена на паллету 9',
+    });
   });
 });

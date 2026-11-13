@@ -1,0 +1,2651 @@
+/* eslint-disable prettier/prettier */
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
+import { CodeEntity } from './code.entity';
+import { IBox, IPallet, IRecords, SearchFrom, SearchStatus } from './types';
+import {
+  IAllCounts,
+  IMonitoringVariables,
+  MonitoringStatusActions,
+  NotPrintedLabelInfo,
+  RootStatus,
+} from 'src/globalTypes';
+import { Logger } from 'winston';
+import {
+  codeLogger,
+  getLastLogMessages,
+} from 'src/logger-winston/winston.config';
+import { AppGateway } from 'src/app.gateway';
+import { TemplateService } from 'src/template/template.service';
+import {
+  generateDatabaseCipher,
+  generateHandPeopleTemplate,
+  generateJSONTemplate,
+} from './helper';
+import { PrinterService } from 'src/printers/printer.service';
+import * as dotenv from 'dotenv';
+import {
+  createTableIfNotExists,
+  createTaskTable,
+  getItemsCountInPallet,
+} from 'src/monitoring/helper';
+import { getRecordsTextFilesDirectory } from 'src/path.util';
+import { join } from 'path';
+import * as fs from 'fs';
+import { CodeRepository } from './code.repository';
+import { ModbusService } from '../modbus/modbus.service';
+import { allAddresses } from '../addresses';
+import { RemoteDbService } from './remote-db.service';
+import { FtpDirectoryType, FtpService } from '../ftp/ftp.service';
+import { Gs1ParserService } from '../gs1-parser/gs1-parser.service';
+import { log } from 'console';
+import { BatchHistoryService } from '../history/batch-history.service';
+import { ProcessedCodeRepository } from './processed-code.repository';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+
+dotenv.config();
+// const isPrint = process.env.IS_PRINT === 'true';
+const isTableRetentionEnabled = +process.env.IS_TABLE_RETENTION;
+const isAutoClosingEnabled = process.env.IS_ENABLED_AUTO_CLOSING === 'true';
+// const isSortingHistoryRetentionEnabled =
+//   +process.env.IS_SORTING_HISTORY_RETENTION; // TODO
+
+@Injectable()
+export class CodeHelperService {
+  constructor(
+    @InjectRepository(CodeEntity)
+    private readonly entityManager: EntityManager,
+    private readonly appGateway: AppGateway,
+    private readonly templateService: TemplateService,
+    private readonly codeRepository: CodeRepository,
+    private readonly printerService: PrinterService,
+    private readonly gs1ParserService: Gs1ParserService,
+    @Inject('GLOBAL_MONITORING_VARIABLES')
+    private readonly globalMonVar: IMonitoringVariables,
+    private readonly remoteDbService: RemoteDbService,
+    private readonly modbusService: ModbusService,
+    @Inject('winston') private readonly logger: Logger = codeLogger,
+    private readonly ftpService: FtpService,
+    private readonly batchHistoryService: BatchHistoryService,
+    private readonly processedCodeRepository: ProcessedCodeRepository,
+    private readonly httpService: HttpService,
+  ) {}
+
+  private readonly is_using_plk = process.env.IS_MODBUS === 'true';
+  private readonly recordsJsonDirectory = getRecordsTextFilesDirectory();
+  private readonly recordTXTFileDirectory =
+    process.env.FILES_DIRECTORY_TXT_RECORD;
+  private readonly is_using_own_db = process.env.IS_USING_OWN_DB === 'true';
+
+  private readonly ip_server = process.env.IP_SERVER;
+
+  private readonly recordsCodesBezerbaDirectory =
+    process.env.FILES_BEZERBA_CODES_DIRECTORY_LOCAL;
+
+  getTableName(): string {
+    //this.logger.info('Код: Получение имени таблицы');
+    return this.globalMonVar.tableName;
+  }
+
+  async isDuplicateCode(code: string): Promise<boolean> {
+    this.logger.info(`Проверка дубликата кода: ${code}`);
+    const existingCode = await this.entityManager.query(
+      `SELECT 1 FROM "${this.globalMonVar.tableName}" WHERE code = $1 LIMIT 1`,
+      [code],
+    );
+    return existingCode.length > 0;
+  }
+
+  async sendCurrentStateToFrontend(allCounts: IAllCounts): Promise<void> {
+    this.appGateway.sendProductCount(allCounts);
+    this.appGateway.sendLogData(getLastLogMessages());
+  }
+
+  getCurrentCounts(): IAllCounts {
+    return {
+      productCount: this.globalMonVar.productCount,
+      productsInCurrentBox: this.globalMonVar.productsInCurrentBox,
+      boxesInCurrentPallet: this.globalMonVar.boxesInCurrentPallet,
+      boxCount: this.globalMonVar.boxCount,
+      palletCount: this.globalMonVar.palletCount,
+      currentBoxNumber: this.globalMonVar.currentBoxNumber,
+      currentPalletNumber: this.globalMonVar.currentPalletNumber,
+    };
+  }
+
+  async getCounts(): Promise<any> {
+    const tableName = this.globalMonVar.tableName;
+    if (!tableName) {
+      return { message: 'задание не запущено', isCounts: true };
+    } else {
+      const countsData = await this.codeRepository.getCounts(tableName);
+      const data = {
+        ...countsData,
+        limitProductsInBox: +this.globalMonVar.task.pieces_per_package,
+      };
+      console.log('------s', data);
+
+      return { message: 'Счетчики получены', data, isCounts: true };
+    }
+  }
+
+  async handleValidationError(
+    message: string,
+    status: MonitoringStatusActions = MonitoringStatusActions.Reject,
+  ): Promise<void> {
+    this.globalMonVar.codeStatus = status;
+    this.logger.error(`Код: ${message}`);
+    this.sendCurrentStateToFrontend(this.getCurrentCounts());
+
+    let countOfCodes;
+
+    if (this.is_using_plk) {
+      const dataFromPLC = await this.modbusService.readRegistersEnron(
+        parseInt(allAddresses.getConturCount, 16),
+        1,
+      );
+
+      countOfCodes = dataFromPLC.data[0];
+    }
+
+    console.log(
+      `ошибкаааааааааааааааааааааааааааааааааааааааааааааааааааааааааааааааааааааа------------------------------------------------`,
+      countOfCodes,
+    );
+
+    this.appGateway.sendRootOpenWindow(
+      {
+        status: RootStatus.Error,
+        message,
+      },
+      countOfCodes || 0,
+    );
+  }
+
+  async initializeTables(): Promise<void> {
+    await createTableIfNotExists(
+      this.entityManager,
+      this.globalMonVar.tableName,
+    );
+    await createTaskTable(
+      this.entityManager,
+      this.globalMonVar.tableName,
+      this.globalMonVar.taskName,
+    );
+    this.logger.info(`Код: Таблица ${this.globalMonVar.tableName} создана`);
+  }
+
+  sendDataToFrontend(allCounts: IAllCounts): void {
+    this.appGateway.sendProductCount(allCounts);
+    this.appGateway.sendLogData(getLastLogMessages());
+  }
+
+  async tableExists(tableName: string): Promise<boolean> {
+    const query = `SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $1)`;
+    const res = await this.entityManager.query(query, [tableName]);
+    // this.logger.info(
+    //   res[0].exists
+    //     ? `Код: Таблица ${tableName} существует`
+    //     : `Код: Таблица ${tableName} не существует`,
+    // );
+    return res[0].exists;
+  }
+
+  async checkTableExists(tableName: string): Promise<void> {
+    if (!(await this.tableExists(tableName))) {
+      throw new Error(`Таблица "${tableName}" не существует`);
+    }
+  }
+
+  // handleBoxTransitionOld() {
+  //   if (
+  //       this.globalMonVar.productsInCurrentBox ===
+  //       this.globalMonVar.limitProductInBox
+  //   ) {
+  //     // if (isPrint) {
+  //     //   this.printerService.printBoxLabel(
+  //     //     this.globalMonVar.currentBoxNumber,
+  //     //     this.globalMonVar.limitProductInBox,
+  //     //   );
+  //     // }
+  //   }
+  //   if (
+  //       this.globalMonVar.productsInCurrentBox >
+  //       this.globalMonVar.limitProductInBox
+  //   ) {
+  //     this.globalMonVar.boxCount++;
+  //     this.globalMonVar.currentBoxNumber++;
+  //     this.globalMonVar.productsInCurrentBox = 1;
+  //     this.globalMonVar.boxesInCurrentPallet++;
+  //   }
+  // }
+
+  async handleBoxTransition() {
+    if (
+      this.globalMonVar.productsInCurrentBox ===
+      this.globalMonVar.limitProductInBox
+    ) {
+      // Запоминаем номер коробки для того чтобы потом её использовать для привязки кодов к коробке
+      const completedBoxNumber = this.globalMonVar.currentBoxNumber;
+      const completedBoxCount = this.globalMonVar.limitProductInBox;
+
+      this.globalMonVar.boxCount++;
+      this.globalMonVar.currentBoxNumber++;
+      this.globalMonVar.productsInCurrentBox = 1;
+      this.globalMonVar.boxesInCurrentPallet++;
+
+      // сохранение используется по просьбе пиканта можно выпилить если нету необходимости
+      if (this.globalMonVar.task?.batch) {
+        await this.batchHistoryService
+          .saveOrUpdate(
+            this.globalMonVar.task.batch,
+            this.globalMonVar.currentBoxNumber,
+            this.globalMonVar.currentPalletNumber,
+            this.globalMonVar.task.date_manufacture,
+          )
+          .catch((err) => {
+            this.logger.error(
+              'Авто: ошибка сохранения прогресса коробки:',
+              err,
+            );
+          });
+      }
+
+      await this.closeAutoBoxAndPrint(completedBoxNumber, completedBoxCount);
+    }
+  }
+
+  handlePalletTransitionOld() {
+    if (
+      this.globalMonVar.boxesInCurrentPallet >
+      this.globalMonVar.limitBoxInPallet
+    ) {
+      this.globalMonVar.palletCount++;
+      this.globalMonVar.currentPalletNumber++;
+      this.globalMonVar.boxesInCurrentPallet = 1;
+    }
+  }
+
+  async handlePalletTransition() {
+    console.log('dadada');
+
+    console.log('dadada');
+    if (
+      this.globalMonVar.boxesInCurrentPallet >
+      this.globalMonVar.limitBoxInPallet
+    ) {
+      const completedPalletNumber = this.globalMonVar.currentPalletNumber;
+      const completedBoxesCount = this.globalMonVar.boxesInCurrentPallet;
+
+      this.globalMonVar.palletCount++;
+      this.globalMonVar.currentPalletNumber++;
+      this.globalMonVar.boxesInCurrentPallet = 1;
+
+      if (this.globalMonVar.task?.batch) {
+        await this.batchHistoryService
+          .saveOrUpdate(
+            this.globalMonVar.task.batch,
+            this.globalMonVar.currentBoxNumber,
+            this.globalMonVar.currentPalletNumber,
+            this.globalMonVar.task.date_manufacture,
+          )
+          .catch((err) => {
+            this.logger.error(
+              'Авто: ошибка сохранения прогресса паллеты:',
+              err,
+            );
+          });
+      }
+
+      await this.closeAutoPalletAndPrint(
+        completedPalletNumber,
+        completedBoxesCount,
+      );
+    }
+  }
+
+  async handlePrintPalletTransition() {
+    if (
+      this.globalMonVar.boxesInCurrentPallet ===
+        this.globalMonVar.limitBoxInPallet &&
+      this.globalMonVar.productsInCurrentBox ===
+        this.globalMonVar.limitProductInBox
+    ) {
+      // if (isPrint) {
+      //   const productCountInPallet = await getItemsCountInPallet(
+      //     this.entityManager,
+      //     this.globalMonVar.tableName,
+      //     this.globalMonVar.currentPalletNumber,
+      //   );
+      //   console.log(
+      //     '-------------handlePalletTransition',
+      //     productCountInPallet,
+      //     this.globalMonVar.currentPalletNumber,
+      //   );
+      //   this.printerService.printPalletLabel(
+      //     this.globalMonVar.currentPalletNumber,
+      //     this.globalMonVar.limitBoxInPallet,
+      //     productCountInPallet,
+      //   );
+      // }
+    }
+  }
+
+  updateCodeStatus() {
+    if (this.globalMonVar.currentBoxNumber % 2 === 0) {
+      this.globalMonVar.codeStatus = this.globalMonVar.isFirstBoxOdd
+        ? MonitoringStatusActions.Right
+        : MonitoringStatusActions.Left;
+    } else {
+      this.globalMonVar.codeStatus = this.globalMonVar.isFirstBoxOdd
+        ? MonitoringStatusActions.Left
+        : MonitoringStatusActions.Right;
+    }
+  }
+
+  async saveCodeToDatabase(
+    code: string,
+    weight: string,
+    brutto_weight,
+    box_number,
+    pallet_number,
+  ) {
+    await this.entityManager.query(
+      `INSERT INTO "${this.globalMonVar.tableName}" (code, weight, brutto_weight,box_number,pallet_number) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (code) DO NOTHING`,
+      [code, weight, brutto_weight, box_number, pallet_number],
+    );
+  }
+
+  async createCleanupMetadataTable(): Promise<void> {
+    try {
+      await this.entityManager.query(`
+        CREATE TABLE IF NOT EXISTS table_cleanup_metadata (
+                                                            id SERIAL PRIMARY KEY,
+                                                            last_cleanup_date DATE NOT NULL
+        );
+      `);
+
+      // Инициализируем запись, если таблица пуста
+      const result = await this.entityManager.query(`
+        SELECT 1 FROM table_cleanup_metadata LIMIT 1
+      `);
+
+      if (result.length === 0) {
+        await this.entityManager.query(`
+          INSERT INTO table_cleanup_metadata (last_cleanup_date)
+          VALUES (CURRENT_DATE - INTERVAL '31 day') -- Инициализируем так, чтобы при первом запуске точно выполнилась очистка
+        `);
+      }
+    } catch (err) {
+      this.logger.error('Ошибка при создании таблицы метаданных очистки', err);
+      throw err;
+    }
+  }
+
+  async deleteOldTablesIfNeeded(): Promise<void> {
+    try {
+      // Проверяем, нужно ли выполнять очистку сегодня
+      const today = new Date().toISOString().split('T')[0];
+
+      const lastCleanup = await this.entityManager.query(`
+        SELECT last_cleanup_date FROM table_cleanup_metadata LIMIT 1
+      `);
+
+      if (
+        lastCleanup[0]?.last_cleanup_date?.toISOString()?.split('T')[0] ===
+        today
+      ) {
+        this.logger.info(
+          'Очистка таблиц уже выполнялась сегодня___________________',
+        );
+        return;
+      }
+
+      // Выполняем очистку
+      await this.deleteTablesOlderThan();
+
+      // Обновляем дату последней очистки
+      await this.entityManager.query(`
+        UPDATE table_cleanup_metadata SET last_cleanup_date = CURRENT_DATE
+      `);
+
+      this.logger.info('Очистка таблиц выполнена успешно__________');
+    } catch (err) {
+      this.logger.error(
+        'Ошибка при проверке необходимости очистки таблиц',
+        err,
+      );
+      throw err;
+    }
+  }
+
+  async deleteTablesOlderThan(): Promise<void> {
+    this.logger.info(
+      `Поиск таблиц старше ${isTableRetentionEnabled} дней______________`,
+    );
+
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - isTableRetentionEnabled);
+
+    let deletedCount = 0;
+    let errorCount = 0;
+
+    try {
+      const tables = await this.entityManager.query(`
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name ~ '^\\d'
+      `);
+
+      for (const table of tables) {
+        const tableName = table.table_name;
+
+        try {
+          const dateMatch = tableName.match(/(\d{4})_(\d{2})_(\d{2})/);
+          if (!dateMatch) continue;
+
+          const year = parseInt(dateMatch[1], 10);
+          const month = parseInt(dateMatch[2], 10) - 1;
+          const day = parseInt(dateMatch[3], 10);
+
+          // Валидация даты
+          if (year < 2000 || year > new Date().getFullYear()) continue;
+          const tableDate = new Date(year, month, day);
+          if (isNaN(tableDate.getTime())) continue;
+
+          if (tableDate < cutoffDate) {
+            await this.entityManager.query(
+              `DROP TABLE IF EXISTS "${tableName}" CASCADE`,
+            );
+            deletedCount++;
+            await new Promise((resolve) => setTimeout(resolve, 100)); // Пауза
+          }
+        } catch (err) {
+          errorCount++;
+          this.logger.error(`Ошибка обработки таблицы ${tableName}`, err);
+        }
+      }
+
+      this.logger.info(
+        `Удаление завершено. Удалено таблиц: ${deletedCount}, ошибок: ${errorCount}`,
+      );
+    } catch (err) {
+      this.logger.error('Ошибка в основном цикле удаления таблиц', err);
+      throw err;
+    }
+  }
+
+  async sendDBDataToFrontend(): Promise<void> {
+    const startTime = performance.now();
+    try {
+      await this.checkTableExists(this.globalMonVar.tableName);
+
+      // Один запрос вместо нескольких
+      const query = `
+        WITH
+          product_count AS (SELECT COUNT(*) as product_count FROM "${this.globalMonVar.tableName}"),
+          box_count AS (SELECT COUNT(DISTINCT box_number) as box_count FROM "${this.globalMonVar.tableName}"),
+          pallet_count AS (SELECT COUNT(DISTINCT pallet_number) as pallet_count FROM "${this.globalMonVar.tableName}"),
+          products_in_current_box AS (
+            SELECT COUNT(*) as products_in_current_box
+            FROM "${this.globalMonVar.tableName}"
+            WHERE box_number = $1
+          ),
+          boxes_in_current_pallet AS (
+            SELECT COUNT(DISTINCT box_number) as boxes_in_current_pallet
+            FROM "${this.globalMonVar.tableName}"
+            WHERE pallet_number = $2
+          )
+        SELECT
+          pc.product_count,
+          bc.box_count,
+          plc.pallet_count,
+          picb.products_in_current_box,
+          bipc.boxes_in_current_pallet
+        FROM
+          product_count pc,
+          box_count bc,
+          pallet_count plc,
+          products_in_current_box picb,
+          boxes_in_current_pallet bipc
+      `;
+
+      const [result] = await this.entityManager.query(query, [
+        this.globalMonVar.currentBoxNumber,
+        this.globalMonVar.currentPalletNumber,
+      ]);
+
+      // Формируем объект allCounts напрямую из результата
+      const allCounts: IAllCounts = {
+        productCount: Number(result.product_count),
+        productsInCurrentBox: Number(result.products_in_current_box),
+        boxesInCurrentPallet: Number(result.boxes_in_current_pallet),
+        boxCount: Number(result.box_count),
+        palletCount: Number(result.pallet_count),
+        currentBoxNumber: this.globalMonVar.currentBoxNumber,
+        currentPalletNumber: this.globalMonVar.currentPalletNumber,
+      };
+
+      this.sendDataToFrontend(allCounts);
+      this.updateGlobalVariablesFromCounts(allCounts);
+      const executionTime = Math.round(performance.now() - startTime);
+      console.log(
+        `Оптимизированный метод sendDBDataToFrontend выполнен за ${executionTime} мс`,
+      );
+    } catch (err) {
+      console.error('Ошибка в sendDBDataToFrontend:', err);
+    }
+  }
+
+  async updateGlobalVariablesFromCounts(
+    allCounts: Partial<IAllCounts>,
+  ): Promise<void> {
+    this.logger.info('Обновление глобальных переменных на основе счетчиков');
+
+    // Обновляем только те поля, которые есть в allCounts
+    if (allCounts.productCount !== undefined) {
+      this.globalMonVar.productCount = allCounts.productCount;
+    }
+    if (allCounts.productsInCurrentBox !== undefined) {
+      this.globalMonVar.productsInCurrentBox = allCounts.productsInCurrentBox;
+    }
+    if (allCounts.boxesInCurrentPallet !== undefined) {
+      this.globalMonVar.boxesInCurrentPallet = allCounts.boxesInCurrentPallet;
+    }
+    if (allCounts.boxCount !== undefined) {
+      this.globalMonVar.boxCount = allCounts.boxCount;
+    }
+    if (allCounts.palletCount !== undefined) {
+      this.globalMonVar.palletCount = allCounts.palletCount;
+    }
+    if (allCounts.currentBoxNumber !== undefined) {
+      this.globalMonVar.currentBoxNumber = allCounts.currentBoxNumber;
+    }
+    if (allCounts.currentPalletNumber !== undefined) {
+      this.globalMonVar.currentPalletNumber = allCounts.currentPalletNumber;
+    }
+
+    this.logger.info(
+      'Глобальные переменные обновлены (частично или полностью)',
+    );
+  }
+
+  async getLastBoxAndPalletInfo(): Promise<{
+    lastBoxNumber: number;
+    lastPalletNumber: number;
+    productsInLastBox: number;
+    boxesInLastPallet: number;
+  }> {
+    try {
+      this.logger.info(
+        'Код: Получение информации о последней коробке и паллете',
+      );
+
+      // Проверяем, есть ли открытая коробка
+      const openBoxResult = await this.entityManager.query(
+        `SELECT box_number, COUNT(*) as count
+         FROM "${this.globalMonVar.tableName}"
+         WHERE box_label IS NULL AND pallet_label IS NULL
+         GROUP BY box_number
+           LIMIT 1`,
+      );
+
+      let lastBoxNumber: number;
+      let productsInLastBox: number;
+
+      if (openBoxResult.length > 0) {
+        // Есть открытая коробка - используем её
+        lastBoxNumber = openBoxResult[0].box_number;
+        productsInLastBox = parseInt(openBoxResult[0].count, 10);
+      } else {
+        // Нет открытых коробок - начинаем новую
+        const maxBoxResult = await this.entityManager.query(
+          `SELECT COALESCE(MAX(box_number), 0) as max_box FROM "${this.globalMonVar.tableName}"`,
+        );
+        lastBoxNumber = parseInt(maxBoxResult[0].max_box, 10) + 1;
+        productsInLastBox = 0;
+      }
+
+      // Проверяем, есть ли открытая паллета
+      const openPalletResult = await this.entityManager.query(
+        `SELECT pallet_number, COUNT(DISTINCT box_number) as box_count
+         FROM "${this.globalMonVar.tableName}"
+         WHERE pallet_label IS NULL
+         GROUP BY pallet_number
+           LIMIT 1`,
+      );
+
+      let lastPalletNumber: number;
+      let boxesInLastPallet: number;
+
+      if (openPalletResult.length > 0) {
+        // Есть открытая паллета - используем её
+        lastPalletNumber = openPalletResult[0].pallet_number;
+        boxesInLastPallet = parseInt(openPalletResult[0].box_count, 10);
+      } else {
+        // Нет открытых паллет - начинаем новую
+        const maxPalletResult = await this.entityManager.query(
+          `SELECT COALESCE(MAX(pallet_number), 0) as max_pallet FROM "${this.globalMonVar.tableName}"`,
+        );
+        lastPalletNumber = parseInt(maxPalletResult[0].max_pallet, 10) + 1;
+        boxesInLastPallet = 0;
+      }
+
+      const lastBatchRecord = await this.batchHistoryService.getByBatchNumber(
+        this.globalMonVar.task.batch,
+        this.globalMonVar.task.date_manufacture,
+      );
+
+      if (!lastBatchRecord) {
+        this.globalMonVar.currentPalletNumber = lastPalletNumber;
+        this.globalMonVar.currentBoxNumber = lastBoxNumber;
+
+        await this.batchHistoryService.saveOrUpdate(
+          this.globalMonVar.task.batch,
+          this.globalMonVar.currentBoxNumber,
+          this.globalMonVar.currentPalletNumber,
+          this.globalMonVar.task.date_manufacture,
+        );
+      } else {
+        this.globalMonVar.currentBoxNumber = lastBatchRecord.last_box_number;
+        this.globalMonVar.currentPalletNumber =
+          lastBatchRecord.last_pallet_number;
+      }
+
+      this.globalMonVar.productsInCurrentBox = productsInLastBox;
+      this.globalMonVar.boxesInCurrentPallet = boxesInLastPallet;
+
+      this.logger.info(
+        `Восстановлено: коробка ${lastBoxNumber} (продуктов: ${productsInLastBox}), паллета ${lastPalletNumber} (коробок: ${boxesInLastPallet})`,
+      );
+
+      return {
+        lastBoxNumber,
+        lastPalletNumber,
+        productsInLastBox,
+        boxesInLastPallet,
+      };
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  //смотри такая темка - если в этих полях нули -> значит закрываем паллеты и коробки вручную. Если есть конкретные значения
+  //значит все делаем как в старых реализацих программы - автоматически
+  isAutoClosing() {
+    return (
+      this.globalMonVar.limitBoxInPallet != 0 &&
+      this.globalMonVar.limitProductInBox != 0
+    );
+  }
+
+  async handleClosingByMode(): Promise<void> {
+    if (
+      this.isAutoClosing() &&
+      this.globalMonVar.task.typeOfWork === 2 &&
+      this.globalMonVar.task.scanEachCode
+    ) {
+      await this.handleBoxTransition();
+      await this.handlePalletTransition();
+    }
+  }
+
+  // this.codeHelperService.handleBoxTransition();
+  // this.codeHelperService.handlePalletTransition();
+
+  //две реализации метода для получения параметров для фасовки
+  // при автомате используется старая реализация метода
+  // при ручном закрытии паллет и коробок - новая
+  async getSummary(): Promise<any> {
+    if (this.isAutoClosing()) {
+      this.logger.info('Код: Получение записей');
+      const records = await this.entityManager.query(
+        `SELECT code, box_number, pallet_number FROM "${this.globalMonVar.tableName}"`,
+      );
+
+      const boxesMap: { [key: string]: IBox } = {};
+      const palletsMap: { [key: string]: IPallet } = {};
+
+      records.forEach((record) => {
+        const { code, box_number, pallet_number } = record;
+
+        if (!boxesMap[box_number]) {
+          boxesMap[box_number] = { name: box_number, products: [] };
+        }
+        boxesMap[box_number].products.push(code);
+
+        if (!palletsMap[pallet_number]) {
+          palletsMap[pallet_number] = { name: pallet_number, boxes: [] };
+        }
+        if (!palletsMap[pallet_number].boxes.includes(box_number)) {
+          palletsMap[pallet_number].boxes.push(box_number);
+        }
+      });
+
+      const boxes = Object.values(boxesMap).sort(
+        (a, b) => parseInt(a.name) - parseInt(b.name),
+      );
+      const pallets = Object.values(palletsMap).sort(
+        (a, b) => parseInt(a.name) - parseInt(b.name),
+      );
+
+      // Количество продуктов
+      const productCount = records.length;
+
+      // Количество уникальных коробок
+      const boxCount = Object.keys(boxesMap).length;
+
+      // Количество уникальных паллет
+      const palletCount = Object.keys(palletsMap).length;
+
+      // Номер последней коробки
+      const lastBox = boxes[boxes.length - 1];
+
+      // Номер последней паллеты
+      const lastPallet = pallets[pallets.length - 1];
+
+      // Количество продуктов в последней коробке
+      const productsInLastBox = lastBox ? lastBox.products.length : 0;
+
+      // Количество коробок в последней паллете
+      const boxesInLastPallet = lastPallet ? lastPallet.boxes.length : 0;
+
+      this.logger.info('Код: Сводка успешно получена');
+      return {
+        productCount,
+        boxCount,
+        palletCount,
+        lastBox: lastBox ? lastBox.name : null,
+        lastPallet: lastPallet ? lastPallet.name : null,
+        productsInLastBox,
+        boxesInLastPallet,
+      };
+    } else {
+      this.logger.info('Код: Получение записей');
+
+      // Получаем ВСЕ записи, включая незакрытые (с NULL)
+      const records = await this.entityManager.query(
+        `SELECT code, box_number, pallet_number, box_label, pallet_label FROM "${this.globalMonVar.tableName}"`,
+      );
+
+      // Фильтруем ТОЛЬКО закрытые коробки (где есть box_label)
+      const closedRecords = records.filter(
+        (record) => record.box_label !== null,
+      );
+
+      const boxesMap: { [key: string]: IBox } = {};
+      const palletsMap: { [key: string]: IPallet } = {};
+
+      closedRecords.forEach((record) => {
+        const { code, box_number, pallet_number } = record;
+
+        if (!boxesMap[box_number]) {
+          boxesMap[box_number] = { name: box_number, products: [] };
+        }
+        boxesMap[box_number].products.push(code);
+
+        if (!palletsMap[pallet_number]) {
+          palletsMap[pallet_number] = { name: pallet_number, boxes: [] };
+        }
+        if (!palletsMap[pallet_number].boxes.includes(box_number)) {
+          palletsMap[pallet_number].boxes.push(box_number);
+        }
+      });
+
+      // Проверяем наличие незакрытых кодов (без box_label)
+      const unclosedRecords = records.filter(
+        (record) => record.box_label === null,
+      );
+      const hasUnclosedCodes = unclosedRecords.length > 0;
+
+      let lastBox = null;
+      let productsInLastBox = 0;
+
+      if (hasUnclosedCodes) {
+        // Если есть незакрытые коды - берем максимальный box_number из них
+        const maxBoxNumber = Math.max(
+          ...unclosedRecords.map((r) => parseInt(r.box_number)),
+        );
+        const lastBoxRecord = boxesMap[maxBoxNumber];
+
+        if (lastBoxRecord) {
+          lastBox = { name: lastBoxRecord.name };
+          productsInLastBox = lastBoxRecord.products.length;
+        }
+      } else {
+        // Если все коробки закрыты - берем последнюю из закрытых
+        const boxes = Object.values(boxesMap).sort(
+          (a, b) => parseInt(a.name) - parseInt(b.name),
+        );
+        lastBox = boxes[boxes.length - 1];
+        productsInLastBox = lastBox ? lastBox.products.length : 0;
+      }
+
+      const pallets = Object.values(palletsMap).sort(
+        (a, b) => parseInt(a.name) - parseInt(b.name),
+      );
+
+      const lastPallet = pallets[pallets.length - 1];
+      const boxesInLastPallet = lastPallet ? lastPallet.boxes.length : 0;
+
+      // Количество продуктов (только закрытые)
+      const productCount = closedRecords.length;
+
+      // Количество уникальных коробок (только закрытые)
+      const boxCount = Object.keys(boxesMap).length;
+
+      // Количество уникальных паллет
+      const palletCount = Object.keys(palletsMap).length;
+
+      this.logger.info('Код: Сводка успешно получена');
+      return {
+        productCount,
+        boxCount,
+        palletCount,
+        lastBox: lastBox ? lastBox.name : null,
+        lastPallet: lastPallet ? lastPallet.name : null,
+        productsInLastBox,
+        boxesInLastPallet,
+      };
+    }
+  }
+
+  async getRecords(): Promise<IRecords> {
+    const template = await this.templateService.getAll();
+    let boxTemplate = [];
+    let palletTemplate = [];
+    const task = this.globalMonVar.task;
+
+    if (template) {
+      boxTemplate = template.find((el) => el.type === 'box')?.template || [];
+      palletTemplate =
+        template.find((el) => el.type === 'pallet')?.template || [];
+    }
+
+    this.logger.info('Код: Получение записей для отчета');
+    const records = await this.entityManager.query(
+      `SELECT code, weight, box_number, pallet_number, box_label, pallet_label FROM "${this.globalMonVar.tableName}"`,
+    );
+
+    // Создаем текстовый файл с кодами (только коды, без qr)
+    try {
+      const codes = records.map((record) => record.code);
+      await this.createCodesTextFile(codes);
+    } catch (error) {
+      this.logger.error(
+        'Код: Продолжаем работу несмотря на ошибку создания файла с кодами',
+        error,
+      );
+    }
+
+    const boxesMap: { [key: string]: IBox } = {};
+    const palletsMap: { [key: string]: IPallet } = {};
+    const palletCodeCounts: { [key: string]: number } = {};
+
+    for (const record of records) {
+      const {
+        code,
+        weight,
+        box_number,
+        pallet_number,
+        box_label,
+        pallet_label,
+      } = record;
+
+      // Обработка коробок
+      if (!boxesMap[box_number]) {
+        try {
+          boxesMap[box_number] = {
+            name: box_label,
+            products: [],
+          };
+        } catch (e) {
+          console.log(123);
+        }
+        console.log(1234);
+      }
+      // Добавляем объект с code и qr
+      boxesMap[box_number].products.push({ code, weight: weight });
+
+      // // Подсчет кодов в паллетах
+      // if (!palletCodeCounts[pallet_number]) {
+      //   palletCodeCounts[pallet_number] = 0;
+      // }
+      // palletCodeCounts[pallet_number]++;
+      //
+      // // Инициализация паллеты
+      // if (!palletsMap[pallet_number]) {
+      //   palletsMap[pallet_number] = {
+      //     name: await generateJSONTemplate(
+      //       palletTemplate,
+      //       task,
+      //       pallet_number,
+      //       this.entityManager,
+      //       this.globalMonVar.tableName,
+      //       palletCodeCounts[pallet_number],
+      //       false,
+      //     ),
+      //     boxes: [],
+      //   };
+      // }
+    }
+
+    // Обновляем name коробок с учетом количества кодов внутри
+    for (const boxNumber in boxesMap) {
+      const box = boxesMap[boxNumber];
+      const countIn = box.products.length;
+      // box.name = await generateJSONTemplate(
+      //   boxTemplate,
+      //   task,
+      //   Number(boxNumber),
+      //   this.entityManager,
+      //   this.globalMonVar.tableName,
+      //   0,
+      //   true,
+      // );
+
+      // // Добавляем коробку в соответствующую паллету
+      // const palletNumber = records.find(
+      //   (r) => r.box_number === +boxNumber,
+      // )?.pallet_number;
+      // if (palletNumber && palletsMap[palletNumber]) {
+      //   if (!palletsMap[palletNumber].boxes.includes(box.name)) {
+      //     palletsMap[palletNumber].boxes.push(box.name);
+      //     // Обновляем имя паллеты с актуальным количеством кодов
+      //     palletsMap[palletNumber].name = await generateJSONTemplate(
+      //       boxTemplate,
+      //       task,
+      //       palletNumber,
+      //       this.entityManager,
+      //       this.globalMonVar.tableName,
+      //       0,
+      //       false,
+      //     );
+      //   }
+      // }
+    }
+
+    const boxes = Object.values(boxesMap).sort(
+      (a, b) => parseInt(a.name) - parseInt(b.name),
+    );
+
+    const pallets = Object.values(palletsMap).sort(
+      (a, b) => parseInt(a.name) - parseInt(b.name),
+    );
+
+    this.logger.info('Код: Записи успешно получены');
+    return { boxes, pallets };
+  }
+
+  async deleteCodesFrimAllTable(returnCodes: string[]): Promise<void> {
+    try {
+      const deletedCount =
+        await this.codeRepository.deleteCodesByValues(returnCodes);
+    } catch (err) {
+      this.logger.error('Код хелпер: Ошибка при удалении таблиц', err);
+      throw err;
+    }
+  }
+
+  private async createCodesTextFile(codes: string[]): Promise<void> {
+    try {
+      if (!codes || codes.length === 0) {
+        this.logger.warn('Код: Нет данных для записи в файл');
+        return;
+      }
+      console.log('12342242442');
+      // Создаем директорию, если ее нет
+      if (!fs.existsSync(this.recordsJsonDirectory)) {
+        fs.mkdirSync(this.recordsJsonDirectory, { recursive: true });
+        this.logger.info(
+          `Код: Директория создана: ${this.recordsJsonDirectory}`,
+        );
+      }
+      console.log('хууууууууууууууууууууууууууууууй');
+      const fileName = `${this.globalMonVar.tableName}_codes.txt`;
+      const filePathReserv = join(this.recordsJsonDirectory, fileName);
+      const filePath = join(this.recordTXTFileDirectory, fileName);
+      console.log(this.recordTXTFileDirectory);
+      try {
+        await fs.promises.writeFile(filePath, codes.join('\n'));
+        console.log('99999999999999999999999999999999', filePath);
+      } catch (error) {
+        this.logger.error(
+          'Не удалось сохранить в основную директорию',
+          filePath,
+        );
+        console.log('1234224зззззззззззззззззззззззз2442');
+        this.logger.info(`Сохроняем в резурвную: ${this.recordsJsonDirectory}`);
+        await fs.promises.writeFile(filePathReserv, codes.join('\n'));
+        this.logger.info(
+          `Код: Файл с кодами успешно создан: ${filePathReserv}`,
+        );
+      }
+    } catch (error) {
+      this.logger.error('Код: Ошибка при создании файла с кодами', error);
+      throw error;
+    }
+  }
+
+  // async getBoxNumber(boxLabel: string): Promise<number> {
+  //   let boxNumber = 0;
+  //   try {
+  //     if (!boxLabel) {
+  //       const message = 'Не прочитана этикетка коробки';
+  //       this.logger.error(message);
+  //       this.sendCurrentStateToFrontend(this.getCurrentCounts());
+  //       this.appGateway.sendRootMessage({
+  //         status: RootStatus.Error,
+  //         message,
+  //       });
+  //       return boxNumber;
+  //     }
+  //
+  //     const template = await this.templateService.getBoxTemplate();
+  //     console.log('------------------------!~~~~~~~~~~~!!!!!!!!', template);
+  //     // Определяем, какой ключ используется в шаблоне: '01 gtin' или '01 itf14'
+  //     const gtinKey = template.includes('01 gtin') ? '01 gtin' : '01 itf14';
+  //     const codeType = gtinKey === '01 gtin' ? 'GTIN' : 'ITF14'; // Тип кода для сообщения
+  //     console.log(
+  //       '------------------------!@@@@@@@@@@@!!!!!!!!',
+  //       gtinKey,
+  //       codeType,
+  //     );
+  //     // Выбираем длину и ожидаемое значение в зависимости от ключа
+  //     const expectedCode =
+  //       gtinKey === '01 gtin'
+  //         ? this.globalMonVar.task.gtin
+  //         : this.globalMonVar.task.ITF14;
+  //     console.log('------------------------!!!!!!!!!', expectedCode);
+  //     const gtinLength = expectedCode.length;
+  //
+  //     const formatOptions = {
+  //       [gtinKey]: gtinLength,
+  //       '11': 6,
+  //       '17': 6,
+  //       '10': this.globalMonVar.task.batch.length,
+  //     };
+  //
+  //     const decoded = decodeLabel(boxLabel, template, formatOptions, '\x1D');
+  //
+  //     // Проверяем только тот ключ, который есть в шаблоне
+  //     const codeFromLabel = decoded[gtinKey];
+  //     if (!codeFromLabel || codeFromLabel !== expectedCode) {
+  //       const message = `${codeType} на коробке не совпадает. Ожидалось: ${expectedCode}, получено: ${codeFromLabel || 'отсутствует'}`;
+  //       this.logger.error(message);
+  //       this.sendCurrentStateToFrontend(this.getCurrentCounts());
+  //       this.appGateway.sendRootMessage({
+  //         status: RootStatus.Error,
+  //         message,
+  //       });
+  //       return 0;
+  //     }
+  //
+  //     // Проверка партии (10)
+  //     if (decoded['10'] !== this.globalMonVar.task.batch) {
+  //       const message = `Партия на коробке не совпадает. Ожидалось: ${this.globalMonVar.task.batch}, получено: ${decoded['10']}`;
+  //       this.logger.error(message);
+  //       this.sendCurrentStateToFrontend(this.getCurrentCounts());
+  //       this.appGateway.sendRootMessage({
+  //         status: RootStatus.Error,
+  //         message,
+  //       });
+  //       return 0;
+  //     }
+  //
+  //     boxNumber = +decoded['21'];
+  //     return boxNumber;
+  //   } catch (err) {
+  //     this.logger.error(`Ошибка при получении номера коробки: ${err.message}`);
+  //     throw err;
+  //   }
+  // }
+
+  getSearchType(code: string): SearchFrom {
+    const sufix = code.substring(16, 18);
+    const startSufix = code.substring(0, 2);
+    console.log('-----sufix', sufix, startSufix);
+    if (sufix === '21') {
+      return SearchFrom.Code;
+    }
+    if (startSufix === '01') {
+      return SearchFrom.Box;
+    } else if (startSufix === '02') {
+      return SearchFrom.Pallet;
+    }
+  }
+
+  async createDB() {
+    const tableName = this.globalMonVar.tableName;
+
+    const isTableNameExist = await this.tableExists(tableName);
+
+    if (!isTableNameExist) {
+      // Создаем таблицу для кодов и таблицу для задания
+      await createTableIfNotExists(this.entityManager, tableName);
+      // Создаем таблицу для задания
+      await createTaskTable(
+        this.entityManager,
+        tableName,
+        this.globalMonVar.taskName,
+      );
+      this.logger.debug(`Код: Таблица ${tableName} создана`);
+      console.log('==============createDB', tableName);
+    }
+  }
+
+  ParseCode(codes: string) {
+    const partNumber = process.env.PART_NUMBER
+      ? parseInt(process.env.PART_NUMBER, 10)
+      : 3;
+
+    let codesArr = codes.split('@').map((el) => el.replace(/^[\s\t\r\n]+/, ''));
+    let barcod = '';
+    let qrCod = '';
+
+    console.log(
+      'codesArrcodesArrcodesArrcodesArrcodesArrcodesArrcodesArrcodesArrcodesArrcodesArr',
+      codesArr,
+    );
+
+    if (this.getApiStatus().isUsingApi && codesArr.length == 2) {
+      return {
+        barcod: '',
+        qrCod: '',
+        parse: false,
+        message: 'Отсканировалось два кода при работе с апи',
+      };
+    }
+
+    // Проверка на наличие двух частей
+    if (!this.getApiStatus().isUsingApi && codesArr.length !== 2) {
+      return {
+        barcod,
+        qrCod,
+        parse: false,
+        message: 'Ожидается 2 кода, разделенных символом "@"',
+      };
+    }
+
+    if (
+      !this.getApiStatus().isUsingApi &&
+      (codesArr[0] === '' || codesArr[1] === '')
+    ) {
+      return {
+        barcod,
+        qrCod,
+        parse: false,
+        message: 'Один из кодов пуст',
+      };
+    }
+
+    // Функция проверки на обычный код (начинается с 01 и содержит 21 на позициях 16-18)
+    const isStandardCode = (code: string): boolean => {
+      return code.startsWith('01') && code.slice(16, 18) === '21';
+    };
+
+    // Функция проверки на QR код (не является обычным кодом)
+    const isQrCode = (code: string): boolean => {
+      return !isStandardCode(code);
+    };
+
+    const codeForReturn = codesArr[0];
+
+    if (!codeForReturn || codeForReturn == 'NoRead') {
+      return {
+        barcod: '',
+        qrCod: '',
+        parse: false,
+        message: 'Ошибка при сканировании, камера ничего не передала',
+      };
+    }
+
+    if (this.getApiStatus().isUsingApi && isStandardCode(codeForReturn)) {
+      return {
+        barcod: codeForReturn,
+        qrCod: '',
+        parse: true,
+      };
+    } else if (this.getApiStatus().isUsingApi && isQrCode(codeForReturn)) {
+      return {
+        barCod: '',
+        qrCod: codeForReturn,
+        parse: true,
+      };
+    }
+
+    // Функция извлечения данных из QR
+
+    // Сначала проверяем, какой из кодов является QR
+    const code1IsQr = isQrCode(codesArr[0]);
+    const code2IsQr = isQrCode(codesArr[1]);
+    const code1IsStandard = isStandardCode(codesArr[0]);
+    const code2IsStandard = isStandardCode(codesArr[1]);
+
+    // Проверяем, что у нас есть ровно один QR код и ровно один обычный код
+    if ((code1IsQr && code2IsQr) || (code1IsStandard && code2IsStandard)) {
+      return {
+        barcod,
+        qrCod,
+        parse: false,
+        message:
+          'Должен быть один QR код и один обычный код (начинающийся с 01 и содержащий 21 на 16-18 позициях)',
+      };
+    }
+
+    let bruttoWeight = '';
+
+    // Определяем, где QR код, а где обычный код
+    if (code1IsQr && code2IsStandard) {
+      const extracted = this.extractQrValue(codesArr[0]);
+      qrCod = extracted.weight;
+      bruttoWeight = extracted.brutto_weight;
+      barcod = codesArr[1];
+    } else if (code2IsQr && code1IsStandard) {
+      const extracted = this.extractQrValue(codesArr[1]);
+      qrCod = extracted.weight;
+      bruttoWeight = extracted.brutto_weight || '';
+      barcod = codesArr[0];
+    } else {
+      return {
+        barcod,
+        qrCod,
+        parse: false,
+        message: 'Не удалось определить тип кодов',
+      };
+    }
+
+    // Дополнительная валидация извлеченных данных
+    if (!qrCod || qrCod === '') {
+      return {
+        barcod,
+        qrCod,
+        parse: false,
+        message: 'Не удалось извлечь данные из QR кода',
+      };
+    }
+
+    if (!barcod || barcod === '') {
+      return {
+        barcod,
+        qrCod,
+        parse: false,
+        message: 'Обычный код пуст',
+      };
+    }
+
+    return {
+      barcod,
+      qrCod,
+      brutto_weight: bruttoWeight,
+      parse: true,
+    };
+  }
+
+  extractQrValue = (qrString: string) => {
+    const gs1Match = qrString.match(/\(3103\)(\d+)/);
+    const gs2Match = qrString.match(/\(3303\)(\d+)/);
+
+    if (gs1Match) {
+      return {
+        weight: gs1Match ? gs1Match[1] : undefined,
+        brutto_weight: gs2Match ? gs2Match[1] : undefined,
+      };
+    }
+
+    const parts = qrString.split('.');
+    if (parts.length >= 2) {
+      return {
+        weight: parts[parts.length - 1],
+        brutto_weight: parts[parts.length - 2],
+      };
+    }
+
+    return { weight: qrString, brutto_weight: undefined };
+  };
+
+  simpleDetectCodeType(code) {
+    if (!code || typeof code !== 'string') {
+      return { type: 'unknown', value: '' };
+    }
+
+    const trimmed = code.trim();
+
+    // Штрихкод: только цифры, длина от 8 до 14
+    // Или специальный GS1 формат с 01...21...
+    const isBarcode = code.startsWith('01') && code.slice(16, 18) === '21';
+    const count = code.split(',').length;
+    // QR код: всё остальное, что не подходит под штрихкод
+    const isQR = !isBarcode && count > 0;
+
+    return {
+      type: isBarcode ? 'barcode' : isQR ? 'qr' : 'unknown',
+      value: trimmed,
+    };
+  }
+
+  async getWeightFromRemoteDb(code: string): Promise<string | null> {
+    try {
+      const column = this.remoteDbService.getRemoteWeightColumnName();
+      const table = this.remoteDbService.getRemoteTableName();
+      const codeColumn = this.remoteDbService.getRemoteCodeColumnName();
+
+      const searchMode = process.env.CODE_SEARCH_MODE || '93';
+
+      // Проверяем, что имена таблицы и колонки безопасны
+      const isValidName = (name: string) =>
+        /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name);
+
+      if (!isValidName(table) || !isValidName(column)) {
+        this.logger.error('Некорректное имя таблицы или колонки');
+        return null;
+      }
+
+      // GS1 group separator (ASCII 29) — обозначает конец переменного поля
+      const GS_SEPARATOR = '\x1D';
+
+      const extractAfterDivider = (
+        source: string,
+        divider: string,
+      ): string | null => {
+        const pos = source.lastIndexOf(divider);
+        if (pos === -1) return null;
+
+        let value = source.substring(pos + divider.length);
+
+        const gsPos = value.indexOf(GS_SEPARATOR);
+        if (gsPos !== -1) {
+          value = value.substring(0, gsPos);
+        }
+
+        return value;
+      };
+
+      let searchCode: string;
+
+      if (searchMode === '21') {
+        const extracted = extractAfterDivider(code, '21');
+        if (extracted === null) {
+          this.logger.warn(`Разделитель 21 не найден в коде ${code}`);
+          return null;
+        }
+        searchCode = extracted;
+      } else if (
+        searchMode === '91' ||
+        searchMode === '92' ||
+        searchMode === '93'
+      ) {
+        const extracted = extractAfterDivider(code, searchMode);
+        searchCode = extracted !== null ? extracted : code;
+      } else {
+        // Поведение по умолчанию: разделитель зависит от длины кода
+        const divider = code.length > 60 ? '92' : '93';
+        const extracted = extractAfterDivider(code, divider);
+        searchCode = extracted !== null ? extracted : code;
+      }
+
+      this.logger.info(`Код для поиска: ${searchCode}`);
+
+      // Используем LIKE для поиска кодов, начинающихся с searchCode
+      const query = `SELECT [${column}] FROM [${table}] WHERE [${codeColumn}] LIKE @code`;
+
+      let result = await this.remoteDbService.findOne(query, {
+        code: searchCode + '%',
+      });
+
+      if (!result && this.is_using_own_db) {
+        return '1.41';
+      }
+
+      if (result && result[column] !== undefined) {
+        this.logger.info(`Получен вес для кода ${code}: ${result[column]}`);
+        return result[column];
+      }
+
+      this.logger.warn(`Вес не найден для кода ${code} в удаленной БД`);
+      return null;
+    } catch (error) {
+      this.logger.error(
+        `Ошибка при получении веса для кода ${code} из удаленной БД: ${error.message}`,
+      );
+      return null;
+    }
+  }
+
+  async checkRemoteDatabaseConnection(): Promise<void> {
+    try {
+      await this.remoteDbService.executeQuery('SELECT 1');
+      this.logger.info('Тестовое подключение к удаленной БД успешно');
+    } catch (error) {
+      this.logger.error('Ошибка подключения к удаленной БД:', error);
+      throw new Error(
+        'Нет подключения к удаленной базе данных. Попробуйте ещё раз.',
+      );
+    }
+  }
+
+  parseCodeForBezerba = (raw: string): { serial: string; payload: string } => {
+    const code = raw.trim();
+    const GS = '\u001d'; // GS1 group separator (ASCII 29) — управляющий символ
+    const serialStart = 18;
+
+    const gsPos = code.indexOf(GS, serialStart);
+
+    const serial = code.substring(serialStart, gsPos);
+
+    const payload = code.substring(gsPos + 1 + 2);
+
+    return { serial, payload };
+  };
+
+  async uploadCodesForBezerba(): Promise<{
+    fileName: string;
+    filePath: string;
+    processedCount: number;
+  }> {
+    const codes =
+      this.globalMonVar.task.codes.length > 0
+        ? this.globalMonVar.task.codes
+        : [];
+
+    this.logger.info(`Начало обработки ${codes.length} кодов для Bizerba`);
+
+    const results: Array<{ serial: string; payload: string }> = [];
+
+    for (const code of codes) {
+      const parsed = this.parseCodeForBezerba(code);
+      results.push({
+        serial: parsed.serial,
+        payload: parsed.payload,
+      });
+    }
+
+    const fileName = 'UniqueData_TrueMark.txt';
+
+    const targetDirectory = this.recordsCodesBezerbaDirectory;
+
+    if (!fs.existsSync(targetDirectory)) {
+      fs.mkdirSync(targetDirectory, { recursive: true });
+      this.logger.info(`Создана директория: ${targetDirectory}`);
+    }
+
+    const filePath = join(targetDirectory, fileName);
+
+    const header = 'GL6E|GT61|GT62|\n';
+    const rows = results.map((result, index) => {
+      const plu = (index + 1).toString();
+      return `${plu}|${result.serial}|${result.payload}|\n`;
+    });
+
+    const fileContent = header + rows.join('');
+
+    try {
+      await fs.promises.writeFile(filePath, fileContent, 'utf-8');
+      this.logger.info(`Файл успешно сохранён локально: ${filePath}`);
+
+      try {
+        await this.ftpService.uploadFile(
+          fileContent,
+          fileName,
+          FtpDirectoryType.CODES,
+        );
+        this.logger.info(`Файл успешно загружен на FTP: ${fileName}`);
+      } catch (ftpError) {
+        this.logger.error(`Ошибка загрузки файла на FTP: ${ftpError.message}`);
+      }
+
+      return {
+        fileName,
+        filePath,
+        processedCount: results.length,
+      };
+    } catch (error) {
+      this.logger.error(`Ошибка сохранения файла: ${error.message}`);
+      throw new Error(`Не удалось сохранить файл: ${error.message}`);
+    }
+  }
+
+  getApiStatus(): { isUsingApi: boolean } {
+    return {
+      isUsingApi: this.remoteDbService.getIsUsingApi(),
+    };
+  }
+
+  determineCodeType(code: string): {
+    type: SearchFrom | null;
+    reason?: string;
+  } {
+    if (!code) {
+      return {
+        type: null,
+        reason: 'Код не может быть пустым',
+      };
+    }
+
+    if (code.length < 18) {
+      return {
+        type: null,
+        reason: 'Код слишком короткий (меньше 18 символов)',
+      };
+    }
+
+    const prefix = code.substring(0, 2);
+    const after16 = code.length > 16 ? code.substring(16, 18) : '';
+
+    // Проверка на код продукта
+    if (prefix === '01' && after16 === '21') {
+      return { type: SearchFrom.Code };
+    }
+
+    // Проверка на код коробки
+    if (prefix === '01' && after16 === '11') {
+      return { type: SearchFrom.Box };
+    }
+
+    // Проверка на код паллеты
+    if (prefix === '02' && after16 === '11') {
+      return { type: SearchFrom.Pallet };
+    }
+
+    console.log(
+      "code.indexOf('21') != -1code.indexOf('21') != -1",
+      code.indexOf('21') != -1,
+    );
+
+    if (
+      prefix === '01' &&
+      code.indexOf('21') != -1 &&
+      code.indexOf('10') != -1 &&
+      code.indexOf('11') != -1
+    ) {
+      return { type: SearchFrom.Box };
+    }
+
+    const cleanCode = code.replace(/[(]/g, '').replace(/[)]/g, '');
+
+    if (cleanCode.startsWith('01')) {
+      return { type: SearchFrom.Box };
+    }
+
+    if (cleanCode.startsWith('02')) {
+      return { type: SearchFrom.Pallet };
+    }
+
+    // Определяем причину неизвестного формата
+    let reason = 'Неизвестный формат кода';
+    if (prefix !== '01' && prefix !== '02') {
+      reason = `Неверный префикс (ожидался 01 или 02, получен ${prefix})`;
+    } else if (after16 !== '21' && after16 !== '11') {
+      reason = `Неверный идентификатор типа (ожидался 21 или 11, получен ${after16})`;
+    }
+
+    return {
+      type: null,
+      reason,
+    };
+  }
+
+  // async scanCodeFromBezerba(code: string){
+  //   console.log('--------------bezerbaaaaaaaaa', code);
+  //   const tableName = this.getTableName();
+  //
+  //   if (!tableName) {
+  //     return {
+  //       success: false,
+  //       status: SearchStatus.ERROR,
+  //       message: `Таблица не найдена`,
+  //       codeType: null,
+  //       data: null,
+  //     };
+  //   }
+  //
+  //   const { type, containerNumber, isValid, validationMessage } =
+  //       await this.gs1ParserService.getContainerNumber(code);
+  //
+  //   const typeInfo = this.determineCodeType(code);
+  //   console.log(type, '141241241');
+  //   // Если тип не определен - возвращаем информацию об ошибке формата
+  //   if (!type) {
+  //     return {
+  //       success: false,
+  //       status: SearchStatus.INVALID_FORMAT,
+  //       message: typeInfo.reason || 'Неизвестный формат кода',
+  //       codeType: null,
+  //       data: null,
+  //       debug: {
+  //         inputCode: code,
+  //         length: code.length,
+  //         prefix: code.substring(0, 2),
+  //         after16: code.length > 16 ? code.substring(16, 18) : null,
+  //       },
+  //     };
+  //   }
+  //
+  //   // Начинаем работу с коробками/паллетами
+  //   let result = null;
+  //   try {
+  //     switch (type) {
+  //       case SearchFrom.Box:
+  //         result = await this.closeCurrentBox(code);
+  //         break;
+  //
+  //       case SearchFrom.Pallet:
+  //         result = await this.closeCurrentPallet(code);
+  //         break;
+  //
+  //       default:
+  //         result = {
+  //           success: false,
+  //           status: SearchStatus.ERROR,
+  //           message: 'Ошибка: отсканированный код не определен, попробуйте ещё раз',
+  //           codeType: null,
+  //           data: null,
+  //           error: null,
+  //         }
+  //     }
+  //   } catch (error) {
+  //     this.logger.error(`Ошибка при поиске кода ${code}:`, error);
+  //     return {
+  //       success: false,
+  //       status: SearchStatus.ERROR,
+  //       message: 'Ошибка при выполнении поиска',
+  //       codeType: typeInfo.type,
+  //       data: null,
+  //       error: error.message,
+  //     };
+  //   }
+  //
+  //   console.log(result)
+  //
+  //   // Если запись не найден  а
+  //   if (!result || !result.success) {
+  //     return {
+  //       success: false,
+  //       status: SearchStatus.NOT_FOUND,
+  //       message: result ? result.message : 'Ошибка при сканировании коробки',
+  //       codeType: typeInfo.type,
+  //       data: null,
+  //     };
+  //   }
+  //
+  //   // Запись успешно найдена
+  //   return {
+  //     success: true,
+  //     status: 'success',
+  //     message: result ? result.message : 'Коробка успешно создана и коды в ней сохранены',
+  //     codeType: type,
+  //     data: result,
+  //     metadata: {
+  //       foundAt: new Date().toISOString(),
+  //       tableName,
+  //     },
+  //   };
+  // }
+
+  async closeCurrentBox(code: string) {
+    const tableName = this.getTableName();
+
+    if (!tableName) {
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Таблица не найдена',
+        data: null,
+      };
+    }
+
+    try {
+      const existingBoxLabel = await this.entityManager.query(
+        `SELECT 1 FROM "${tableName}" WHERE box_label = $1`,
+        [code],
+      );
+
+      if (existingBoxLabel.length > 0) {
+        console.log('Этикетка коробки "${code}" уже существует в таблице');
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message: `Этикетка коробки "${code}" уже существует в таблице`,
+          data: null,
+        };
+      }
+
+      const codesToUpdate = await this.entityManager.query(
+        `SELECT code FROM "${tableName}" WHERE box_label IS NULL AND pallet_label IS NULL `,
+      );
+
+      if (!codesToUpdate || codesToUpdate.length === 0) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message:
+            'Нет доступных кодов для назначения коробки, нету свободных кодов  ',
+          data: null,
+        };
+      }
+
+      await this.entityManager.query(
+        `UPDATE "${tableName}"
+         SET box_label = $1
+         WHERE box_label IS NULL AND pallet_label IS NULL`,
+        [code],
+      );
+
+      this.logger.info(
+        `Код коробки "${code}" успешно присвоен ${codesToUpdate.length} продуктам`,
+      );
+
+      await this.updateCountsForBox();
+      await this.sendDBDataToFrontend();
+
+      return {
+        success: true,
+        status: 'success',
+        message: `Код коробки "${code}" успешно присвоен ${codesToUpdate.length} продуктам`,
+        data: {
+          boxLabel: code,
+          updatedCodesCount: codesToUpdate.length,
+          updatedCodes: codesToUpdate.map((row) => row.code),
+        },
+      };
+    } catch (error) {
+      this.logger.error(
+        `Ошибка при сканировании кода коробки безербой: ${error.message}`,
+        error,
+      );
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: `Ошибка при обработке кода коробки: ${error.message}`,
+        data: null,
+        error: error.message,
+      };
+    }
+  }
+
+  async closeCurrentPallet(code: string) {
+    console.log(
+      'Сканирование кода паллеты безеброй------------------------------',
+      code,
+    );
+    const tableName = this.getTableName();
+
+    if (!tableName) {
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Таблица не найдена',
+        data: null,
+      };
+    }
+
+    try {
+      const hasBoxedCodes = await this.entityManager.query(
+        `SELECT 1 FROM "${tableName}" WHERE box_label IS NOT NULL LIMIT 1`,
+      );
+
+      if (!hasBoxedCodes || hasBoxedCodes.length === 0) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message:
+            'Нет кодов с назначенными коробками. Сначала отсканируйте коробку.',
+          data: null,
+        };
+      }
+
+      const existingPalletLabel = await this.entityManager.query(
+        `SELECT 1 FROM "${tableName}" WHERE pallet_label = $1 LIMIT 1`,
+        [code],
+      );
+
+      if (existingPalletLabel.length > 0) {
+        console.log('нету кодов');
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message: `Этикетка паллеты "${code}" уже существует в таблице`,
+          data: null,
+        };
+      }
+
+      const codesToUpdate = await this.entityManager.query(
+        `SELECT code FROM "${tableName}" WHERE pallet_label IS NULL AND box_label IS NOT NULL`,
+      );
+
+      if (!codesToUpdate || codesToUpdate.length === 0) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message:
+            'Нет доступных кодов для назначения паллеты, нету свободных кодов  ',
+          data: null,
+        };
+      }
+
+      await this.entityManager.query(
+        `UPDATE "${tableName}"
+         SET pallet_label = $1
+         WHERE pallet_label IS NULL AND box_label IS NOT NULL`,
+        [code],
+      );
+
+      this.logger.info(
+        `Код паллеты "${code}" успешно присвоен ${codesToUpdate.length} продуктам`,
+      );
+
+      await this.updateCountsForPallet();
+      await this.sendDBDataToFrontend();
+
+      return {
+        success: true,
+        status: 'success',
+        message: `Код паллеты "${code}" успешно присвоен ${codesToUpdate.length} продуктам`,
+        data: {
+          palletLabel: code,
+          updatedCodesCount: codesToUpdate.length,
+          updatedCodes: codesToUpdate.map((row) => row.code),
+        },
+      };
+    } catch (error) {
+      this.logger.error(
+        `Ошибка при сканировании кода коробки безербой: ${error.message}`,
+        error,
+      );
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: `Ошибка при обработке кода коробки: ${error.message}`,
+        data: null,
+        error: error.message,
+      };
+    }
+  }
+
+  async updateCountsForBox() {
+    this.globalMonVar.boxCount++;
+    this.globalMonVar.currentBoxNumber++;
+    this.globalMonVar.productsInCurrentBox = 0;
+    this.globalMonVar.boxesInCurrentPallet++;
+
+    if (this.globalMonVar.task?.batch) {
+      await this.batchHistoryService
+        .saveOrUpdate(
+          this.globalMonVar.task.batch,
+          this.globalMonVar.currentBoxNumber,
+          this.globalMonVar.currentPalletNumber,
+          this.globalMonVar.task.date_manufacture,
+        )
+        .catch((err) => {
+          this.logger.error('Ошибка сохранения прогресса коробки:', err);
+        });
+    }
+  }
+
+  async updateCountsForPallet() {
+    this.globalMonVar.palletCount++;
+    this.globalMonVar.currentPalletNumber++;
+    this.globalMonVar.boxesInCurrentPallet = 0;
+
+    if (this.globalMonVar.task?.batch) {
+      await this.batchHistoryService
+        .saveOrUpdate(
+          this.globalMonVar.task.batch,
+          this.globalMonVar.currentBoxNumber,
+          this.globalMonVar.currentPalletNumber,
+          this.globalMonVar.task.date_manufacture,
+        )
+        .catch((err) => {
+          this.logger.error('Ошибка сохранения прогресса паллеты:', err);
+        });
+    }
+  }
+
+  private async checkDataForTable() {
+    const tableName = this.getTableName();
+
+    if (!tableName) {
+      return {
+        tableName: '',
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Таблица не найдена',
+        data: null,
+      };
+    }
+
+    if (!(await this.tableExists(tableName))) {
+      return {
+        tableName: '',
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Таблица не создана',
+        data: null,
+      };
+    }
+
+    return { tableName: tableName, success: true, message: '' };
+  }
+
+  async getWeightOfCurrentBox() {
+    const { tableName, success, message } = await this.checkDataForTable();
+
+    if (!success) {
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: message,
+        data: null,
+        error: null,
+      };
+    }
+
+    try {
+      const result = await this.entityManager.query(
+        `SELECT SUM(CAST(weight AS DECIMAL)) as total_weight FROM "${tableName}" WHERE box_label IS NULL AND pallet_label IS NULL`,
+      );
+
+      const totalWeight = result[0]?.total_weight || 0;
+
+      return {
+        success: true,
+        status: SearchStatus.SUCCESS,
+        message: 'Вес коробки получен',
+        data: {
+          weight: parseFloat(totalWeight) || 0,
+          unit: 'kg',
+        },
+      };
+    } catch (e) {
+      console.error('Ошибка при получении веса коробки:', e);
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Ошибка при получении веса коробки',
+        data: null,
+        error: e.message,
+      };
+    }
+  }
+
+  async getWeightOfCurrentPallet() {
+    const { tableName, success, message } = await this.checkDataForTable();
+
+    if (!success) {
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: message,
+        data: null,
+        error: null,
+      };
+    }
+
+    try {
+      const result = await this.entityManager.query(
+        `SELECT SUM(CAST(weight AS DECIMAL)) as total_weight FROM "${tableName}" WHERE pallet_label IS NULL AND box_label IS NOT NULL`,
+      );
+
+      const totalWeight = result[0]?.total_weight || 0;
+
+      return {
+        success: true,
+        status: SearchStatus.SUCCESS,
+        message: 'Вес паллеты получен',
+        data: {
+          weight: parseFloat(totalWeight) || 0,
+          unit: 'kg',
+        },
+      };
+    } catch (e) {
+      console.error('Ошибка при получении веса паллеты:', e);
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Ошибка при получении веса паллеты',
+        data: null,
+        error: e.message,
+      };
+    }
+  }
+
+  async getFullBoxCode(boxNumber: number, countInBox: number): Promise<string> {
+    try {
+      const task = this.globalMonVar.task;
+
+      // Получаем шаблон коробки
+      const template = await this.templateService.getAll();
+      const boxTemplate =
+        template.find((el) => el.type === 'box')?.template || [];
+
+      const boxCode = await generateHandPeopleTemplate(
+        boxTemplate,
+        task,
+        boxNumber,
+        this.entityManager,
+        this.globalMonVar.tableName,
+        countInBox,
+        true,
+      );
+
+      return boxCode;
+    } catch (err) {
+      this.logger.error('Ошибка при получении кода коробки:', err);
+      throw err;
+    }
+  }
+
+  async getFullPalletCode(
+    palletNumber: number,
+    countInPallet: number,
+    productCountInPallet: number,
+  ): Promise<string> {
+    try {
+      const template = await this.templateService.getAll();
+      const palletTemplate =
+        template.find((el) => el.type === 'pallet')?.template || [];
+
+      const palletCode = generateHandPeopleTemplate(
+        palletTemplate,
+        this.globalMonVar.task,
+        palletNumber,
+        this.entityManager,
+        this.globalMonVar.tableName,
+        countInPallet,
+        false,
+      );
+
+      return palletCode;
+    } catch (err) {
+      this.logger.error('Ошибка при получении кода паллеты:', err);
+      throw err;
+    }
+  }
+
+  async closeCurrentBoxAndPrint() {
+    const { tableName, success, message } = await this.checkDataForTable();
+
+    if (!success) {
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: message,
+        data: null,
+        error: null,
+      };
+    }
+
+    try {
+      const freeCodesResult = await this.entityManager.query(
+        `SELECT COUNT(*) FROM "${tableName}" WHERE box_label IS NULL AND pallet_label IS NULL`,
+      );
+
+      const countOfFreeCodes = +freeCodesResult[0].count || 0;
+
+      if (countOfFreeCodes === 0) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message: 'Нету свободных кодов для закрытия коробки',
+          data: null,
+          error: null,
+        };
+      }
+
+      const resultOfCurrentBoxNumber = await this.entityManager.query(
+        `SELECT MAX(box_number) as current_box_number FROM "${tableName}" WHERE box_label IS NULL AND pallet_label IS NULL`,
+      );
+
+      const currentBoxNumber = +resultOfCurrentBoxNumber[0]?.current_box_number;
+
+      if (!currentBoxNumber) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message: 'Последняя коробка не найдена',
+          data: null,
+          error: null,
+        };
+      }
+
+      const currentBoxLabel = await this.getFullBoxCode(
+        currentBoxNumber,
+        countOfFreeCodes,
+      );
+      console.log(
+        'Номер текущей коробки: ' +
+          currentBoxNumber +
+          ', Label: ' +
+          currentBoxLabel,
+      );
+
+      const result = await this.closeCurrentBox(currentBoxLabel);
+      await this.printerService.printBoxLabel(
+        currentBoxNumber,
+        countOfFreeCodes,
+      );
+
+      return result;
+    } catch (e) {
+      console.log('Ошибка при закрытии и печати кода коробки: ' + e.message);
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Ошибка при закрытии и печати кода коробки: ' + e.message,
+        data: null,
+        error: null,
+      };
+    }
+  }
+
+  async closeCurrentPalletAndPrint() {
+    const { tableName, success, message } = await this.checkDataForTable();
+
+    if (!success) {
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: message,
+        data: null,
+        error: null,
+      };
+    }
+
+    try {
+      // Проверяем наличие незакрытых коробок
+      const unclosedBoxesResult = await this.entityManager.query(
+        `SELECT COUNT(*) as count FROM "${tableName}" WHERE box_label IS NULL AND pallet_label IS NULL`,
+      );
+
+      const unclosedBoxesCount = +unclosedBoxesResult[0]?.count || 0;
+
+      if (unclosedBoxesCount > 0) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message: `Существует не закрытая коробка (${unclosedBoxesCount} кодов без коробки). Сначала закройте текущую коробку.`,
+          data: null,
+          error: null,
+        };
+      }
+
+      // Проверяем наличие коробок без паллеты
+      const freeBoxesResult = await this.entityManager.query(
+        `SELECT COUNT(DISTINCT box_label) as count FROM "${tableName}" WHERE pallet_label IS NULL AND box_label IS NOT NULL`,
+      );
+
+      const countOfFreeBoxes = +freeBoxesResult[0]?.count || 0;
+
+      if (countOfFreeBoxes === 0) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message: 'Нету свободных коробок для закрытия паллеты',
+          data: null,
+          error: null,
+        };
+      }
+
+      // Получаем номер текущей паллеты
+      const resultOfCurrentPalletNumber = await this.entityManager.query(
+        `SELECT MAX(pallet_number) as current_pallet_number FROM "${tableName}" WHERE pallet_label IS NULL AND box_label IS NOT NULL`,
+      );
+
+      const currentPalletNumber =
+        +resultOfCurrentPalletNumber[0]?.current_pallet_number;
+
+      if (!currentPalletNumber) {
+        return {
+          success: false,
+          status: SearchStatus.ERROR,
+          message: 'Последняя паллета не найдена',
+          data: null,
+          error: null,
+        };
+      }
+
+      // Получаем общее количество продуктов в паллете
+      const productCountResult = await this.entityManager.query(
+        `SELECT COUNT(*) as count FROM "${tableName}" WHERE pallet_label IS NULL AND box_label IS NOT NULL`,
+      );
+
+      const productCountInPallet = 1;
+
+      // Генерируем код паллеты
+      const currentPalletLabel = await this.getFullPalletCode(
+        currentPalletNumber,
+        countOfFreeBoxes,
+        productCountResult[0].count,
+      );
+
+      console.log(
+        'Номер текущей паллеты: ' +
+          currentPalletNumber +
+          ', Label: ' +
+          currentPalletLabel,
+      );
+
+      // Закрываем паллету
+      const result = await this.closeCurrentPallet(currentPalletLabel);
+
+      // Печатаем этикетку паллеты
+      await this.printerService.printPalletLabel(
+        currentPalletNumber,
+        countOfFreeBoxes,
+        productCountInPallet,
+      );
+
+      return result;
+    } catch (e) {
+      console.log('Ошибка при закрытии и печати кода паллеты: ' + e.message);
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Ошибка при закрытии и печати кода паллеты: ' + e.message,
+        data: null,
+        error: null,
+      };
+    }
+  }
+
+  //метод для автоматического закрытия коробки   и печати её этикетки
+  private async closeAutoBoxAndPrint(
+    boxNumber: number,
+    countInBox: number,
+  ): Promise<void> {
+    try {
+      const boxLabel = await this.getFullBoxCode(boxNumber, countInBox);
+
+      await this.entityManager.query(
+        `UPDATE "${this.globalMonVar.tableName}" SET box_label = $1 WHERE box_number = $2 AND box_label IS NULL`,
+        [boxLabel, boxNumber],
+      );
+
+      this.logger.info(
+        `Авто: коробка ${boxNumber} закрыта (${countInBox} кодов), label: ${boxLabel}`,
+      );
+
+      await this.printerService.printBoxLabel(boxNumber, countInBox);
+    } catch (err) {
+      this.logger.error(
+        `Авто: ошибка при закрытии/печати коробки ${boxNumber}: ${err.message}`,
+        err,
+      );
+    }
+  }
+
+  //метод для автоматического закрытия паллеты и печати её этикетки
+  private async closeAutoPalletAndPrint(
+    palletNumber: number,
+    countInBoxesInPallet: number,
+  ): Promise<void> {
+    try {
+      const productCountResult = await this.entityManager.query(
+        `SELECT COUNT(*) as count FROM "${this.globalMonVar.tableName}" WHERE pallet_number = $1`,
+        [palletNumber],
+      );
+      const productCountInPallet = +productCountResult[0]?.count || 0;
+
+      const palletLabel = await this.getFullPalletCode(
+        palletNumber,
+        countInBoxesInPallet,
+        productCountInPallet,
+      );
+
+      await this.entityManager.query(
+        `UPDATE "${this.globalMonVar.tableName}" SET pallet_label = $1 WHERE pallet_number = $2 AND pallet_label IS NULL`,
+        [palletLabel, palletNumber],
+      );
+
+      this.logger.info(
+        `Авто: паллета ${palletNumber} закрыта (${countInBoxesInPallet} коробок, ${productCountInPallet} кодов), label: ${palletLabel}`,
+      );
+
+      await this.printerService.printPalletLabel(
+        palletNumber,
+        countInBoxesInPallet,
+        productCountInPallet,
+      );
+    } catch (err) {
+      this.logger.error(
+        `Авто: ошибка при закрытии/печати паллеты ${palletNumber}: ${err.message}`,
+        err,
+      );
+    }
+  }
+
+  async getIsAutoClosingEnabled() {
+    return isAutoClosingEnabled;
+  }
+
+  async getBoxCodesFromRemoteDb(
+    boxId: string,
+  ): Promise<Array<{ code: string; weight: string }>> {
+    this.logger.info(`Получение кодов для коробки ${boxId} из удаленной БД`);
+
+    try {
+      const codes = await this.remoteDbService.getBoxCodesFromRemoteDb(boxId);
+      return codes;
+    } catch (error) {
+      this.logger.error(
+        `Ошибка при получении кодов коробки из удаленной БД: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  extractBoxIdFromLabel(boxLabel: string): string | null {
+    try {
+      if (!boxLabel.includes('21')) {
+        this.logger.warn(
+          `Не удалось извлечь boxId из этикетки (отсутствует '21'): ${boxLabel}`,
+        );
+        return null;
+      }
+
+      if (boxLabel.length < 5) {
+        this.logger.warn(
+          `Строка этикетки слишком короткая для извлечения boxId: ${boxLabel}`,
+        );
+        return null;
+      }
+
+      const boxId = boxLabel.slice(-5);
+
+      this.logger.info(`Извлечен boxId: ${boxId} из этикетки: ${boxLabel}`);
+      return boxId;
+    } catch (error) {
+      this.logger.error(`Ошибка извлечения boxId: ${error.message}`);
+      return null;
+    }
+  }
+
+  async getBoxCodesCountFromRemoteDb(boxId: string): Promise<number> {
+    this.logger.info(
+      `Получение количества кодов для коробки ${boxId} из удаленной БД`,
+    );
+
+    try {
+      const codes: string[] =
+        await this.remoteDbService.getBoxCodesCountFromRemoteDb(boxId);
+
+      const matched: { originalCode: string; fullCode: string }[] = [];
+
+      const notMatchedCodes: string[] = [];
+
+      for (const code of codes) {
+        const processedRecord =
+          await this.processedCodeRepository.findByCodeAfter21(code);
+
+        if (!processedRecord) {
+          notMatchedCodes.push(code);
+          this.logger.warn(
+            `Код ${code} из удаленной БД не сопоставлен с processed_codes`,
+          );
+          continue;
+        }
+
+        matched.push({
+          originalCode: code,
+          fullCode: processedRecord.fullCode,
+        });
+      }
+
+      console.log('matchedmatchedmatchedmatchedmatched', matched);
+
+      const taskCodes = this.globalMonVar.task.codes || [];
+      let resultCodes = matched;
+
+      if (taskCodes.length > 0) {
+        const taskCodesSet = new Set(taskCodes.map((c) => c.trim()));
+        resultCodes = matched.filter((c) =>
+          taskCodesSet.has(c.fullCode.trim()),
+        );
+
+        const removed = matched.length - resultCodes.length;
+        if (removed > 0) {
+          this.logger.warn(`Не из задания: ${removed} кодов`);
+        }
+      }
+
+      console.log('countcountcount from db', resultCodes.length);
+
+      return resultCodes.length;
+    } catch (error) {
+      this.logger.error(
+        `Ошибка при получении количества кодов коробки из удаленной БД: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  async getBoxCodesCount(boxLabel: string): Promise<{
+    success: boolean;
+    boxId: string;
+    codesCount: number;
+    message: string;
+  }> {
+    this.logger.info(
+      `Получение количества кодов для коробочной этикетки: ${boxLabel}`,
+    );
+
+    try {
+      const boxId = this.extractBoxIdFromLabel(boxLabel);
+
+      if (!boxId) {
+        throw new Error('Не удалось извлечь идентификатор коробки из этикетки');
+      }
+
+      this.logger.info(`Извлечен boxId: ${boxId}`);
+
+      const count = await this.getBoxCodesCountFromRemoteDb(boxId);
+
+      this.logger.info(`Найдено ${count} кодов для коробки ${boxId}`);
+
+      return {
+        success: true,
+        boxId,
+        codesCount: count,
+        message: `Найдено ${count} кодов для коробки ${boxId}`,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Ошибка при получении количества кодов: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  async saveAllCodesToProcessedTable(codes: string[]): Promise<void> {
+    if (!codes || codes.length === 0) {
+      this.logger.warn(
+        'Список кодов пуст, пропускаем сохранение в processed_codes',
+      );
+      return;
+    }
+
+    this.logger.info(
+      `Начинаем сохранение ${codes.length} кодов в processed_codes`,
+    );
+
+    let savedCount = 0;
+    let skippedCount = 0;
+    let errorCount = 0;
+
+    for (const code of codes) {
+      try {
+        const codeAfter21 = this.extractCodeAfter21(code);
+
+        if (codeAfter21) {
+          // Сохраняем в базу
+          await this.processedCodeRepository.saveCode(code, codeAfter21);
+          savedCount++;
+        } else {
+          this.logger.warn(
+            `Не удалось извлечь часть после 21 для кода: ${code}`,
+          );
+          skippedCount++;
+        }
+      } catch (error) {
+        errorCount++;
+        this.logger.error(
+          `Ошибка сохранения кода ${code} в processed_codes: ${error.message}`,
+        );
+      }
+    }
+
+    this.logger.info(
+      `Сохранение кодов в processed_codes завершено. Сохранено: ${savedCount}, пропущено: ${skippedCount}, ошибок: ${errorCount}`,
+    );
+  }
+
+  extractCodeAfter21(fullCode: string): string | null {
+    try {
+      if (!fullCode) return null;
+
+      const code = fullCode.trim();
+      const GS = '\x1D';
+      const serialStart = 18; // 01 + 14 цифр GTIN + 21 = 18 символов
+
+      // Проверяем структуру: 01<GTIN14>21<serial>
+      if (
+        code.length <= serialStart ||
+        !code.startsWith('01') ||
+        code.slice(16, 18) !== '21'
+      ) {
+        this.logger.warn(
+          `Код не соответствует формату 01...21...: ${fullCode}`,
+        );
+        return null;
+      }
+
+      // Ищем GS только начиная с позиции серийника
+      const gsPos = code.indexOf(GS, serialStart);
+
+      // Если GS нет, серийник идёт до конца строки
+      const serial = (
+        gsPos === -1
+          ? code.substring(serialStart)
+          : code.substring(serialStart, gsPos)
+      ).trim();
+
+      if (!serial) {
+        this.logger.warn(`Пустой серийник в коде: ${fullCode}`);
+        return null;
+      }
+
+      this.logger.info(`Извлечён серийник: ${fullCode} -> ${serial}`);
+      return serial;
+    } catch (error) {
+      this.logger.error(`Ошибка извлечения серийника: ${error.message}`);
+      return null;
+    }
+  }
+
+  async saveCurrentCode(code: string) {
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.post(
+          `http://${this.ip_server}:4001/code/validate-code`,
+          {
+            code: code,
+          },
+        ),
+      );
+      console.log(data);
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getDuplicatesCodes(codes: string[]) {
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.post(`http://${this.ip_server}:4001/code/get-codes`, {
+          codes: codes,
+        }),
+      );
+      console.log(data);
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async deleteCode(code: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.httpService.delete(
+          `http://${this.ip_server}:4001/code/delete-code`,
+          { data: { code } },
+        ),
+      );
+      console.log(code);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async removeLaserCodesPresentInCodeEntity(code: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.httpService.delete(
+          `http://${this.ip_server}:4001/code/delete-laser-codes`,
+          { data: { code } },
+        ),
+      );
+      console.log(code);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getCommonWeightOfCurrentPacking() {
+    const { tableName, success, message } = await this.checkDataForTable();
+
+    if (!success) {
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: message,
+        data: null,
+        error: null,
+      };
+    }
+
+    try {
+      const result = await this.entityManager.query(
+        `SELECT SUM(CAST(weight AS DECIMAL)) as total_weight FROM "${tableName}"`,
+      );
+
+      const totalWeight = result[0]?.total_weight || 0;
+
+      return {
+        success: true,
+        status: SearchStatus.SUCCESS,
+        message: 'Вес фасовки получен',
+        data: {
+          weight: parseFloat(totalWeight) || 0,
+          unit: 'kg',
+        },
+      };
+    } catch (e) {
+      console.error('Ошибка при получении веса фасовки:', e);
+      return {
+        success: false,
+        status: SearchStatus.ERROR,
+        message: 'Ошибка при получении веса фасовки',
+        data: null,
+        error: e.message,
+      };
+    }
+  }
+}

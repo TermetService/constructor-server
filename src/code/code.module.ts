@@ -16,6 +16,17 @@ import { CodeMigrationService } from './code-migration.service';
 import { CodeRepository } from './code.repository';
 import { Gs1ParserModule } from 'src/gs1-parser/gs1-parser.module';
 import { numberBoxETEModule } from 'src/NumberBoxETE/numberBoxETE.module';
+import { GatewayModule } from 'src/gateway.moduel';
+import { HandOperation } from './hand-operation.service';
+import { CodeTablesService } from './helpers/code-tables.service';
+import { CodeCountsService } from './helpers/code-counts.service';
+import { CodeSaveService } from './helpers/code-save.service';
+import { CodeLabelsService } from './helpers/code-labels.service';
+import { CodeReportsService } from './helpers/code-reports.service';
+import { CodeScanService } from './helpers/code-scan.service';
+import { CodeWeightsService } from './helpers/code-weights.service';
+import { CodeRemoteService } from './helpers/code-remote.service';
+import { CodeLayersService } from './helpers/code-layers.service';
 
 @Module({
   imports: [
@@ -26,6 +37,7 @@ import { numberBoxETEModule } from 'src/NumberBoxETE/numberBoxETE.module';
     PrinterModule,
     numberBoxETEModule,
     forwardRef(() => MonitoringModule),
+    GatewayModule,
   ],
   controllers: [CodeController],
   providers: [
@@ -34,8 +46,16 @@ import { numberBoxETEModule } from 'src/NumberBoxETE/numberBoxETE.module';
     CodeHelperService,
     CodeSearchService,
     CodeMigrationService,
-
-    AppGateway,
+    CodeTablesService,
+    CodeCountsService,
+    CodeSaveService,
+    CodeLabelsService,
+    CodeReportsService,
+    CodeScanService,
+    CodeWeightsService,
+    CodeRemoteService,
+    CodeLayersService,
+    HandOperation,
     { provide: 'winston', useValue: codeLogger },
   ],
   exports: [

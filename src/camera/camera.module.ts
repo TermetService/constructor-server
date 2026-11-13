@@ -7,6 +7,7 @@ import { cameraLogger } from 'src/logger-winston/winston.config';
 import { CameraService } from './camera.service';
 import { CameraController } from './camera.controller';
 import { CodeModule } from 'src/code/code.module';
+import { CameraConfigService } from './camera-config.service';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CodeModule } from 'src/code/code.module';
   controllers: [CameraController],
   providers: [
     CameraService,
+    CameraConfigService,
     AppGateway,
     CameraConfigRepository,
     { provide: 'winston', useValue: cameraLogger },

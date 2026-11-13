@@ -30,6 +30,7 @@ import { TrialModule } from './trail-period/trial-period.module';
 import { Gs1ParserModule } from './gs1-parser/gs1-parser.module';
 import { FTPModule } from './ftp/ftp.module';
 import { numberBoxETEModule } from './NumberBoxETE/numberBoxETE.module';
+import { GatewayModule } from './gateway.moduel';
 
 @Module({
   imports: [
@@ -52,9 +53,9 @@ import { numberBoxETEModule } from './NumberBoxETE/numberBoxETE.module';
     FTPModule,
     Gs1ParserModule,
     numberBoxETEModule,
+    GatewayModule,
     // QtModule,
   ],
-  providers: [AppGateway],
 })
 export class AppModule {
   constructor() {

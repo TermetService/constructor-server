@@ -5,7 +5,11 @@ import { AppGateway } from 'src/app.gateway';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Logger } from 'winston';
 import { printer } from 'node-thermal-printer';
-import { IMonitoringVariables, MonitoringStatusActions, Status } from 'src/globalTypes';
+import {
+  IMonitoringVariables,
+  MonitoringStatusActions,
+  Status,
+} from 'src/globalTypes';
 import { printLabelBox, printLabelPallet } from './printer.utils';
 import { TemplateService } from 'src/template/template.service';
 import * as net from 'net';
@@ -27,8 +31,7 @@ export class PrinterService implements OnModuleDestroy {
     @Inject('GLOBAL_MONITORING_VARIABLES')
     private readonly globalMonVar: IMonitoringVariables,
     @Inject('winston') private readonly logger: Logger = printerLogger,
-
-  ) { }
+  ) {}
 
   private isConnected = false;
   private printer: any;
@@ -137,6 +140,7 @@ export class PrinterService implements OnModuleDestroy {
   public async printBoxLabel(
     boxNumber: number,
     countInBox: number,
+    cameraName?: string,
   ): Promise<any> {
     try {
       const template = await this.templateService.getAll();
@@ -147,7 +151,7 @@ export class PrinterService implements OnModuleDestroy {
       const printerName1 = process.env.PRINTER_NAME_1 || '';
       const printerName2 = process.env.PRINTER_NAME_1 || '';
 
-      let goTo = MonitoringStatusActions.Right
+      let goTo = MonitoringStatusActions.Right;
       if (boxNumber % 2 === 0) {
         goTo = this.globalMonVar.isFirstBoxOdd
           ? MonitoringStatusActions.Right
@@ -158,9 +162,7 @@ export class PrinterService implements OnModuleDestroy {
           : MonitoringStatusActions.Right;
       }
       const printerName =
-        goTo === MonitoringStatusActions.Right
-          ? printerName2
-          : printerName1;
+        goTo === MonitoringStatusActions.Right ? printerName2 : printerName1;
 
       if (boxTemplate.length) {
         await printLabelBox(
@@ -170,7 +172,7 @@ export class PrinterService implements OnModuleDestroy {
           boxTemplate,
           this.globalMonVar,
           this.logger,
-          printerName
+          printerName,
         );
       }
     } catch (err) {

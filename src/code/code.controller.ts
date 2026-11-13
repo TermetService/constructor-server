@@ -14,12 +14,13 @@ import { IBoxResponse, IPalletResponse } from './types';
 import { CodeSearchService } from './code-search.service';
 import { CodeHelperService } from './code-helper.service';
 import { CodeMigrationService } from './code-migration.service';
-
+import { HandOperation } from './hand-operation.service';
 
 @Controller('code')
 export class CodeController {
   constructor(
     private readonly codeService: CodeService,
+    private readonly handOper: HandOperation,
     private readonly codeHelperService: CodeHelperService,
     private readonly codeMigrationService: CodeMigrationService,
     private readonly codeSearchService: CodeSearchService,
@@ -70,7 +71,10 @@ export class CodeController {
     let { code } = body;
     code = code.replaceAll('@', '\x1D');
     try {
-      const result = await this.codeService.handValidateAndSaveCode(code);
+      const result = await this.codeService.validateAndSaveCode(
+        code,
+        body.name,
+      );
       if (result.isAddCode) {
         res.send({
           message: 'Ручной код успешно сохранен',
@@ -176,7 +180,7 @@ export class CodeController {
   async addCodeToBox(@Body() body) {
     const { code, boxNumber, palletNumber } = body;
     try {
-      const res = await this.codeService.addCodeToBox(
+      const res = await this.handOper.addCodeToBox(
         code,
         boxNumber,
         palletNumber,
@@ -192,7 +196,7 @@ export class CodeController {
   async deleteBox(@Body() body, @Res() res) {
     const { boxNumber } = body;
     try {
-      await this.codeService.deleteBox(boxNumber);
+      await this.handOper.deleteBox(boxNumber);
       res.send('Короб успешно удален');
     } catch (err) {
       console.error(err);
@@ -204,7 +208,7 @@ export class CodeController {
   async removeBoxFromPallet(@Body() body, @Res() res) {
     const { boxNumber } = body;
     try {
-      await this.codeService.removeBoxFromPallet(boxNumber);
+      await this.handOper.removeBoxFromPallet(boxNumber);
       res.send('Короб успешно изъят из паллеты');
     } catch (err) {
       console.error(err);
@@ -216,7 +220,7 @@ export class CodeController {
   async deletePallet(@Body() body, @Res() res) {
     const { palletNumber } = body;
     try {
-      await this.codeService.deletePallet(palletNumber);
+      await this.handOper.deletePallet(palletNumber);
       res.send('Паллета успешно удалена');
     } catch (err) {
       console.error(err);
@@ -249,7 +253,7 @@ export class CodeController {
     @Res() res,
   ) {
     try {
-      await this.codeService.moveBoxToPallet(boxNumber, newPalletNumber);
+      await this.handOper.moveBoxToPallet(boxNumber, newPalletNumber);
       res.send({
         message: `Коробка ${boxNumber} успешно перемещена на паллету ${newPalletNumber}`,
       });

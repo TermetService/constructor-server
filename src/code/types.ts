@@ -30,6 +30,14 @@ export enum SearchFrom {
   Unknown = 'unknown',
 }
 
+/** Статус ответа методов поиска/веса */
+export enum SearchStatus {
+  SUCCESS = 'success',
+  ERROR = 'error',
+  INVALID_FORMAT = 'invalid_format',
+  DUPLICATE = 'duplicate',
+}
+
 // =====================================
 // 1. Описываем интерфейсы для каждого уровня
 export interface ProductCode {
