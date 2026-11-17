@@ -20,11 +20,16 @@ import {
   getLogMessages,
 } from 'src/logger-winston/winston.config';
 import { AppGateway } from 'src/app.gateway';
-import { CodeHelperService } from './code-helper.service';
 import { CodeRepository } from './code.repository';
 import { NumberBoxETEService } from 'src/NumberBoxETE/numberBoxETE.service';
 import { CodeLayersService } from './helpers/code-layers.service';
+import { CodeTablesService } from './helpers/code-tables.service';
+import { CodeSaveService } from './helpers/code-save.service';
+import { CodeLabelsService } from './helpers/code-labels.service';
+import { CodeCountsService } from './helpers/code-counts.service';
+import { CodeCameraStateService } from './helpers/code-camera-state.service';
 import { CameraNames } from 'src/camera/types';
+import { BoxLabelCheckService } from './bind/box-label-check.service';
 
 type cameraData = {
   currectProductInBox: number;
@@ -37,7 +42,7 @@ type cameraData = {
 
 const flagInpallet = false; //флаг кторый будет отвечать за фасуем в общую паллету или в разные false - в разные true в общую
 
-const flagInBoxLable = false; //флаг кторый будет отвечать за коробоки идет с label и закртыая или нет
+const flagInBoxLable = true; //флаг кторый будет отвечать за коробоки идет с label и закртыая или нет
 
 @Injectable()
 export class CodeService {
@@ -46,7 +51,12 @@ export class CodeService {
     private readonly entityManager: EntityManager,
     private readonly eventEmitter: EventEmitter2,
     private readonly appGateway: AppGateway,
-    private readonly codeHelperService: CodeHelperService,
+    private readonly boxLabelCheckService: BoxLabelCheckService,
+    private readonly tables: CodeTablesService,
+    private readonly saveService: CodeSaveService,
+    private readonly labels: CodeLabelsService,
+    private readonly counts: CodeCountsService,
+    private readonly cameraState: CodeCameraStateService,
     private readonly numberBoxETEService: NumberBoxETEService,
     private readonly codeLayersService: CodeLayersService,
     @Inject('GLOBAL_MONITORING_VARIABLES')
@@ -61,7 +71,12 @@ export class CodeService {
 
   private saveQueue: Promise<any> = Promise.resolve();
 
-  private cameraStates = {} as Record<string, cameraData>;
+  private pending = 0;
+
+  /** Состояние камер хранится в общем реестре (его читает и CodeCountsService) */
+  private get cameraStates(): Record<string, cameraData> {
+    return this.cameraState.all() as Record<string, cameraData>;
+  }
 
   private lastUsedBoxNumber;
 
@@ -85,18 +100,50 @@ export class CodeService {
     this.lastUsedBoxNumber = value;
   }
 
+  // сеттер паллеты — с валидацией
+  setLastUsedPalletNumber(value: number): void {
+    if (value < 0) {
+      throw new Error('Pallet number must be non-negative');
+    }
+    this.lastUsedPalletNumber = value;
+  }
+
+  /**
+   * Начало смены/задания: сбрасывает состояние камер и выставляет номера так,
+   * чтобы первый код попал в коробку boxNumber и паллету palletNumber
+   * (initCamera сделает ++).
+   */
+  startSession(boxNumber: number, palletNumber: number): void {
+    this.cameraState.reset();
+    this.lastUsedBoxNumber = Math.max(0, boxNumber - 1);
+    this.lastUsedPalletNumber = Math.max(0, palletNumber - 1);
+    this.countBox = Number(this.globalMonVar.task?.packaging_per_pallet) || 6;
+  }
+
   private enqueueSave<T>(task: () => Promise<T>): Promise<T> {
+    this.pending++;
     const run = this.saveQueue.then(task, task);
     this.saveQueue = run.then(
-      () => undefined,
-      () => undefined,
+      () => {
+        this.pending--;
+        this.resetIfIdle();
+      },
+      () => {
+        this.pending--;
+        this.resetIfIdle();
+      },
     );
     return run;
   }
 
+  private resetIfIdle() {
+    if (this.pending === 0) {
+      this.saveQueue = Promise.resolve(); // ← рвём ссылку на историю
+    }
+  }
+
   async UpdateStateCamera(name, weigth) {
     this.globalMonVar.productCount++;
-    this.globalMonVar.productsInCurrentBox++;
     this.cameraStates[name].currectProductInBox++;
     this.cameraStates[name].WeightBox += +weigth;
     if (
@@ -149,7 +196,7 @@ export class CodeService {
       this.cameraStates[name].currectProductInBox ===
       this.globalMonVar.limitProductInBox
     ) {
-      await this.codeHelperService.closeAutoBoxAndPrint(
+      await this.labels.closeAutoBoxAndPrint(
         this.cameraStates[name].UsedBoxNumber,
         this.globalMonVar.limitProductInBox,
         name,
@@ -158,6 +205,16 @@ export class CodeService {
   }
 
   async initCamera(name) {
+    // защита от неинициализированных счётчиков: иначе ++undefined = NaN,
+    // и в таблицу уходит pallet_number = NaN
+    if (!Number.isFinite(this.lastUsedBoxNumber)) this.lastUsedBoxNumber = 0;
+    if (!Number.isFinite(this.lastUsedPalletNumber)) {
+      this.lastUsedPalletNumber = 0;
+    }
+    if (!Number.isFinite(this.countBox)) {
+      this.countBox = Number(this.globalMonVar.task?.packaging_per_pallet) || 6;
+    }
+
     let cameraState = this.cameraStates[name];
     console.log(!cameraState, '3256587', this.cameraStates[name]);
 
@@ -174,6 +231,7 @@ export class CodeService {
         WeightPallet: 0,
         currectBoxInPallet: 1,
       };
+      cameraState = this.cameraStates[name];
 
       await this.numberBoxETEService.UpdateBoxNumber(
         this.globalMonVar.task.gtin,
@@ -181,6 +239,35 @@ export class CodeService {
         this.globalMonVar.task.date_manufacture,
       );
     }
+
+    return cameraState;
+  }
+
+  /**
+   * Восстанавливает состояние камеры из БД (продолжение фасовки):
+   * последняя коробка/паллета и сколько в них уже лежит.
+   */
+  syncCameraState(
+    name: string,
+    info: {
+      lastBoxNumber: number;
+      lastPalletNumber: number;
+      productsInLastBox: number;
+      boxesInLastPallet: number;
+    },
+  ): void {
+    this.countBox = Number(this.globalMonVar.task?.packaging_per_pallet) || 6;
+    this.lastUsedBoxNumber = Math.max(0, (info.lastBoxNumber || 1) - 1);
+    this.lastUsedPalletNumber = Math.max(0, (info.lastPalletNumber || 1) - 1);
+
+    this.cameraState.set(name, {
+      currectProductInBox: info.productsInLastBox || 0,
+      currectBoxInPallet: info.boxesInLastPallet || 0,
+      UsedBoxNumber: info.lastBoxNumber || 1,
+      UsedPalletNumber: info.lastPalletNumber || 1,
+      WeightBox: 0,
+      WeightPallet: 0,
+    });
   }
 
   hasValidCoordinates(productCoords: string[][]): boolean {
@@ -191,6 +278,7 @@ export class CodeService {
   }
 
   async ParseLayer(codes: string[], name: string): Promise<any> {
+    const startParse = performance.now();
     const UnValidateCodes = [];
     const valideCodes = [];
     // TODO: разбор кодов по слоям для камеры
@@ -209,8 +297,12 @@ export class CodeService {
       }
     }
 
-    if (productCodes.length !== this.globalMonVar.task.codesInLayer) {
+    if (productCodes.length !== +this.globalMonVar.task.codesInLayer) {
       this.appGateway.sendCoordinates(productCoords);
+      return {
+        isValid: false,
+        codes: UnValidateCodes,
+      };
     }
 
     if (UnValidateCodes.length > 0) {
@@ -220,6 +312,8 @@ export class CodeService {
       };
     }
 
+    const tValEnd = performance.now();
+    console.log(tValEnd - startParse, '254534522 ms');
     return {
       isValid: true,
       codes: valideCodes,
@@ -241,7 +335,7 @@ export class CodeService {
         const validation = await this.validateCode(code);
 
         if (!validation.isValid) {
-          this.codeHelperService.handleValidationError(
+          this.counts.handleValidationError(
             validation.message,
             MonitoringStatusActions.Reject,
           );
@@ -251,7 +345,7 @@ export class CodeService {
         // Таблица создаётся при первом коде для конкретного задания,
         // даже если счётчик productCount остался с прошлого задания.
         if (this.initializedTableName !== this.globalMonVar.tableName) {
-          await this.codeHelperService.initializeTables();
+          await this.tables.initializeTables();
           this.initializedTableName = this.globalMonVar.tableName;
         }
         //insert code
@@ -266,7 +360,7 @@ export class CodeService {
         this.logger.info(
           `Код: Время, прошедшее с момента изменения контура до начала валидации 2: ${timeDifference2} мс`,
         );
-        this.codeHelperService.getCurrentCounts();
+        this.counts.getCurrentCounts();
         const result = { isAddCode: true };
         return result;
       });
@@ -281,16 +375,92 @@ export class CodeService {
     return isValidCode(code, this.globalMonVar.task, this.logger, {
       isDuplicate: (candidate) =>
         this.codeRepository.isDuplicateCode(candidate),
-      isCodeTask: (codes, code) =>
-        this.codeHelperService.isCodeTask(codes, code),
+      isCodeTask: (codes, code) => this.saveService.isCodeTask(codes, code),
     });
   }
   private a = /^01\d{14}21(?:.{8}|.{6})[\x1D]9[123]/;
 
-  private async BindAgregateCode(codes, agregatCode) {}
+  async BindAgregateCode(codes, name) {
+    const { ok, productCodes, boxLabel, boxNumber } =
+      await this.boxLabelCheckService.check(codes);
+
+    if (ok) await this.labels.bindBoxLabel(boxNumber, boxLabel);
+  }
+
+  /**
+   * Пакетное сохранение кодов камеры: создаёт таблицу при необходимости,
+   * инициализирует состояние камеры, двигает счётчики, пишет коды и
+   * отправляет счётчики на панель этой камеры.
+   * При ошибке состояние и счётчики откатываются.
+   */
+  async saveCodes(codes: string[], name = 'Camera1') {
+    const key = this.cameraKey(name);
+
+    return await this.enqueueSave(async () => {
+      if (this.initializedTableName !== this.globalMonVar.tableName) {
+        await this.tables.initializeTables();
+        this.initializedTableName = this.globalMonVar.tableName;
+      }
+
+      const prevState = await this.initCamera(key);
+
+      const snapshot = {
+        camera: { ...prevState },
+        lastUsedBoxNumber: this.lastUsedBoxNumber,
+        lastUsedPalletNumber: this.lastUsedPalletNumber,
+        productCount: this.globalMonVar.productCount,
+        boxCount: this.globalMonVar.boxCount,
+        palletCount: this.globalMonVar.palletCount,
+      };
+
+      try {
+        for (let i = 0; i < codes.length; i++) {
+          await this.UpdateStateCamera(key, 0);
+        }
+
+        await this.saveService.saveCodess(
+          this.globalMonVar.tableName,
+          codes,
+          this.lastUsedBoxNumber,
+          key,
+          flagInpallet ? null : this.cameraStates[key].UsedPalletNumber,
+        );
+
+        await this.counts.sendCurrentStateToFrontend(
+          this.counts.getCurrentCounts(key),
+          key,
+        );
+      } catch (err) {
+        this.cameraState.set(key, snapshot.camera);
+        this.lastUsedBoxNumber = snapshot.lastUsedBoxNumber;
+        this.lastUsedPalletNumber = snapshot.lastUsedPalletNumber;
+        this.globalMonVar.productCount = snapshot.productCount;
+        this.globalMonVar.boxCount = snapshot.boxCount;
+        this.globalMonVar.palletCount = snapshot.palletCount;
+
+        this.logger.error(
+          `Код: ошибка пакетного сохранения (${codes.length} кодов), откат: ${err?.message ?? err}`,
+        );
+        this.counts.handleValidationError(
+          `Ошибка сохранения кодов: ${err?.message ?? err}`,
+          MonitoringStatusActions.Reject,
+        );
+      }
+    });
+  }
+
+  /** Имя состояния камеры: 'Camera1' для «Камера 1» / 'Camera1' */
+  private cameraKey(name: string): string {
+    if (!name) return 'Camera1';
+    if (name.startsWith('Camera')) return name;
+
+    const digits = name.replace(/\D/g, '');
+
+    return digits ? `Camera${digits}` : 'Camera1';
+  }
 
   private async saveCode(code: string): Promise<void> {
-    const saved = await this.codeHelperService.saveCode(
+    const saved = await this.saveService.saveCode(
       this.globalMonVar.tableName,
       code,
       this.lastUsedBoxNumber,
@@ -299,19 +469,19 @@ export class CodeService {
     );
 
     if (!saved) {
-      this.codeHelperService.handleValidationError(
+      this.counts.handleValidationError(
         `Найден дубликат кода ${code}`,
         MonitoringStatusActions.Reject,
       );
       return;
     }
 
-    this.codeHelperService.updateCodeStatus();
+    this.saveService.updateCodeStatus();
     this.eventEmitter.emit(EventTypes.CodeStatusUpdated);
     this.logger.info(`Код: Статус кода обновлен для кода: ${code}`);
 
-    const counts = this.codeHelperService.getCurrentCounts();
-    this.codeHelperService.sendCurrentStateToFrontend(counts);
+    const counts = this.counts.getCurrentCounts('Camera1');
+    this.counts.sendCurrentStateToFrontend(counts, 'Camera1');
     this.appGateway.sendRootMessage({
       status: RootStatus.Success,
       message: 'Код сохранен',
@@ -327,27 +497,27 @@ export class CodeService {
 
   //       if (!validation.isValid) {
   //         this.logger.warn(`Код ручной: ${validation.message}`);
-  //         this.codeHelperService.sendDBDataToFrontend();
+  //         this.counts.sendDBDataToFrontend();
   //         return { isAddCode: false };
   //       }
 
   //       if (this.globalMonVar.productCount === 0) {
-  //         await this.codeHelperService.initializeTables();
+  //         await this.tables.initializeTables();
   //         this.isDatabaseInitialized = true;
   //       }
 
   //       const saved =
-  //         await this.codeHelperService.saveCodeAndAdvanceState(code);
+  //         await this.saveService.saveCodeAndAdvanceState(code);
 
   //       if (!saved) {
   //         this.logger.warn(`Код ручной: Код ${code} уже существует`);
-  //         this.codeHelperService.sendDBDataToFrontend();
+  //         this.counts.sendDBDataToFrontend();
   //         return { isAddCode: false };
   //       }
 
   //       this.logger.info(`Код ручной: Код ${code} сохранен`);
 
-  //       this.codeHelperService.sendDBDataToFrontend();
+  //       this.counts.sendDBDataToFrontend();
   //       return {
   //         isAddCode: true,
   //         boxNumber: this.globalMonVar.currentBoxNumber,
@@ -371,7 +541,7 @@ export class CodeService {
 
     if (!codes?.length) {
       this.logger.info('Код: Пустой массив кодов для удаления - пропускаем');
-      return this.codeHelperService.getCurrentCounts();
+      return this.counts.getCurrentCounts();
     }
 
     const { boxNumber } = codes[0];
@@ -421,12 +591,12 @@ export class CodeService {
       }
     }
 
-    await this.codeHelperService.sendDBDataToFrontend();
+    await this.counts.sendDBDataToFrontend();
     const endT = performance.now();
     const delta = endT - startT;
     console.log('delta ------------ deleteCodes', delta);
 
-    return this.codeHelperService.getCurrentCounts();
+    return this.counts.getCurrentCounts();
   }
 
   async deleteTablesStartingWithNumber(): Promise<void> {
@@ -456,15 +626,15 @@ export class CodeService {
 
   private async initializeCleanupSystem(): Promise<void> {
     try {
-      await this.codeHelperService.createCleanupMetadataTable();
+      await this.tables.createCleanupMetadataTable();
 
       // Проверяем при старте приложения
-      await this.codeHelperService.deleteOldTablesIfNeeded();
+      await this.tables.deleteOldTablesIfNeeded();
 
       // Также можно добавить периодическую проверку на случай, если сервер работает долго
       setInterval(
         async () => {
-          await this.codeHelperService.deleteOldTablesIfNeeded();
+          await this.tables.deleteOldTablesIfNeeded();
         },
         12 * 60 * 60 * 1000,
       ); // Проверять каждые 12 часов

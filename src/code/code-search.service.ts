@@ -8,7 +8,8 @@ import { Logger } from 'winston';
 import { codeLogger } from 'src/logger-winston/winston.config';
 import { TemplateService } from 'src/template/template.service';
 import * as dotenv from 'dotenv';
-import { CodeHelperService } from './code-helper.service';
+import { CodeTablesService } from './helpers/code-tables.service';
+import { CodeCountsService } from './helpers/code-counts.service';
 import { getItemsCountInPallet } from 'src/monitoring/helper';
 import { Gs1ParserService } from 'src/gs1-parser/gs1-parser.service';
 
@@ -23,7 +24,8 @@ export class CodeSearchService {
         private readonly entityManager: EntityManager,
         private readonly templateService: TemplateService,
         private readonly gs1ParserService: Gs1ParserService,
-        private readonly codeHelperService: CodeHelperService,
+        private readonly tables: CodeTablesService,
+        private readonly counts: CodeCountsService,
         @Inject('GLOBAL_MONITORING_VARIABLES')
         private readonly globalMonVar: IMonitoringVariables,
         @Inject('winston') private readonly logger: Logger = codeLogger,
@@ -38,8 +40,8 @@ export class CodeSearchService {
         const start = performance.now();
         this.logger.info(`Код: Поиск кода: ${query}`);
         try {
-            const tableName = this.codeHelperService.getTableName();
-            await this.codeHelperService.checkTableExists(
+            const tableName = this.counts.getTableName();
+            await this.tables.checkTableExists(
                 this.globalMonVar.tableName,
             );
 
@@ -115,9 +117,9 @@ export class CodeSearchService {
     ): Promise<{ code: CodeEntity | null; pageNumber: number }> {
         this.logger.info(`Код: Поиск кода с пагинацией: ${query}`);
         const start = performance.now();
-        const tableName = this.codeHelperService.getTableName();
+        const tableName = this.counts.getTableName();
 
-        await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+        await this.tables.checkTableExists(this.globalMonVar.tableName);
 
         const res = await this.entityManager.query(
             `SELECT * FROM "${tableName}" WHERE code = $1 LIMIT 1`,
@@ -150,9 +152,9 @@ export class CodeSearchService {
     async searchByBoxNumber(boxNumber: number): Promise<CodeEntity[]> {
         this.logger.info(`Код: Поиск всех кодов в коробе номер: ${boxNumber}`);
         const start = performance.now();
-        const tableName = this.codeHelperService.getTableName();
+        const tableName = this.counts.getTableName();
 
-        await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+        await this.tables.checkTableExists(this.globalMonVar.tableName);
 
         const res = await this.entityManager.query(
             `SELECT * FROM "${tableName}" WHERE box_number = $1`,
@@ -171,9 +173,9 @@ export class CodeSearchService {
     ): Promise<{ data: IBoxResponse; total: number } | any> {
         const start = performance.now();
         this.logger.info('Код: Получение всех коробов');
-        const tableName = this.codeHelperService.getTableName();
+        const tableName = this.counts.getTableName();
 
-        await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+        await this.tables.checkTableExists(this.globalMonVar.tableName);
 
         const offset = (page - 1) * limit;
         const res = await this.entityManager.query(
@@ -197,9 +199,9 @@ export class CodeSearchService {
     ): Promise<{ data: IPalletResponse; total: number } | any> {
         this.logger.info('Код: Получение всех паллет');
         const start = performance.now();
-        const tableName = this.codeHelperService.getTableName();
+        const tableName = this.counts.getTableName();
 
-        await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+        await this.tables.checkTableExists(this.globalMonVar.tableName);
 
         const offset = (page - 1) * limit;
         const res = await this.entityManager.query(

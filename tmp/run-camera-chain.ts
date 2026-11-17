@@ -206,7 +206,6 @@ async function main() {
   const { numberBoxETE } = require('src/NumberBoxETE/numberBoxETE.entity');
   const { NumberBoxETEService } = require('src/NumberBoxETE/numberBoxETE.service');
   const { CodeRepository } = require('src/code/code.repository');
-  const { CodeHelperService } = require('src/code/code-helper.service');
   const { CodeService } = require('src/code/code.service');
   const { CameraService } = require('src/camera/camera.service');
   const { CameraNames } = require('src/camera/types');
@@ -219,6 +218,7 @@ async function main() {
   const { CodeWeightsService } = require('src/code/helpers/code-weights.service');
   const { CodeRemoteService } = require('src/code/helpers/code-remote.service');
   const { CodeLayersService } = require('src/code/helpers/code-layers.service');
+  const { CodeCameraStateService } = require('src/code/helpers/code-camera-state.service');
 
   const ds = new DataSource({
     type: 'postgres',
@@ -384,29 +384,20 @@ async function main() {
     );
     const layers = new CodeLayersService(globalMonVar, logger);
 
-    const helper = new CodeHelperService(
-      tables,
-      new CodeCountsService(repository, gateway, tables, globalMonVar, logger),
-      new CodeSaveService(repository, globalMonVar, logger),
-      new CodeLabelsService(
-        ds.manager,
-        templateService,
-        printerService,
-        globalMonVar,
-        logger,
-      ),
-      new CodeReportsService(
-        ds.manager,
-        repository,
-        templateService,
-        globalMonVar,
-        logger,
-      ),
-      new CodeScanService(globalMonVar, logger),
-      new CodeWeightsService(ds.manager, repository, globalMonVar, logger),
-      new CodeRemoteService(logger),
-      layers,
+    const cameraState = new CodeCameraStateService();
+    const counts = new CodeCountsService(
+      repository,
       gateway,
+      tables,
+      cameraState,
+      globalMonVar,
+      logger,
+    );
+    const saveCodes = new CodeSaveService(repository, globalMonVar, logger);
+    const labels = new CodeLabelsService(
+      ds.manager,
+      templateService,
+      printerService,
       globalMonVar,
       logger,
     );
@@ -416,7 +407,12 @@ async function main() {
       ds.manager,
       eventEmitter,
       gateway,
-      helper,
+      { check: async () => ({ ok: true }) } as any,
+      tables,
+      saveCodes,
+      labels,
+      counts,
+      cameraState,
       numberBoxEte,
       layers,
       globalMonVar,
@@ -470,7 +466,7 @@ async function main() {
       codes,
     ]);
 
-    await helper.initializeTables();
+    await tables.initializeTables();
 
     if (process.env.ETE_SEED === '0') {
       console.log('ETE_SEED=0: строку не создаём');

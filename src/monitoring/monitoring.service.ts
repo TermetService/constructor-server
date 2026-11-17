@@ -37,7 +37,9 @@ import {
   resetLogMessages,
 } from 'src/logger-winston/winston.config';
 import { PrinterService } from 'src/printers/printer.service';
-import { CodeHelperService } from 'src/code/code-helper.service';
+import { CodeTablesService } from 'src/code/helpers/code-tables.service';
+import { CodeCountsService } from 'src/code/helpers/code-counts.service';
+import { CodeReportsService } from 'src/code/helpers/code-reports.service';
 import * as dotenv from 'dotenv';
 import { EntityManager } from 'typeorm';
 import { TasksService } from 'src/tasks/tasks.service';
@@ -71,7 +73,9 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
     private readonly printerService: PrinterService,
     private readonly tasksService: TasksService,
     private readonly codeService: CodeService,
-    private readonly codeHelperService: CodeHelperService,
+    private readonly tables: CodeTablesService,
+    private readonly counts: CodeCountsService,
+    private readonly reports: CodeReportsService,
     @Inject('GLOBAL_MONITORING_VARIABLES')
     private readonly globalMonVar: IMonitoringVariables,
     @Inject('winston') private readonly logger: Logger = monitoringLogger,
@@ -158,8 +162,13 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
           this.globalMonVar.boxesInCurrentPallet = 0;
         }
 
+        this.codeService.startSession(
+          +task.startCorob || 1,
+          +task.startPallet || 1,
+        );
+
         // таблица задания должна существовать до первого кода
-        await this.codeHelperService.initializeTables();
+        await this.tables.initializeTables();
       }
       if (isPrintZero) {
         this.printerService.printBoxLabel(0, 0);
@@ -168,13 +177,32 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
       await this.monitoringHelperService.addPLCDelay();
 
       if (this.isUnfinishedTask) {
-        await this.codeHelperService.sendDBDataToFrontend();
-        // назначение правильных последних коробок и паллет
-        await this.codeHelperService.getLastBoxAndPalletInfo();
+        await this.counts.sendDBDataToFrontend();
+        // у каждой камеры своё состояние: восстанавливаем по имени из таблицы
+        await this.restoreCamerasFromDb();
       }
       await this.modbusService.writeCoil(allAddresses.greenLamp2, true);
       this.monitorKontur();
       return this.globalMonVar.tableName;
+    }
+  }
+
+  private async restoreCamerasFromDb(): Promise<void> {
+    const cameras = await this.codeRepository.getCameraNames(
+      this.globalMonVar.tableName,
+    );
+    const list = cameras.length ? cameras : ['Camera1'];
+
+    for (const camera of list) {
+      const info = await this.counts.getLastBoxAndPalletInfo(camera);
+
+      if (!info.allProductsCount) continue;
+
+      this.codeService.syncCameraState(camera, info);
+      await this.counts.sendCurrentStateToFrontend(
+        this.counts.getCurrentCounts(camera),
+        camera,
+      );
     }
   }
 
@@ -231,10 +259,10 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
 
           if (reportType === ReportType.Databy) {
             const res = await this.generateFullReport();
-            header = this.codeHelperService.createReportHeaderDataby();
+            header = this.reports.createReportHeaderDataby();
             units = res;
           } else {
-            const res = await this.codeHelperService.getReportTermet();
+            const res = await this.reports.getReportTermet();
             header = {
               docId: task.docId ? task.docId : '20240724-2401',
               StartDate: this.startMonitoringDate,
@@ -387,7 +415,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
   }
 
   async generateFullReport() {
-    const barcodesArray = await this.codeHelperService.getReportDataby();
+    const barcodesArray = await this.reports.getReportDataby();
     console.log('--barcodesArray', barcodesArray);
 
     const finalReport = {
@@ -440,7 +468,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
     this.globalMonVar.limitProductInBox = +task.pieces_per_package;
     this.globalMonVar.limitBoxInPallet = +task.packaging_per_pallet;
 
-    const records = await this.codeHelperService.getSummary(); // Получаем записи из таблицы
+    const records = await this.counts.getSummary(); // Получаем записи из таблицы
     // const isFullCurentBox = +records.productsInLastBox === +this.globalMonVar.task.pieces_per_package
     // const isFullCurentPallet = +records.boxesInLastPallet === +this.globalMonVar.task.packaging_per_pallet
 
@@ -451,6 +479,9 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
     this.globalMonVar.currentBoxNumber = +records.lastBox;
     this.globalMonVar.boxesInCurrentPallet = +records.boxesInLastPallet;
     this.globalMonVar.currentPalletNumber = +records.lastPallet;
+
+    // продолжаем с того же места: состояние каждой камеры из БД и счётчики на её панель
+    await this.restoreCamerasFromDb();
 
     this.logger.info('Мониторинг: Продолжение сортировки начато.');
     // Запрос задержок ПЛК для сброса контуров

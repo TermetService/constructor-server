@@ -1,0 +1,2393 @@
+=== ПОДЪЁМ ПРИЛОЖЕНИЯ ===
+Директория tmp/nomenclature уже существует
+Директория tmp/templates уже существует
+Директория tmp/settings уже существует
+Директория tmp/tasks уже существует
+Директория tmp/records-1 уже существует
+Директория tmp/records-2 уже существует
+Директория tmp/finish уже существует
+Директория tmp/reserve уже существует
+CameraService: CameraService
+CodeService:   CodeService
+DataSource:    подключён
+
+=== ПАРАМЕТРЫ ===
+таблица:   test-real-2026_11_16_09_38_05 (создаст приложение при первом коде)
+кодов:     116
+режим:     partial (по 5)
+сообщений: 24
+камера:    Камера 1
+
+=== ОТПРАВКА СООБЩЕНИЙ В handleMessage2 ===
+-------------handleMessage raw:  0104810272003892215I8&+d91FFD092dGVzdMw84MxZiGYEZ/dJwK1JV9mw5QGtHF9eKy+xnBs=@@0104810272003892215fBgnk91FFD092dGVzdIXEJ2hXDbjbXbvVyMhTqLdyDovdfL3AjmUCza0=@@0104810272003892215zkZE=91FFD092dGVzdG4uUHJXNUmuwMch37Rg6rfc07JKkLBdW86aJaM=@@0104810272003892215G;dJY91FFD092dGVzdHiNa13bfD4CnOjdhlVFMkiX4FCbcXiAP/WBdbk=@@0104810272003892215YpPKg91FFD092dGVzdN722Ia0D/BmaVQmFrOmzywikg3+oH/c8G7L6bg=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215I8&+d91FFD092dGVzdMw84MxZiGYEZ/dJwK1JV9mw5QGtHF9eKy+xnBs=@@0104810272003892215fBgnk91FFD092dGVzdIXEJ2hXDbjbXbvVyMhTqLdyDovdfL3AjmUCza0=@@0104810272003892215zkZE=91FFD092dGVzdG4uUHJXNUmuwMch37Rg6rfc07JKkLBdW86aJaM=@@0104810272003892215G;dJY91FFD092dGVzdHiNa13bfD4CnOjdhlVFMkiX4FCbcXiAP/WBdbk=@@0104810272003892215YpPKg91FFD092dGVzdN722Ia0D/BmaVQmFrOmzywikg3+oH/c8G7L6bg=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215I8&+d91FFD092dGVzdMw84MxZiGYEZ/dJwK1JV9mw5QGtHF9eKy+xnBs= -1
+==============extractProductCodesWithCoords 0104810272003892215fBgnk91FFD092dGVzdIXEJ2hXDbjbXbvVyMhTqLdyDovdfL3AjmUCza0= -1
+==============extractProductCodesWithCoords 0104810272003892215zkZE=91FFD092dGVzdG4uUHJXNUmuwMch37Rg6rfc07JKkLBdW86aJaM= -1
+==============extractProductCodesWithCoords 0104810272003892215G;dJY91FFD092dGVzdHiNa13bfD4CnOjdhlVFMkiX4FCbcXiAP/WBdbk= -1
+==============extractProductCodesWithCoords 0104810272003892215YpPKg91FFD092dGVzdN722Ia0D/BmaVQmFrOmzywikg3+oH/c8G7L6bg= -1
+productCodes [
+  '0104810272003892215I8&+d\x1D91FFD0\x1D92dGVzdMw84MxZiGYEZ/dJwK1JV9mw5QGtHF9eKy+xnBs=',
+  '0104810272003892215fBgnk\x1D91FFD0\x1D92dGVzdIXEJ2hXDbjbXbvVyMhTqLdyDovdfL3AjmUCza0=',
+  '0104810272003892215zkZE=\x1D91FFD0\x1D92dGVzdG4uUHJXNUmuwMch37Rg6rfc07JKkLBdW86aJaM=',
+  '0104810272003892215G;dJY\x1D91FFD0\x1D92dGVzdHiNa13bfD4CnOjdhlVFMkiX4FCbcXiAP/WBdbk=',
+  '0104810272003892215YpPKg\x1D91FFD0\x1D92dGVzdN722Ia0D/BmaVQmFrOmzywikg3+oH/c8G7L6bg='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 5.298ms
+Детализация: запрос к БД занял 6 мс, результат: false
+duplicate_check_0104810272: 0.789ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.789ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.777ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 1.099ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:07.389Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215I8&+d91FFD092dGVzdMw84MxZiGYEZ/dJwK1JV9mw5QGtHF9eKy+xnBs=[39m
+2026-11-16T09:38:07.392Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887392 мс[39m
+2026-11-16T09:38:07.393Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215fBgnk91FFD092dGVzdIXEJ2hXDbjbXbvVyMhTqLdyDovdfL3AjmUCza0=[39m
+2026-11-16T09:38:07.394Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887394 мс[39m
+2026-11-16T09:38:07.394Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215zkZE=91FFD092dGVzdG4uUHJXNUmuwMch37Rg6rfc07JKkLBdW86aJaM=[39m
+2026-11-16T09:38:07.395Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887395 мс[39m
+2026-11-16T09:38:07.395Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215G;dJY91FFD092dGVzdHiNa13bfD4CnOjdhlVFMkiX4FCbcXiAP/WBdbk=[39m
+2026-11-16T09:38:07.395Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887395 мс[39m
+2026-11-16T09:38:07.396Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215YpPKg91FFD092dGVzdN722Ia0D/BmaVQmFrOmzywikg3+oH/c8G7L6bg=[39m
+2026-11-16T09:38:07.396Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887396 мс[39m
+duplicate_check_0104810272: 1.26ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:07.448Z [34minfo[39m: [34mКод: Таблица test-real-2026_11_16_09_38_05 создана[39m
+true 3256587 undefined
+1
+2026-11-16T09:38:07.458Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215I8&+d91FFD092dGVzdMw84MxZiGYEZ/dJwK1JV9mw5QGtHF9eKy+xnBs=[39m
+2026-11-16T09:38:07.459Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887459 мс[39m
+duplicate_check_0104810272: 0.837ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.463Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215fBgnk91FFD092dGVzdIXEJ2hXDbjbXbvVyMhTqLdyDovdfL3AjmUCza0=[39m
+2026-11-16T09:38:07.463Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887463 мс[39m
+duplicate_check_0104810272: 0.739ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.466Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215zkZE=91FFD092dGVzdG4uUHJXNUmuwMch37Rg6rfc07JKkLBdW86aJaM=[39m
+2026-11-16T09:38:07.466Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887466 мс[39m
+duplicate_check_0104810272: 1.106ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.470Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215G;dJY91FFD092dGVzdHiNa13bfD4CnOjdhlVFMkiX4FCbcXiAP/WBdbk=[39m
+2026-11-16T09:38:07.470Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887470 мс[39m
+duplicate_check_0104810272: 0.552ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.473Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215YpPKg91FFD092dGVzdN722Ia0D/BmaVQmFrOmzywikg3+oH/c8G7L6bg=[39m
+2026-11-16T09:38:07.473Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887473 мс[39m
+#01/24: 5 кодов, строк 0 → 5, коробка 1 (5/15), паллета 1, последняя запись: box=1, pallet=1, 103 мс
+-------------handleMessage raw:  0104810272003892215AmgLp91FFD092dGVzdJUW0MhdpnvZfV14xmrYv8WL/7CL0leEGxVMcTg=@@0104810272003892215fiZLF91FFD092dGVzdGsfJ+aP9fs8a8/bV29JYpbut3FWQuZfTzoMjQo=@@0104810272003892215l;HNh91FFD092dGVzdNWG9JfmWkRFLiojb1A8mHD0JaIY9tm3J9F479Q=@@0104810272003892215m5Irq91FFD092dGVzdCIhLvd9XQXYGK+TLfoSu2barMbGtNrX2ddbWf4=@@0104810272003892215Kz0&j91FFD092dGVzdOMYsgTxomE9rf3hGEe7ZcVTmviKY0wSSz6prvQ=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215AmgLp91FFD092dGVzdJUW0MhdpnvZfV14xmrYv8WL/7CL0leEGxVMcTg=@@0104810272003892215fiZLF91FFD092dGVzdGsfJ+aP9fs8a8/bV29JYpbut3FWQuZfTzoMjQo=@@0104810272003892215l;HNh91FFD092dGVzdNWG9JfmWkRFLiojb1A8mHD0JaIY9tm3J9F479Q=@@0104810272003892215m5Irq91FFD092dGVzdCIhLvd9XQXYGK+TLfoSu2barMbGtNrX2ddbWf4=@@0104810272003892215Kz0&j91FFD092dGVzdOMYsgTxomE9rf3hGEe7ZcVTmviKY0wSSz6prvQ=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215AmgLp91FFD092dGVzdJUW0MhdpnvZfV14xmrYv8WL/7CL0leEGxVMcTg= -1
+==============extractProductCodesWithCoords 0104810272003892215fiZLF91FFD092dGVzdGsfJ+aP9fs8a8/bV29JYpbut3FWQuZfTzoMjQo= -1
+==============extractProductCodesWithCoords 0104810272003892215l;HNh91FFD092dGVzdNWG9JfmWkRFLiojb1A8mHD0JaIY9tm3J9F479Q= -1
+==============extractProductCodesWithCoords 0104810272003892215m5Irq91FFD092dGVzdCIhLvd9XQXYGK+TLfoSu2barMbGtNrX2ddbWf4= -1
+==============extractProductCodesWithCoords 0104810272003892215Kz0&j91FFD092dGVzdOMYsgTxomE9rf3hGEe7ZcVTmviKY0wSSz6prvQ= -1
+productCodes [
+  '0104810272003892215AmgLp\x1D91FFD0\x1D92dGVzdJUW0MhdpnvZfV14xmrYv8WL/7CL0leEGxVMcTg=',
+  '0104810272003892215fiZLF\x1D91FFD0\x1D92dGVzdGsfJ+aP9fs8a8/bV29JYpbut3FWQuZfTzoMjQo=',
+  '0104810272003892215l;HNh\x1D91FFD0\x1D92dGVzdNWG9JfmWkRFLiojb1A8mHD0JaIY9tm3J9F479Q=',
+  '0104810272003892215m5Irq\x1D91FFD0\x1D92dGVzdCIhLvd9XQXYGK+TLfoSu2barMbGtNrX2ddbWf4=',
+  '0104810272003892215Kz0&j\x1D91FFD0\x1D92dGVzdOMYsgTxomE9rf3hGEe7ZcVTmviKY0wSSz6prvQ='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.57ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.427ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.785ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.519ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.385ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.484Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215AmgLp91FFD092dGVzdJUW0MhdpnvZfV14xmrYv8WL/7CL0leEGxVMcTg=[39m
+2026-11-16T09:38:07.484Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887484 мс[39m
+2026-11-16T09:38:07.484Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215fiZLF91FFD092dGVzdGsfJ+aP9fs8a8/bV29JYpbut3FWQuZfTzoMjQo=[39m
+2026-11-16T09:38:07.485Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887485 мс[39m
+2026-11-16T09:38:07.485Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215l;HNh91FFD092dGVzdNWG9JfmWkRFLiojb1A8mHD0JaIY9tm3J9F479Q=[39m
+2026-11-16T09:38:07.485Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887485 мс[39m
+2026-11-16T09:38:07.485Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215m5Irq91FFD092dGVzdCIhLvd9XQXYGK+TLfoSu2barMbGtNrX2ddbWf4=[39m
+2026-11-16T09:38:07.486Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887486 мс[39m
+2026-11-16T09:38:07.486Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Kz0&j91FFD092dGVzdOMYsgTxomE9rf3hGEe7ZcVTmviKY0wSSz6prvQ=[39m
+2026-11-16T09:38:07.486Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887486 мс[39m
+duplicate_check_0104810272: 0.481ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.489Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215AmgLp91FFD092dGVzdJUW0MhdpnvZfV14xmrYv8WL/7CL0leEGxVMcTg=[39m
+2026-11-16T09:38:07.489Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887489 мс[39m
+duplicate_check_0104810272: 0.527ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.492Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215fiZLF91FFD092dGVzdGsfJ+aP9fs8a8/bV29JYpbut3FWQuZfTzoMjQo=[39m
+2026-11-16T09:38:07.492Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887492 мс[39m
+duplicate_check_0104810272: 0.502ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.495Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215l;HNh91FFD092dGVzdNWG9JfmWkRFLiojb1A8mHD0JaIY9tm3J9F479Q=[39m
+2026-11-16T09:38:07.495Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887495 мс[39m
+duplicate_check_0104810272: 0.35ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.498Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215m5Irq91FFD092dGVzdCIhLvd9XQXYGK+TLfoSu2barMbGtNrX2ddbWf4=[39m
+2026-11-16T09:38:07.498Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887498 мс[39m
+duplicate_check_0104810272: 0.529ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.502Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Kz0&j91FFD092dGVzdOMYsgTxomE9rf3hGEe7ZcVTmviKY0wSSz6prvQ=[39m
+2026-11-16T09:38:07.502Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887502 мс[39m
+#02/24: 5 кодов, строк 5 → 10, коробка 1 (10/15), паллета 1, последняя запись: box=1, pallet=1, 39 мс
+-------------handleMessage raw:  0104810272003892215)XGok91FFD092dGVzdPX/A8g7WseAwenxiKLX8ZlAUzFS0QHHFeKt9yg=@@0104810272003892215MJcXj91FFD092dGVzdILSvv6Df3aLGTXXByOLnRPnO4GzPmOzPo91YlY=@@0104810272003892215hNDIe91FFD092dGVzdL+KXqg2u4sfb3kADvvX+Tj66P570ORxM140/90=@@0104810272003892215lwKD)91FFD092dGVzdMmW8gk2EYi7k2BjpEsqfbq5/JYwswHVt6MqjRg=@@0104810272003892215cSNRp91FFD092dGVzdO8LqBZ12Rblf8it6oR6+WUfVQE2AKLoZ6OmMxA=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215)XGok91FFD092dGVzdPX/A8g7WseAwenxiKLX8ZlAUzFS0QHHFeKt9yg=@@0104810272003892215MJcXj91FFD092dGVzdILSvv6Df3aLGTXXByOLnRPnO4GzPmOzPo91YlY=@@0104810272003892215hNDIe91FFD092dGVzdL+KXqg2u4sfb3kADvvX+Tj66P570ORxM140/90=@@0104810272003892215lwKD)91FFD092dGVzdMmW8gk2EYi7k2BjpEsqfbq5/JYwswHVt6MqjRg=@@0104810272003892215cSNRp91FFD092dGVzdO8LqBZ12Rblf8it6oR6+WUfVQE2AKLoZ6OmMxA=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215)XGok91FFD092dGVzdPX/A8g7WseAwenxiKLX8ZlAUzFS0QHHFeKt9yg= -1
+==============extractProductCodesWithCoords 0104810272003892215MJcXj91FFD092dGVzdILSvv6Df3aLGTXXByOLnRPnO4GzPmOzPo91YlY= -1
+==============extractProductCodesWithCoords 0104810272003892215hNDIe91FFD092dGVzdL+KXqg2u4sfb3kADvvX+Tj66P570ORxM140/90= -1
+==============extractProductCodesWithCoords 0104810272003892215lwKD)91FFD092dGVzdMmW8gk2EYi7k2BjpEsqfbq5/JYwswHVt6MqjRg= -1
+==============extractProductCodesWithCoords 0104810272003892215cSNRp91FFD092dGVzdO8LqBZ12Rblf8it6oR6+WUfVQE2AKLoZ6OmMxA= -1
+productCodes [
+  '0104810272003892215)XGok\x1D91FFD0\x1D92dGVzdPX/A8g7WseAwenxiKLX8ZlAUzFS0QHHFeKt9yg=',
+  '0104810272003892215MJcXj\x1D91FFD0\x1D92dGVzdILSvv6Df3aLGTXXByOLnRPnO4GzPmOzPo91YlY=',
+  '0104810272003892215hNDIe\x1D91FFD0\x1D92dGVzdL+KXqg2u4sfb3kADvvX+Tj66P570ORxM140/90=',
+  '0104810272003892215lwKD)\x1D91FFD0\x1D92dGVzdMmW8gk2EYi7k2BjpEsqfbq5/JYwswHVt6MqjRg=',
+  '0104810272003892215cSNRp\x1D91FFD0\x1D92dGVzdO8LqBZ12Rblf8it6oR6+WUfVQE2AKLoZ6OmMxA='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.584ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.378ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.337ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.327ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.328ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:07.522Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215)XGok91FFD092dGVzdPX/A8g7WseAwenxiKLX8ZlAUzFS0QHHFeKt9yg=[39m
+2026-11-16T09:38:07.522Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887522 мс[39m
+2026-11-16T09:38:07.523Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215MJcXj91FFD092dGVzdILSvv6Df3aLGTXXByOLnRPnO4GzPmOzPo91YlY=[39m
+2026-11-16T09:38:07.523Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887523 мс[39m
+2026-11-16T09:38:07.523Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215hNDIe91FFD092dGVzdL+KXqg2u4sfb3kADvvX+Tj66P570ORxM140/90=[39m
+2026-11-16T09:38:07.524Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887524 мс[39m
+2026-11-16T09:38:07.524Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215lwKD)91FFD092dGVzdMmW8gk2EYi7k2BjpEsqfbq5/JYwswHVt6MqjRg=[39m
+2026-11-16T09:38:07.524Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887524 мс[39m
+2026-11-16T09:38:07.524Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215cSNRp91FFD092dGVzdO8LqBZ12Rblf8it6oR6+WUfVQE2AKLoZ6OmMxA=[39m
+2026-11-16T09:38:07.524Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887524 мс[39m
+duplicate_check_0104810272: 0.438ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.527Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215)XGok91FFD092dGVzdPX/A8g7WseAwenxiKLX8ZlAUzFS0QHHFeKt9yg=[39m
+2026-11-16T09:38:07.527Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887527 мс[39m
+duplicate_check_0104810272: 0.337ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 11,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.529Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215MJcXj91FFD092dGVzdILSvv6Df3aLGTXXByOLnRPnO4GzPmOzPo91YlY=[39m
+2026-11-16T09:38:07.530Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887530 мс[39m
+duplicate_check_0104810272: 0.396ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 12,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.532Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215hNDIe91FFD092dGVzdL+KXqg2u4sfb3kADvvX+Tj66P570ORxM140/90=[39m
+2026-11-16T09:38:07.532Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887532 мс[39m
+duplicate_check_0104810272: 0.336ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 13,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.534Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215lwKD)91FFD092dGVzdMmW8gk2EYi7k2BjpEsqfbq5/JYwswHVt6MqjRg=[39m
+2026-11-16T09:38:07.535Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887535 мс[39m
+duplicate_check_0104810272: 0.34ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 14,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:07.537Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215cSNRp91FFD092dGVzdO8LqBZ12Rblf8it6oR6+WUfVQE2AKLoZ6OmMxA=[39m
+2026-11-16T09:38:07.537Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887537 мс[39m
+#03/24: 5 кодов, строк 10 → 15, коробка 1 (15/15), паллета 1, последняя запись: box=1, pallet=1, 29 мс
+-------------handleMessage raw:  0104810272003892215f*98m91FFD092dGVzdCXxRmrPp/6GodF3FRVr8GKtsUWjLXX1tMwB9wQ=@@0104810272003892215PJ3+d91FFD092dGVzdKPImI1QAayA3oAvGXOj4O9iI7DPJXPayqCZ+Xw=@@0104810272003892215GAz3t91FFD092dGVzdJBx4EGmn1oX83QJRlXQA2ryL5cdAZQg1AQg6X0=@@0104810272003892215sdnD&91FFD092dGVzdFR29V0uA7lOEYDvP3Epp3IMJZ1ErNJ/TpYd1wg=@@0104810272003892215P/z>391FFD092dGVzdDKzMYhTGVWTCchh/MDamauwoGeOhmJy3gGUYsY=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215f*98m91FFD092dGVzdCXxRmrPp/6GodF3FRVr8GKtsUWjLXX1tMwB9wQ=@@0104810272003892215PJ3+d91FFD092dGVzdKPImI1QAayA3oAvGXOj4O9iI7DPJXPayqCZ+Xw=@@0104810272003892215GAz3t91FFD092dGVzdJBx4EGmn1oX83QJRlXQA2ryL5cdAZQg1AQg6X0=@@0104810272003892215sdnD&91FFD092dGVzdFR29V0uA7lOEYDvP3Epp3IMJZ1ErNJ/TpYd1wg=@@0104810272003892215P/z>391FFD092dGVzdDKzMYhTGVWTCchh/MDamauwoGeOhmJy3gGUYsY=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215f*98m91FFD092dGVzdCXxRmrPp/6GodF3FRVr8GKtsUWjLXX1tMwB9wQ= -1
+==============extractProductCodesWithCoords 0104810272003892215PJ3+d91FFD092dGVzdKPImI1QAayA3oAvGXOj4O9iI7DPJXPayqCZ+Xw= -1
+==============extractProductCodesWithCoords 0104810272003892215GAz3t91FFD092dGVzdJBx4EGmn1oX83QJRlXQA2ryL5cdAZQg1AQg6X0= -1
+==============extractProductCodesWithCoords 0104810272003892215sdnD&91FFD092dGVzdFR29V0uA7lOEYDvP3Epp3IMJZ1ErNJ/TpYd1wg= -1
+==============extractProductCodesWithCoords 0104810272003892215P/z>391FFD092dGVzdDKzMYhTGVWTCchh/MDamauwoGeOhmJy3gGUYsY= -1
+productCodes [
+  '0104810272003892215f*98m\x1D91FFD0\x1D92dGVzdCXxRmrPp/6GodF3FRVr8GKtsUWjLXX1tMwB9wQ=',
+  '0104810272003892215PJ3+d\x1D91FFD0\x1D92dGVzdKPImI1QAayA3oAvGXOj4O9iI7DPJXPayqCZ+Xw=',
+  '0104810272003892215GAz3t\x1D91FFD0\x1D92dGVzdJBx4EGmn1oX83QJRlXQA2ryL5cdAZQg1AQg6X0=',
+  '0104810272003892215sdnD&\x1D91FFD0\x1D92dGVzdFR29V0uA7lOEYDvP3Epp3IMJZ1ErNJ/TpYd1wg=',
+  '0104810272003892215P/z>3\x1D91FFD0\x1D92dGVzdDKzMYhTGVWTCchh/MDamauwoGeOhmJy3gGUYsY='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.396ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.31ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.317ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.314ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.318ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.552Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215f*98m91FFD092dGVzdCXxRmrPp/6GodF3FRVr8GKtsUWjLXX1tMwB9wQ=[39m
+2026-11-16T09:38:07.552Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887552 мс[39m
+2026-11-16T09:38:07.552Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215PJ3+d91FFD092dGVzdKPImI1QAayA3oAvGXOj4O9iI7DPJXPayqCZ+Xw=[39m
+2026-11-16T09:38:07.553Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887552 мс[39m
+2026-11-16T09:38:07.553Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215GAz3t91FFD092dGVzdJBx4EGmn1oX83QJRlXQA2ryL5cdAZQg1AQg6X0=[39m
+2026-11-16T09:38:07.553Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887553 мс[39m
+2026-11-16T09:38:07.553Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215sdnD&91FFD092dGVzdFR29V0uA7lOEYDvP3Epp3IMJZ1ErNJ/TpYd1wg=[39m
+2026-11-16T09:38:07.553Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887553 мс[39m
+2026-11-16T09:38:07.554Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215P/z>391FFD092dGVzdDKzMYhTGVWTCchh/MDamauwoGeOhmJy3gGUYsY=[39m
+2026-11-16T09:38:07.554Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887554 мс[39m
+duplicate_check_0104810272: 0.479ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 15,
+  UsedBoxNumber: 1,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+2
+2026-11-16T09:38:07.557Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215f*98m91FFD092dGVzdCXxRmrPp/6GodF3FRVr8GKtsUWjLXX1tMwB9wQ=[39m
+2026-11-16T09:38:07.557Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887557 мс[39m
+duplicate_check_0104810272: 0.343ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.560Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215PJ3+d91FFD092dGVzdKPImI1QAayA3oAvGXOj4O9iI7DPJXPayqCZ+Xw=[39m
+2026-11-16T09:38:07.560Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887560 мс[39m
+duplicate_check_0104810272: 0.33ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.562Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215GAz3t91FFD092dGVzdJBx4EGmn1oX83QJRlXQA2ryL5cdAZQg1AQg6X0=[39m
+2026-11-16T09:38:07.562Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887562 мс[39m
+duplicate_check_0104810272: 0.398ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.565Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215sdnD&91FFD092dGVzdFR29V0uA7lOEYDvP3Epp3IMJZ1ErNJ/TpYd1wg=[39m
+2026-11-16T09:38:07.565Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887565 мс[39m
+duplicate_check_0104810272: 0.348ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.567Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215P/z>391FFD092dGVzdDKzMYhTGVWTCchh/MDamauwoGeOhmJy3gGUYsY=[39m
+2026-11-16T09:38:07.568Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887568 мс[39m
+#04/24: 5 кодов, строк 15 → 20, коробка 2 (5/15), паллета 1, последняя запись: box=2, pallet=1, 31 мс
+-------------handleMessage raw:  0104810272003892215oryna91FFD092dGVzdDM0fyCF9YbtZGTSHTllAuX7dqG8O4bB/bF5B0c=@@0104810272003892215f'y=Y91FFD092dGVzdHP087676IAkdpwwKetlmMclw+CXIoF+VuqQrTw=@@0104810272003892215RJii,91FFD092dGVzdNF468qLMoeJ+bbT1hC+EQcio9QgxS/1amrOoEg=@@0104810272003892215ayQ;a91FFD092dGVzdIvdfm9OS9/+gHrGvri/4I5xom9tt4W/40kVAcA=@@0104810272003892215B=bbM91FFD092dGVzdM93+Lc0cuJv+B2ElvfaMSvx4K2HnQYANmOVPWE=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215oryna91FFD092dGVzdDM0fyCF9YbtZGTSHTllAuX7dqG8O4bB/bF5B0c=@@0104810272003892215f'y=Y91FFD092dGVzdHP087676IAkdpwwKetlmMclw+CXIoF+VuqQrTw=@@0104810272003892215RJii,91FFD092dGVzdNF468qLMoeJ+bbT1hC+EQcio9QgxS/1amrOoEg=@@0104810272003892215ayQ;a91FFD092dGVzdIvdfm9OS9/+gHrGvri/4I5xom9tt4W/40kVAcA=@@0104810272003892215B=bbM91FFD092dGVzdM93+Lc0cuJv+B2ElvfaMSvx4K2HnQYANmOVPWE=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215oryna91FFD092dGVzdDM0fyCF9YbtZGTSHTllAuX7dqG8O4bB/bF5B0c= -1
+==============extractProductCodesWithCoords 0104810272003892215f'y=Y91FFD092dGVzdHP087676IAkdpwwKetlmMclw+CXIoF+VuqQrTw= -1
+==============extractProductCodesWithCoords 0104810272003892215RJii,91FFD092dGVzdNF468qLMoeJ+bbT1hC+EQcio9QgxS/1amrOoEg= -1
+==============extractProductCodesWithCoords 0104810272003892215ayQ;a91FFD092dGVzdIvdfm9OS9/+gHrGvri/4I5xom9tt4W/40kVAcA= -1
+==============extractProductCodesWithCoords 0104810272003892215B=bbM91FFD092dGVzdM93+Lc0cuJv+B2ElvfaMSvx4K2HnQYANmOVPWE= -1
+productCodes [
+  '0104810272003892215oryna\x1D91FFD0\x1D92dGVzdDM0fyCF9YbtZGTSHTllAuX7dqG8O4bB/bF5B0c=',
+  "0104810272003892215f'y=Y\x1D91FFD0\x1D92dGVzdHP087676IAkdpwwKetlmMclw+CXIoF+VuqQrTw=",
+  '0104810272003892215RJii,\x1D91FFD0\x1D92dGVzdNF468qLMoeJ+bbT1hC+EQcio9QgxS/1amrOoEg=',
+  '0104810272003892215ayQ;a\x1D91FFD0\x1D92dGVzdIvdfm9OS9/+gHrGvri/4I5xom9tt4W/40kVAcA=',
+  '0104810272003892215B=bbM\x1D91FFD0\x1D92dGVzdM93+Lc0cuJv+B2ElvfaMSvx4K2HnQYANmOVPWE='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.52ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.343ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.331ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.365ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.326ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:07.584Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215oryna91FFD092dGVzdDM0fyCF9YbtZGTSHTllAuX7dqG8O4bB/bF5B0c=[39m
+2026-11-16T09:38:07.584Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887584 мс[39m
+2026-11-16T09:38:07.585Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215f'y=Y91FFD092dGVzdHP087676IAkdpwwKetlmMclw+CXIoF+VuqQrTw=[39m
+2026-11-16T09:38:07.585Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887585 мс[39m
+2026-11-16T09:38:07.585Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215RJii,91FFD092dGVzdNF468qLMoeJ+bbT1hC+EQcio9QgxS/1amrOoEg=[39m
+2026-11-16T09:38:07.585Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887585 мс[39m
+2026-11-16T09:38:07.586Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215ayQ;a91FFD092dGVzdIvdfm9OS9/+gHrGvri/4I5xom9tt4W/40kVAcA=[39m
+2026-11-16T09:38:07.586Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887586 мс[39m
+2026-11-16T09:38:07.586Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215B=bbM91FFD092dGVzdM93+Lc0cuJv+B2ElvfaMSvx4K2HnQYANmOVPWE=[39m
+2026-11-16T09:38:07.587Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887587 мс[39m
+duplicate_check_0104810272: 0.445ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.589Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215oryna91FFD092dGVzdDM0fyCF9YbtZGTSHTllAuX7dqG8O4bB/bF5B0c=[39m
+2026-11-16T09:38:07.589Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887589 мс[39m
+duplicate_check_0104810272: 0.354ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.591Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215f'y=Y91FFD092dGVzdHP087676IAkdpwwKetlmMclw+CXIoF+VuqQrTw=[39m
+2026-11-16T09:38:07.592Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887592 мс[39m
+duplicate_check_0104810272: 0.354ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.596Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215RJii,91FFD092dGVzdNF468qLMoeJ+bbT1hC+EQcio9QgxS/1amrOoEg=[39m
+2026-11-16T09:38:07.597Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887597 мс[39m
+duplicate_check_0104810272: 1.122ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.601Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215ayQ;a91FFD092dGVzdIvdfm9OS9/+gHrGvri/4I5xom9tt4W/40kVAcA=[39m
+2026-11-16T09:38:07.601Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887601 мс[39m
+duplicate_check_0104810272: 0.535ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.604Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215B=bbM91FFD092dGVzdM93+Lc0cuJv+B2ElvfaMSvx4K2HnQYANmOVPWE=[39m
+2026-11-16T09:38:07.604Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887604 мс[39m
+#05/24: 5 кодов, строк 20 → 25, коробка 2 (10/15), паллета 1, последняя запись: box=2, pallet=1, 31 мс
+-------------handleMessage raw:  01048102720038922154G&tm91FFD092dGVzdAbmyABgZqR+7TrNRfNGrPOE+FxtUU1jk0s557A=@@0104810272003892215ed7qG91FFD092dGVzdOhowHsPHS9IsVNfnNAHi8ceCYTGgmcaGaaVmYI=@@0104810272003892215U8KQU91FFD092dGVzdJPUJAZLmhxPvbfT8P5nrd0VcHJfP6+TB+Gpu/k=@@0104810272003892215eN9A291FFD092dGVzdDdsmQEcmm/Rtl6nzjlJaP21oyO43KLnyLzhigY=@@0104810272003892215Az1CP91FFD092dGVzdOUh/S0UBCfLOSgu6GYBLYZKe2J+UiRJrGxMWY0=	 Камера 1
+-------------processCompleteMessage:  01048102720038922154G&tm91FFD092dGVzdAbmyABgZqR+7TrNRfNGrPOE+FxtUU1jk0s557A=@@0104810272003892215ed7qG91FFD092dGVzdOhowHsPHS9IsVNfnNAHi8ceCYTGgmcaGaaVmYI=@@0104810272003892215U8KQU91FFD092dGVzdJPUJAZLmhxPvbfT8P5nrd0VcHJfP6+TB+Gpu/k=@@0104810272003892215eN9A291FFD092dGVzdDdsmQEcmm/Rtl6nzjlJaP21oyO43KLnyLzhigY=@@0104810272003892215Az1CP91FFD092dGVzdOUh/S0UBCfLOSgu6GYBLYZKe2J+UiRJrGxMWY0=	 Камера 1
+==============extractProductCodesWithCoords 01048102720038922154G&tm91FFD092dGVzdAbmyABgZqR+7TrNRfNGrPOE+FxtUU1jk0s557A= -1
+==============extractProductCodesWithCoords 0104810272003892215ed7qG91FFD092dGVzdOhowHsPHS9IsVNfnNAHi8ceCYTGgmcaGaaVmYI= -1
+==============extractProductCodesWithCoords 0104810272003892215U8KQU91FFD092dGVzdJPUJAZLmhxPvbfT8P5nrd0VcHJfP6+TB+Gpu/k= -1
+==============extractProductCodesWithCoords 0104810272003892215eN9A291FFD092dGVzdDdsmQEcmm/Rtl6nzjlJaP21oyO43KLnyLzhigY= -1
+==============extractProductCodesWithCoords 0104810272003892215Az1CP91FFD092dGVzdOUh/S0UBCfLOSgu6GYBLYZKe2J+UiRJrGxMWY0= -1
+productCodes [
+  '01048102720038922154G&tm\x1D91FFD0\x1D92dGVzdAbmyABgZqR+7TrNRfNGrPOE+FxtUU1jk0s557A=',
+  '0104810272003892215ed7qG\x1D91FFD0\x1D92dGVzdOhowHsPHS9IsVNfnNAHi8ceCYTGgmcaGaaVmYI=',
+  '0104810272003892215U8KQU\x1D91FFD0\x1D92dGVzdJPUJAZLmhxPvbfT8P5nrd0VcHJfP6+TB+Gpu/k=',
+  '0104810272003892215eN9A2\x1D91FFD0\x1D92dGVzdDdsmQEcmm/Rtl6nzjlJaP21oyO43KLnyLzhigY=',
+  '0104810272003892215Az1CP\x1D91FFD0\x1D92dGVzdOUh/S0UBCfLOSgu6GYBLYZKe2J+UiRJrGxMWY0='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.494ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.378ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.398ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.452ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.438ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.616Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922154G&tm91FFD092dGVzdAbmyABgZqR+7TrNRfNGrPOE+FxtUU1jk0s557A=[39m
+2026-11-16T09:38:07.616Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887616 мс[39m
+2026-11-16T09:38:07.617Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215ed7qG91FFD092dGVzdOhowHsPHS9IsVNfnNAHi8ceCYTGgmcaGaaVmYI=[39m
+2026-11-16T09:38:07.617Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887617 мс[39m
+2026-11-16T09:38:07.617Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215U8KQU91FFD092dGVzdJPUJAZLmhxPvbfT8P5nrd0VcHJfP6+TB+Gpu/k=[39m
+2026-11-16T09:38:07.617Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887617 мс[39m
+2026-11-16T09:38:07.618Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215eN9A291FFD092dGVzdDdsmQEcmm/Rtl6nzjlJaP21oyO43KLnyLzhigY=[39m
+2026-11-16T09:38:07.618Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887618 мс[39m
+2026-11-16T09:38:07.618Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Az1CP91FFD092dGVzdOUh/S0UBCfLOSgu6GYBLYZKe2J+UiRJrGxMWY0=[39m
+2026-11-16T09:38:07.618Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887618 мс[39m
+duplicate_check_0104810272: 0.622ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.621Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922154G&tm91FFD092dGVzdAbmyABgZqR+7TrNRfNGrPOE+FxtUU1jk0s557A=[39m
+2026-11-16T09:38:07.621Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887621 мс[39m
+duplicate_check_0104810272: 0.365ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 11,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.624Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215ed7qG91FFD092dGVzdOhowHsPHS9IsVNfnNAHi8ceCYTGgmcaGaaVmYI=[39m
+2026-11-16T09:38:07.624Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887624 мс[39m
+duplicate_check_0104810272: 0.41ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 12,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.626Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215U8KQU91FFD092dGVzdJPUJAZLmhxPvbfT8P5nrd0VcHJfP6+TB+Gpu/k=[39m
+2026-11-16T09:38:07.626Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887626 мс[39m
+duplicate_check_0104810272: 0.346ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 13,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.629Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215eN9A291FFD092dGVzdDdsmQEcmm/Rtl6nzjlJaP21oyO43KLnyLzhigY=[39m
+2026-11-16T09:38:07.629Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887629 мс[39m
+duplicate_check_0104810272: 0.338ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 14,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:07.631Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Az1CP91FFD092dGVzdOUh/S0UBCfLOSgu6GYBLYZKe2J+UiRJrGxMWY0=[39m
+2026-11-16T09:38:07.631Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887631 мс[39m
+#06/24: 5 кодов, строк 25 → 30, коробка 2 (15/15), паллета 1, последняя запись: box=2, pallet=1, 32 мс
+-------------handleMessage raw:  0104810272003892215gJiPg91FFD092dGVzdPliHOZ5BDUmUrNWclJ6N7bmywi7LUwojLEISiI=@@0104810272003892215HJLPP91FFD092dGVzdLBPfrpFB6e5trX3qWfn4BJpe1xysZt1K3icEjs=@@0104810272003892215DisnS91FFD092dGVzdPbL8Fl8tO7op/OZM7qf5Bjg53yowhd4QNzuSwQ=@@0104810272003892215yOtgv91FFD092dGVzdI2MTMQzE7pmIKT7qCDOiNL/WWTQSf3mkaUA5Vs=@@0104810272003892215MraDj91FFD092dGVzdMuNHMbIqYSMUruJW5Qd7xpBYUJdcOqnSZbQXwQ=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215gJiPg91FFD092dGVzdPliHOZ5BDUmUrNWclJ6N7bmywi7LUwojLEISiI=@@0104810272003892215HJLPP91FFD092dGVzdLBPfrpFB6e5trX3qWfn4BJpe1xysZt1K3icEjs=@@0104810272003892215DisnS91FFD092dGVzdPbL8Fl8tO7op/OZM7qf5Bjg53yowhd4QNzuSwQ=@@0104810272003892215yOtgv91FFD092dGVzdI2MTMQzE7pmIKT7qCDOiNL/WWTQSf3mkaUA5Vs=@@0104810272003892215MraDj91FFD092dGVzdMuNHMbIqYSMUruJW5Qd7xpBYUJdcOqnSZbQXwQ=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215gJiPg91FFD092dGVzdPliHOZ5BDUmUrNWclJ6N7bmywi7LUwojLEISiI= -1
+==============extractProductCodesWithCoords 0104810272003892215HJLPP91FFD092dGVzdLBPfrpFB6e5trX3qWfn4BJpe1xysZt1K3icEjs= -1
+==============extractProductCodesWithCoords 0104810272003892215DisnS91FFD092dGVzdPbL8Fl8tO7op/OZM7qf5Bjg53yowhd4QNzuSwQ= -1
+==============extractProductCodesWithCoords 0104810272003892215yOtgv91FFD092dGVzdI2MTMQzE7pmIKT7qCDOiNL/WWTQSf3mkaUA5Vs= -1
+==============extractProductCodesWithCoords 0104810272003892215MraDj91FFD092dGVzdMuNHMbIqYSMUruJW5Qd7xpBYUJdcOqnSZbQXwQ= -1
+productCodes [
+  '0104810272003892215gJiPg\x1D91FFD0\x1D92dGVzdPliHOZ5BDUmUrNWclJ6N7bmywi7LUwojLEISiI=',
+  '0104810272003892215HJLPP\x1D91FFD0\x1D92dGVzdLBPfrpFB6e5trX3qWfn4BJpe1xysZt1K3icEjs=',
+  '0104810272003892215DisnS\x1D91FFD0\x1D92dGVzdPbL8Fl8tO7op/OZM7qf5Bjg53yowhd4QNzuSwQ=',
+  '0104810272003892215yOtgv\x1D91FFD0\x1D92dGVzdI2MTMQzE7pmIKT7qCDOiNL/WWTQSf3mkaUA5Vs=',
+  '0104810272003892215MraDj\x1D91FFD0\x1D92dGVzdMuNHMbIqYSMUruJW5Qd7xpBYUJdcOqnSZbQXwQ='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.573ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.484ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.353ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.341ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.325ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.648Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215gJiPg91FFD092dGVzdPliHOZ5BDUmUrNWclJ6N7bmywi7LUwojLEISiI=[39m
+2026-11-16T09:38:07.648Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887648 мс[39m
+2026-11-16T09:38:07.648Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215HJLPP91FFD092dGVzdLBPfrpFB6e5trX3qWfn4BJpe1xysZt1K3icEjs=[39m
+2026-11-16T09:38:07.649Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887649 мс[39m
+2026-11-16T09:38:07.649Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215DisnS91FFD092dGVzdPbL8Fl8tO7op/OZM7qf5Bjg53yowhd4QNzuSwQ=[39m
+2026-11-16T09:38:07.649Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887649 мс[39m
+2026-11-16T09:38:07.649Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215yOtgv91FFD092dGVzdI2MTMQzE7pmIKT7qCDOiNL/WWTQSf3mkaUA5Vs=[39m
+2026-11-16T09:38:07.650Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887650 мс[39m
+2026-11-16T09:38:07.650Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215MraDj91FFD092dGVzdMuNHMbIqYSMUruJW5Qd7xpBYUJdcOqnSZbQXwQ=[39m
+2026-11-16T09:38:07.650Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887650 мс[39m
+duplicate_check_0104810272: 0.348ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 15,
+  UsedBoxNumber: 2,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+3
+2026-11-16T09:38:07.653Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215gJiPg91FFD092dGVzdPliHOZ5BDUmUrNWclJ6N7bmywi7LUwojLEISiI=[39m
+2026-11-16T09:38:07.654Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887654 мс[39m
+duplicate_check_0104810272: 0.345ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.656Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215HJLPP91FFD092dGVzdLBPfrpFB6e5trX3qWfn4BJpe1xysZt1K3icEjs=[39m
+2026-11-16T09:38:07.657Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887657 мс[39m
+duplicate_check_0104810272: 0.395ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.659Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215DisnS91FFD092dGVzdPbL8Fl8tO7op/OZM7qf5Bjg53yowhd4QNzuSwQ=[39m
+2026-11-16T09:38:07.659Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887659 мс[39m
+duplicate_check_0104810272: 0.396ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.661Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215yOtgv91FFD092dGVzdI2MTMQzE7pmIKT7qCDOiNL/WWTQSf3mkaUA5Vs=[39m
+2026-11-16T09:38:07.661Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887661 мс[39m
+duplicate_check_0104810272: 0.346ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.664Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215MraDj91FFD092dGVzdMuNHMbIqYSMUruJW5Qd7xpBYUJdcOqnSZbQXwQ=[39m
+2026-11-16T09:38:07.664Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887664 мс[39m
+#07/24: 5 кодов, строк 30 → 35, коробка 3 (5/15), паллета 1, последняя запись: box=3, pallet=1, 31 мс
+-------------handleMessage raw:  0104810272003892215hJXoL91FFD092dGVzdCNNsSYQeJLfHwwFFKAK/Nw/ENpctiUHBvi9iwQ=@@0104810272003892215rBJGp91FFD092dGVzdBg8JGXlpKQ3LnL4I8KGBVc3BEZ2lG7i663fM8I=@@0104810272003892215SLN"891FFD092dGVzdBXIauDBWEI4VcQeKlbTh3LbSNQLA18bl19JTho=@@01048102720038922151jhn(91FFD092dGVzdIduhZ523CTm+ECetRzKVJ+3kHnKXLN4/EgsUus=@@01048102720038922158GZZb91FFD092dGVzdD7phE7kt5xdCjt8A/Da+JDhiEuYoR+0/o/TQ7Q=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215hJXoL91FFD092dGVzdCNNsSYQeJLfHwwFFKAK/Nw/ENpctiUHBvi9iwQ=@@0104810272003892215rBJGp91FFD092dGVzdBg8JGXlpKQ3LnL4I8KGBVc3BEZ2lG7i663fM8I=@@0104810272003892215SLN"891FFD092dGVzdBXIauDBWEI4VcQeKlbTh3LbSNQLA18bl19JTho=@@01048102720038922151jhn(91FFD092dGVzdIduhZ523CTm+ECetRzKVJ+3kHnKXLN4/EgsUus=@@01048102720038922158GZZb91FFD092dGVzdD7phE7kt5xdCjt8A/Da+JDhiEuYoR+0/o/TQ7Q=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215hJXoL91FFD092dGVzdCNNsSYQeJLfHwwFFKAK/Nw/ENpctiUHBvi9iwQ= -1
+==============extractProductCodesWithCoords 0104810272003892215rBJGp91FFD092dGVzdBg8JGXlpKQ3LnL4I8KGBVc3BEZ2lG7i663fM8I= -1
+==============extractProductCodesWithCoords 0104810272003892215SLN"891FFD092dGVzdBXIauDBWEI4VcQeKlbTh3LbSNQLA18bl19JTho= -1
+==============extractProductCodesWithCoords 01048102720038922151jhn(91FFD092dGVzdIduhZ523CTm+ECetRzKVJ+3kHnKXLN4/EgsUus= -1
+==============extractProductCodesWithCoords 01048102720038922158GZZb91FFD092dGVzdD7phE7kt5xdCjt8A/Da+JDhiEuYoR+0/o/TQ7Q= -1
+productCodes [
+  '0104810272003892215hJXoL\x1D91FFD0\x1D92dGVzdCNNsSYQeJLfHwwFFKAK/Nw/ENpctiUHBvi9iwQ=',
+  '0104810272003892215rBJGp\x1D91FFD0\x1D92dGVzdBg8JGXlpKQ3LnL4I8KGBVc3BEZ2lG7i663fM8I=',
+  '0104810272003892215SLN"8\x1D91FFD0\x1D92dGVzdBXIauDBWEI4VcQeKlbTh3LbSNQLA18bl19JTho=',
+  '01048102720038922151jhn(\x1D91FFD0\x1D92dGVzdIduhZ523CTm+ECetRzKVJ+3kHnKXLN4/EgsUus=',
+  '01048102720038922158GZZb\x1D91FFD0\x1D92dGVzdD7phE7kt5xdCjt8A/Da+JDhiEuYoR+0/o/TQ7Q='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.545ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.407ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.381ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.376ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.305ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:07.679Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215hJXoL91FFD092dGVzdCNNsSYQeJLfHwwFFKAK/Nw/ENpctiUHBvi9iwQ=[39m
+2026-11-16T09:38:07.679Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887679 мс[39m
+2026-11-16T09:38:07.680Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215rBJGp91FFD092dGVzdBg8JGXlpKQ3LnL4I8KGBVc3BEZ2lG7i663fM8I=[39m
+2026-11-16T09:38:07.680Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887680 мс[39m
+2026-11-16T09:38:07.680Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215SLN"891FFD092dGVzdBXIauDBWEI4VcQeKlbTh3LbSNQLA18bl19JTho=[39m
+2026-11-16T09:38:07.680Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887680 мс[39m
+2026-11-16T09:38:07.681Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922151jhn(91FFD092dGVzdIduhZ523CTm+ECetRzKVJ+3kHnKXLN4/EgsUus=[39m
+2026-11-16T09:38:07.681Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887681 мс[39m
+2026-11-16T09:38:07.681Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922158GZZb91FFD092dGVzdD7phE7kt5xdCjt8A/Da+JDhiEuYoR+0/o/TQ7Q=[39m
+2026-11-16T09:38:07.681Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887681 мс[39m
+duplicate_check_0104810272: 0.343ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.683Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215hJXoL91FFD092dGVzdCNNsSYQeJLfHwwFFKAK/Nw/ENpctiUHBvi9iwQ=[39m
+2026-11-16T09:38:07.684Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887683 мс[39m
+duplicate_check_0104810272: 0.334ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.686Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215rBJGp91FFD092dGVzdBg8JGXlpKQ3LnL4I8KGBVc3BEZ2lG7i663fM8I=[39m
+2026-11-16T09:38:07.686Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887686 мс[39m
+duplicate_check_0104810272: 0.37ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.690Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215SLN"891FFD092dGVzdBXIauDBWEI4VcQeKlbTh3LbSNQLA18bl19JTho=[39m
+2026-11-16T09:38:07.690Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887690 мс[39m
+duplicate_check_0104810272: 0.431ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.693Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922151jhn(91FFD092dGVzdIduhZ523CTm+ECetRzKVJ+3kHnKXLN4/EgsUus=[39m
+2026-11-16T09:38:07.693Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887693 мс[39m
+duplicate_check_0104810272: 0.461ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.696Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922158GZZb91FFD092dGVzdD7phE7kt5xdCjt8A/Da+JDhiEuYoR+0/o/TQ7Q=[39m
+2026-11-16T09:38:07.696Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887696 мс[39m
+#08/24: 5 кодов, строк 35 → 40, коробка 3 (10/15), паллета 1, последняя запись: box=3, pallet=1, 30 мс
+-------------handleMessage raw:  0104810272003892215&NvHn91FFD092dGVzdEW8AG0m0KGXvb2g78t09nPKlQan/ekuf8STzVc=@@0104810272003892215e/AO"91FFD092dGVzdK0OsF8NDkRJk97ZpCgKDd9OFxxzsvetHA4TPMM=@@0104810272003892215rDY.r91FFD092dGVzdDiDcnVkmRmk+2KxQDHltg0pzAinXqEZrTIjcrY=@@0104810272003892215b5NlT91FFD092dGVzdHA7PmEdWW6+pqH6aYYaX9lv1FPuucN6hm9LI00=@@0104810272003892215-(NQj91FFD092dGVzdJ9rH5mEotlXdpe88FH7OX+sd92wzlytV/7Tgfs=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215&NvHn91FFD092dGVzdEW8AG0m0KGXvb2g78t09nPKlQan/ekuf8STzVc=@@0104810272003892215e/AO"91FFD092dGVzdK0OsF8NDkRJk97ZpCgKDd9OFxxzsvetHA4TPMM=@@0104810272003892215rDY.r91FFD092dGVzdDiDcnVkmRmk+2KxQDHltg0pzAinXqEZrTIjcrY=@@0104810272003892215b5NlT91FFD092dGVzdHA7PmEdWW6+pqH6aYYaX9lv1FPuucN6hm9LI00=@@0104810272003892215-(NQj91FFD092dGVzdJ9rH5mEotlXdpe88FH7OX+sd92wzlytV/7Tgfs=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215&NvHn91FFD092dGVzdEW8AG0m0KGXvb2g78t09nPKlQan/ekuf8STzVc= -1
+==============extractProductCodesWithCoords 0104810272003892215e/AO"91FFD092dGVzdK0OsF8NDkRJk97ZpCgKDd9OFxxzsvetHA4TPMM= -1
+==============extractProductCodesWithCoords 0104810272003892215rDY.r91FFD092dGVzdDiDcnVkmRmk+2KxQDHltg0pzAinXqEZrTIjcrY= -1
+==============extractProductCodesWithCoords 0104810272003892215b5NlT91FFD092dGVzdHA7PmEdWW6+pqH6aYYaX9lv1FPuucN6hm9LI00= -1
+==============extractProductCodesWithCoords 0104810272003892215-(NQj91FFD092dGVzdJ9rH5mEotlXdpe88FH7OX+sd92wzlytV/7Tgfs= -1
+productCodes [
+  '0104810272003892215&NvHn\x1D91FFD0\x1D92dGVzdEW8AG0m0KGXvb2g78t09nPKlQan/ekuf8STzVc=',
+  '0104810272003892215e/AO"\x1D91FFD0\x1D92dGVzdK0OsF8NDkRJk97ZpCgKDd9OFxxzsvetHA4TPMM=',
+  '0104810272003892215rDY.r\x1D91FFD0\x1D92dGVzdDiDcnVkmRmk+2KxQDHltg0pzAinXqEZrTIjcrY=',
+  '0104810272003892215b5NlT\x1D91FFD0\x1D92dGVzdHA7PmEdWW6+pqH6aYYaX9lv1FPuucN6hm9LI00=',
+  '0104810272003892215-(NQj\x1D91FFD0\x1D92dGVzdJ9rH5mEotlXdpe88FH7OX+sd92wzlytV/7Tgfs='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.604ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.415ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.345ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.33ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.324ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.710Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215&NvHn91FFD092dGVzdEW8AG0m0KGXvb2g78t09nPKlQan/ekuf8STzVc=[39m
+2026-11-16T09:38:07.711Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887711 мс[39m
+2026-11-16T09:38:07.711Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215e/AO"91FFD092dGVzdK0OsF8NDkRJk97ZpCgKDd9OFxxzsvetHA4TPMM=[39m
+2026-11-16T09:38:07.711Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887711 мс[39m
+2026-11-16T09:38:07.711Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215rDY.r91FFD092dGVzdDiDcnVkmRmk+2KxQDHltg0pzAinXqEZrTIjcrY=[39m
+2026-11-16T09:38:07.712Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887711 мс[39m
+2026-11-16T09:38:07.712Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215b5NlT91FFD092dGVzdHA7PmEdWW6+pqH6aYYaX9lv1FPuucN6hm9LI00=[39m
+2026-11-16T09:38:07.712Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887712 мс[39m
+2026-11-16T09:38:07.712Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215-(NQj91FFD092dGVzdJ9rH5mEotlXdpe88FH7OX+sd92wzlytV/7Tgfs=[39m
+2026-11-16T09:38:07.713Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887713 мс[39m
+duplicate_check_0104810272: 0.407ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.715Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215&NvHn91FFD092dGVzdEW8AG0m0KGXvb2g78t09nPKlQan/ekuf8STzVc=[39m
+2026-11-16T09:38:07.715Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887715 мс[39m
+duplicate_check_0104810272: 0.409ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 11,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.717Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215e/AO"91FFD092dGVzdK0OsF8NDkRJk97ZpCgKDd9OFxxzsvetHA4TPMM=[39m
+2026-11-16T09:38:07.718Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887717 мс[39m
+duplicate_check_0104810272: 0.334ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 12,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.721Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215rDY.r91FFD092dGVzdDiDcnVkmRmk+2KxQDHltg0pzAinXqEZrTIjcrY=[39m
+2026-11-16T09:38:07.721Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887721 мс[39m
+duplicate_check_0104810272: 0.446ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 13,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.723Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215b5NlT91FFD092dGVzdHA7PmEdWW6+pqH6aYYaX9lv1FPuucN6hm9LI00=[39m
+2026-11-16T09:38:07.724Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887724 мс[39m
+duplicate_check_0104810272: 0.366ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 14,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+3
+2026-11-16T09:38:07.726Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215-(NQj91FFD092dGVzdJ9rH5mEotlXdpe88FH7OX+sd92wzlytV/7Tgfs=[39m
+2026-11-16T09:38:07.726Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887726 мс[39m
+#09/24: 5 кодов, строк 40 → 45, коробка 3 (15/15), паллета 1, последняя запись: box=3, pallet=1, 31 мс
+-------------handleMessage raw:  0104810272003892215DBLGD91FFD092dGVzdCAoE2wwzZAyBdmu1UMEcp2kUdXn2mUzWp5Eg+s=@@0104810272003892215.j<pJ91FFD092dGVzdMDJglq0MzBYuT13qLF4AprZLaXsVNEQix4DEIY=@@0104810272003892215V4ULN91FFD092dGVzdIIKG5GvyRHjYG/aL2MJXAAgyc/AdsyYIQyTbUU=@@0104810272003892215:YBsh91FFD092dGVzdHzSC64Xuw09znZoZqcniY7ox254CAdsOkduEaU=@@0104810272003892215Xg'7H91FFD092dGVzdK0xzPINuo0fEmGlxwxnD/O/rqKyIjMDoHebSe4=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215DBLGD91FFD092dGVzdCAoE2wwzZAyBdmu1UMEcp2kUdXn2mUzWp5Eg+s=@@0104810272003892215.j<pJ91FFD092dGVzdMDJglq0MzBYuT13qLF4AprZLaXsVNEQix4DEIY=@@0104810272003892215V4ULN91FFD092dGVzdIIKG5GvyRHjYG/aL2MJXAAgyc/AdsyYIQyTbUU=@@0104810272003892215:YBsh91FFD092dGVzdHzSC64Xuw09znZoZqcniY7ox254CAdsOkduEaU=@@0104810272003892215Xg'7H91FFD092dGVzdK0xzPINuo0fEmGlxwxnD/O/rqKyIjMDoHebSe4=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215DBLGD91FFD092dGVzdCAoE2wwzZAyBdmu1UMEcp2kUdXn2mUzWp5Eg+s= -1
+==============extractProductCodesWithCoords 0104810272003892215.j<pJ91FFD092dGVzdMDJglq0MzBYuT13qLF4AprZLaXsVNEQix4DEIY= -1
+==============extractProductCodesWithCoords 0104810272003892215V4ULN91FFD092dGVzdIIKG5GvyRHjYG/aL2MJXAAgyc/AdsyYIQyTbUU= -1
+==============extractProductCodesWithCoords 0104810272003892215:YBsh91FFD092dGVzdHzSC64Xuw09znZoZqcniY7ox254CAdsOkduEaU= -1
+==============extractProductCodesWithCoords 0104810272003892215Xg'7H91FFD092dGVzdK0xzPINuo0fEmGlxwxnD/O/rqKyIjMDoHebSe4= -1
+productCodes [
+  '0104810272003892215DBLGD\x1D91FFD0\x1D92dGVzdCAoE2wwzZAyBdmu1UMEcp2kUdXn2mUzWp5Eg+s=',
+  '0104810272003892215.j<pJ\x1D91FFD0\x1D92dGVzdMDJglq0MzBYuT13qLF4AprZLaXsVNEQix4DEIY=',
+  '0104810272003892215V4ULN\x1D91FFD0\x1D92dGVzdIIKG5GvyRHjYG/aL2MJXAAgyc/AdsyYIQyTbUU=',
+  '0104810272003892215:YBsh\x1D91FFD0\x1D92dGVzdHzSC64Xuw09znZoZqcniY7ox254CAdsOkduEaU=',
+  "0104810272003892215Xg'7H\x1D91FFD0\x1D92dGVzdK0xzPINuo0fEmGlxwxnD/O/rqKyIjMDoHebSe4="
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.596ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.349ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.334ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.449ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.373ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.742Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215DBLGD91FFD092dGVzdCAoE2wwzZAyBdmu1UMEcp2kUdXn2mUzWp5Eg+s=[39m
+2026-11-16T09:38:07.743Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887743 мс[39m
+2026-11-16T09:38:07.743Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215.j<pJ91FFD092dGVzdMDJglq0MzBYuT13qLF4AprZLaXsVNEQix4DEIY=[39m
+2026-11-16T09:38:07.743Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887743 мс[39m
+2026-11-16T09:38:07.743Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215V4ULN91FFD092dGVzdIIKG5GvyRHjYG/aL2MJXAAgyc/AdsyYIQyTbUU=[39m
+2026-11-16T09:38:07.744Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887744 мс[39m
+2026-11-16T09:38:07.744Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215:YBsh91FFD092dGVzdHzSC64Xuw09znZoZqcniY7ox254CAdsOkduEaU=[39m
+2026-11-16T09:38:07.744Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887744 мс[39m
+2026-11-16T09:38:07.744Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Xg'7H91FFD092dGVzdK0xzPINuo0fEmGlxwxnD/O/rqKyIjMDoHebSe4=[39m
+2026-11-16T09:38:07.745Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887745 мс[39m
+duplicate_check_0104810272: 0.46ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 15,
+  UsedBoxNumber: 3,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 3
+}
+4
+2026-11-16T09:38:07.747Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215DBLGD91FFD092dGVzdCAoE2wwzZAyBdmu1UMEcp2kUdXn2mUzWp5Eg+s=[39m
+2026-11-16T09:38:07.748Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887748 мс[39m
+duplicate_check_0104810272: 0.366ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.750Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215.j<pJ91FFD092dGVzdMDJglq0MzBYuT13qLF4AprZLaXsVNEQix4DEIY=[39m
+2026-11-16T09:38:07.750Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887750 мс[39m
+duplicate_check_0104810272: 0.585ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.753Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215V4ULN91FFD092dGVzdIIKG5GvyRHjYG/aL2MJXAAgyc/AdsyYIQyTbUU=[39m
+2026-11-16T09:38:07.754Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887753 мс[39m
+duplicate_check_0104810272: 0.661ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.756Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215:YBsh91FFD092dGVzdHzSC64Xuw09znZoZqcniY7ox254CAdsOkduEaU=[39m
+2026-11-16T09:38:07.756Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887756 мс[39m
+duplicate_check_0104810272: 0.38ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.759Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Xg'7H91FFD092dGVzdK0xzPINuo0fEmGlxwxnD/O/rqKyIjMDoHebSe4=[39m
+2026-11-16T09:38:07.759Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887759 мс[39m
+#10/24: 5 кодов, строк 45 → 50, коробка 4 (5/15), паллета 1, последняя запись: box=4, pallet=1, 30 мс
+-------------handleMessage raw:  0104810272003892215"y'Zw91FFD092dGVzdEunBMrDrDM1zEtg0nLt/2kF2uDA/wYZijg5Ylg=@@0104810272003892215jz<gI91FFD092dGVzdODhv0Mei6x6C3fgTNSSXXQwF2wN2W1ECthd6Tw=@@0104810272003892215iiW?>91FFD092dGVzdIF0/BBYMpHfen9gFc9dVYggyWNxgp6mL06wdro=@@0104810272003892215:aq0B91FFD092dGVzdKP0HWmh7vRAaC1yyCOj2rGrq1YK6A+YD2tqnzk=@@0104810272003892215sKR%A91FFD092dGVzdOG41EtfWjn/+hy9R3ADawPejb/AaE5Hv/uZ+a8=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215"y'Zw91FFD092dGVzdEunBMrDrDM1zEtg0nLt/2kF2uDA/wYZijg5Ylg=@@0104810272003892215jz<gI91FFD092dGVzdODhv0Mei6x6C3fgTNSSXXQwF2wN2W1ECthd6Tw=@@0104810272003892215iiW?>91FFD092dGVzdIF0/BBYMpHfen9gFc9dVYggyWNxgp6mL06wdro=@@0104810272003892215:aq0B91FFD092dGVzdKP0HWmh7vRAaC1yyCOj2rGrq1YK6A+YD2tqnzk=@@0104810272003892215sKR%A91FFD092dGVzdOG41EtfWjn/+hy9R3ADawPejb/AaE5Hv/uZ+a8=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215"y'Zw91FFD092dGVzdEunBMrDrDM1zEtg0nLt/2kF2uDA/wYZijg5Ylg= -1
+==============extractProductCodesWithCoords 0104810272003892215jz<gI91FFD092dGVzdODhv0Mei6x6C3fgTNSSXXQwF2wN2W1ECthd6Tw= -1
+==============extractProductCodesWithCoords 0104810272003892215iiW?>91FFD092dGVzdIF0/BBYMpHfen9gFc9dVYggyWNxgp6mL06wdro= -1
+==============extractProductCodesWithCoords 0104810272003892215:aq0B91FFD092dGVzdKP0HWmh7vRAaC1yyCOj2rGrq1YK6A+YD2tqnzk= -1
+==============extractProductCodesWithCoords 0104810272003892215sKR%A91FFD092dGVzdOG41EtfWjn/+hy9R3ADawPejb/AaE5Hv/uZ+a8= -1
+productCodes [
+  `0104810272003892215"y'Zw\x1D91FFD0\x1D92dGVzdEunBMrDrDM1zEtg0nLt/2kF2uDA/wYZijg5Ylg=`,
+  '0104810272003892215jz<gI\x1D91FFD0\x1D92dGVzdODhv0Mei6x6C3fgTNSSXXQwF2wN2W1ECthd6Tw=',
+  '0104810272003892215iiW?>\x1D91FFD0\x1D92dGVzdIF0/BBYMpHfen9gFc9dVYggyWNxgp6mL06wdro=',
+  '0104810272003892215:aq0B\x1D91FFD0\x1D92dGVzdKP0HWmh7vRAaC1yyCOj2rGrq1YK6A+YD2tqnzk=',
+  '0104810272003892215sKR%A\x1D91FFD0\x1D92dGVzdOG41EtfWjn/+hy9R3ADawPejb/AaE5Hv/uZ+a8='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.43ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.321ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.311ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.318ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.308ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.772Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215"y'Zw91FFD092dGVzdEunBMrDrDM1zEtg0nLt/2kF2uDA/wYZijg5Ylg=[39m
+2026-11-16T09:38:07.773Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887773 мс[39m
+2026-11-16T09:38:07.773Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215jz<gI91FFD092dGVzdODhv0Mei6x6C3fgTNSSXXQwF2wN2W1ECthd6Tw=[39m
+2026-11-16T09:38:07.773Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887773 мс[39m
+2026-11-16T09:38:07.773Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215iiW?>91FFD092dGVzdIF0/BBYMpHfen9gFc9dVYggyWNxgp6mL06wdro=[39m
+2026-11-16T09:38:07.774Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887774 мс[39m
+2026-11-16T09:38:07.774Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215:aq0B91FFD092dGVzdKP0HWmh7vRAaC1yyCOj2rGrq1YK6A+YD2tqnzk=[39m
+2026-11-16T09:38:07.774Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887774 мс[39m
+2026-11-16T09:38:07.774Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215sKR%A91FFD092dGVzdOG41EtfWjn/+hy9R3ADawPejb/AaE5Hv/uZ+a8=[39m
+2026-11-16T09:38:07.774Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887774 мс[39m
+duplicate_check_0104810272: 0.741ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.777Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215"y'Zw91FFD092dGVzdEunBMrDrDM1zEtg0nLt/2kF2uDA/wYZijg5Ylg=[39m
+2026-11-16T09:38:07.778Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887777 мс[39m
+duplicate_check_0104810272: 0.622ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.780Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215jz<gI91FFD092dGVzdODhv0Mei6x6C3fgTNSSXXQwF2wN2W1ECthd6Tw=[39m
+2026-11-16T09:38:07.780Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887780 мс[39m
+duplicate_check_0104810272: 0.345ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.783Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215iiW?>91FFD092dGVzdIF0/BBYMpHfen9gFc9dVYggyWNxgp6mL06wdro=[39m
+2026-11-16T09:38:07.783Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887783 мс[39m
+duplicate_check_0104810272: 0.357ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.785Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215:aq0B91FFD092dGVzdKP0HWmh7vRAaC1yyCOj2rGrq1YK6A+YD2tqnzk=[39m
+2026-11-16T09:38:07.786Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887786 мс[39m
+duplicate_check_0104810272: 0.343ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.788Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215sKR%A91FFD092dGVzdOG41EtfWjn/+hy9R3ADawPejb/AaE5Hv/uZ+a8=[39m
+2026-11-16T09:38:07.788Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887788 мс[39m
+#11/24: 5 кодов, строк 50 → 55, коробка 4 (10/15), паллета 1, последняя запись: box=4, pallet=1, 31 мс
+-------------handleMessage raw:  0104810272003892215Airh'91FFD092dGVzdPI0QZtd0wxg7zPnMduho9E5XKRvbK1UQu8GFBY=@@01048102720038922158kHN-91FFD092dGVzdKrY/Ap7LzeoUKaqD2E2QDBG7r/MQiDfg9/L13c=@@0104810272003892215!hpbJ91FFD092dGVzdJUDEi0+jcSHXHOuWOyViAte3Ekyjj7xuFEfDrs=@@0104810272003892215sHQFY91FFD092dGVzdEjN6XJJzYZmMDSPpb+oHQsG4ZM4JRauFGllN4Y=@@0104810272003892215ZGt(m91FFD092dGVzdNtIBIGB6qAN828+a83aVv/+xL75y3lNm4I4KuE=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215Airh'91FFD092dGVzdPI0QZtd0wxg7zPnMduho9E5XKRvbK1UQu8GFBY=@@01048102720038922158kHN-91FFD092dGVzdKrY/Ap7LzeoUKaqD2E2QDBG7r/MQiDfg9/L13c=@@0104810272003892215!hpbJ91FFD092dGVzdJUDEi0+jcSHXHOuWOyViAte3Ekyjj7xuFEfDrs=@@0104810272003892215sHQFY91FFD092dGVzdEjN6XJJzYZmMDSPpb+oHQsG4ZM4JRauFGllN4Y=@@0104810272003892215ZGt(m91FFD092dGVzdNtIBIGB6qAN828+a83aVv/+xL75y3lNm4I4KuE=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215Airh'91FFD092dGVzdPI0QZtd0wxg7zPnMduho9E5XKRvbK1UQu8GFBY= -1
+==============extractProductCodesWithCoords 01048102720038922158kHN-91FFD092dGVzdKrY/Ap7LzeoUKaqD2E2QDBG7r/MQiDfg9/L13c= -1
+==============extractProductCodesWithCoords 0104810272003892215!hpbJ91FFD092dGVzdJUDEi0+jcSHXHOuWOyViAte3Ekyjj7xuFEfDrs= -1
+==============extractProductCodesWithCoords 0104810272003892215sHQFY91FFD092dGVzdEjN6XJJzYZmMDSPpb+oHQsG4ZM4JRauFGllN4Y= -1
+==============extractProductCodesWithCoords 0104810272003892215ZGt(m91FFD092dGVzdNtIBIGB6qAN828+a83aVv/+xL75y3lNm4I4KuE= -1
+productCodes [
+  "0104810272003892215Airh'\x1D91FFD0\x1D92dGVzdPI0QZtd0wxg7zPnMduho9E5XKRvbK1UQu8GFBY=",
+  '01048102720038922158kHN-\x1D91FFD0\x1D92dGVzdKrY/Ap7LzeoUKaqD2E2QDBG7r/MQiDfg9/L13c=',
+  '0104810272003892215!hpbJ\x1D91FFD0\x1D92dGVzdJUDEi0+jcSHXHOuWOyViAte3Ekyjj7xuFEfDrs=',
+  '0104810272003892215sHQFY\x1D91FFD0\x1D92dGVzdEjN6XJJzYZmMDSPpb+oHQsG4ZM4JRauFGllN4Y=',
+  '0104810272003892215ZGt(m\x1D91FFD0\x1D92dGVzdNtIBIGB6qAN828+a83aVv/+xL75y3lNm4I4KuE='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.513ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.393ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.389ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.445ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.448ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:07.805Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Airh'91FFD092dGVzdPI0QZtd0wxg7zPnMduho9E5XKRvbK1UQu8GFBY=[39m
+2026-11-16T09:38:07.805Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887805 мс[39m
+2026-11-16T09:38:07.806Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922158kHN-91FFD092dGVzdKrY/Ap7LzeoUKaqD2E2QDBG7r/MQiDfg9/L13c=[39m
+2026-11-16T09:38:07.806Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887806 мс[39m
+2026-11-16T09:38:07.806Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215!hpbJ91FFD092dGVzdJUDEi0+jcSHXHOuWOyViAte3Ekyjj7xuFEfDrs=[39m
+2026-11-16T09:38:07.807Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887807 мс[39m
+2026-11-16T09:38:07.807Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215sHQFY91FFD092dGVzdEjN6XJJzYZmMDSPpb+oHQsG4ZM4JRauFGllN4Y=[39m
+2026-11-16T09:38:07.807Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887807 мс[39m
+2026-11-16T09:38:07.808Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215ZGt(m91FFD092dGVzdNtIBIGB6qAN828+a83aVv/+xL75y3lNm4I4KuE=[39m
+2026-11-16T09:38:07.808Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887808 мс[39m
+duplicate_check_0104810272: 0.467ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.811Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Airh'91FFD092dGVzdPI0QZtd0wxg7zPnMduho9E5XKRvbK1UQu8GFBY=[39m
+2026-11-16T09:38:07.811Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887811 мс[39m
+duplicate_check_0104810272: 0.387ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 11,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.814Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922158kHN-91FFD092dGVzdKrY/Ap7LzeoUKaqD2E2QDBG7r/MQiDfg9/L13c=[39m
+2026-11-16T09:38:07.815Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887815 мс[39m
+duplicate_check_0104810272: 0.818ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 12,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.818Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215!hpbJ91FFD092dGVzdJUDEi0+jcSHXHOuWOyViAte3Ekyjj7xuFEfDrs=[39m
+2026-11-16T09:38:07.819Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887819 мс[39m
+duplicate_check_0104810272: 0.758ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 13,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.822Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215sHQFY91FFD092dGVzdEjN6XJJzYZmMDSPpb+oHQsG4ZM4JRauFGllN4Y=[39m
+2026-11-16T09:38:07.822Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887822 мс[39m
+duplicate_check_0104810272: 0.739ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 14,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+4
+2026-11-16T09:38:07.826Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215ZGt(m91FFD092dGVzdNtIBIGB6qAN828+a83aVv/+xL75y3lNm4I4KuE=[39m
+2026-11-16T09:38:07.827Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887827 мс[39m
+#12/24: 5 кодов, строк 55 → 60, коробка 4 (15/15), паллета 1, последняя запись: box=4, pallet=1, 48 мс
+-------------handleMessage raw:  0104810272003892215hx7/w91FFD092dGVzdJeSQI8BtVXGfLTbhKvAmV4bawZVLs43QkMK9XE=@@01048102720038922154CW6W91FFD092dGVzdC5qBnaYbLG4glRIUSOvTYW4Qbl74dOoaWtcHKg=@@0104810272003892215fF<KQ91FFD092dGVzdG5FrAHWUNBN8d5ZXX9UJAzDn4a3dVtjSp0Wun4=@@0104810272003892215hdBAh91FFD092dGVzdNC0/sRVuqEVCeea+byN9BKOoxOyrwM4OAtTM1k=@@0104810272003892215A2Du291FFD092dGVzdElVa2QkXTfABeg44xnzRPLhVi1+d2ueaE7LLg0=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215hx7/w91FFD092dGVzdJeSQI8BtVXGfLTbhKvAmV4bawZVLs43QkMK9XE=@@01048102720038922154CW6W91FFD092dGVzdC5qBnaYbLG4glRIUSOvTYW4Qbl74dOoaWtcHKg=@@0104810272003892215fF<KQ91FFD092dGVzdG5FrAHWUNBN8d5ZXX9UJAzDn4a3dVtjSp0Wun4=@@0104810272003892215hdBAh91FFD092dGVzdNC0/sRVuqEVCeea+byN9BKOoxOyrwM4OAtTM1k=@@0104810272003892215A2Du291FFD092dGVzdElVa2QkXTfABeg44xnzRPLhVi1+d2ueaE7LLg0=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215hx7/w91FFD092dGVzdJeSQI8BtVXGfLTbhKvAmV4bawZVLs43QkMK9XE= -1
+==============extractProductCodesWithCoords 01048102720038922154CW6W91FFD092dGVzdC5qBnaYbLG4glRIUSOvTYW4Qbl74dOoaWtcHKg= -1
+==============extractProductCodesWithCoords 0104810272003892215fF<KQ91FFD092dGVzdG5FrAHWUNBN8d5ZXX9UJAzDn4a3dVtjSp0Wun4= -1
+==============extractProductCodesWithCoords 0104810272003892215hdBAh91FFD092dGVzdNC0/sRVuqEVCeea+byN9BKOoxOyrwM4OAtTM1k= -1
+==============extractProductCodesWithCoords 0104810272003892215A2Du291FFD092dGVzdElVa2QkXTfABeg44xnzRPLhVi1+d2ueaE7LLg0= -1
+productCodes [
+  '0104810272003892215hx7/w\x1D91FFD0\x1D92dGVzdJeSQI8BtVXGfLTbhKvAmV4bawZVLs43QkMK9XE=',
+  '01048102720038922154CW6W\x1D91FFD0\x1D92dGVzdC5qBnaYbLG4glRIUSOvTYW4Qbl74dOoaWtcHKg=',
+  '0104810272003892215fF<KQ\x1D91FFD0\x1D92dGVzdG5FrAHWUNBN8d5ZXX9UJAzDn4a3dVtjSp0Wun4=',
+  '0104810272003892215hdBAh\x1D91FFD0\x1D92dGVzdNC0/sRVuqEVCeea+byN9BKOoxOyrwM4OAtTM1k=',
+  '0104810272003892215A2Du2\x1D91FFD0\x1D92dGVzdElVa2QkXTfABeg44xnzRPLhVi1+d2ueaE7LLg0='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.673ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.456ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.418ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.382ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.38ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:07.854Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215hx7/w91FFD092dGVzdJeSQI8BtVXGfLTbhKvAmV4bawZVLs43QkMK9XE=[39m
+2026-11-16T09:38:07.854Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887854 мс[39m
+2026-11-16T09:38:07.855Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922154CW6W91FFD092dGVzdC5qBnaYbLG4glRIUSOvTYW4Qbl74dOoaWtcHKg=[39m
+2026-11-16T09:38:07.855Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887855 мс[39m
+2026-11-16T09:38:07.855Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215fF<KQ91FFD092dGVzdG5FrAHWUNBN8d5ZXX9UJAzDn4a3dVtjSp0Wun4=[39m
+2026-11-16T09:38:07.855Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887855 мс[39m
+2026-11-16T09:38:07.856Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215hdBAh91FFD092dGVzdNC0/sRVuqEVCeea+byN9BKOoxOyrwM4OAtTM1k=[39m
+2026-11-16T09:38:07.856Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887856 мс[39m
+2026-11-16T09:38:07.856Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215A2Du291FFD092dGVzdElVa2QkXTfABeg44xnzRPLhVi1+d2ueaE7LLg0=[39m
+2026-11-16T09:38:07.857Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887857 мс[39m
+duplicate_check_0104810272: 0.663ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 15,
+  UsedBoxNumber: 4,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 4
+}
+5
+2026-11-16T09:38:07.860Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215hx7/w91FFD092dGVzdJeSQI8BtVXGfLTbhKvAmV4bawZVLs43QkMK9XE=[39m
+2026-11-16T09:38:07.861Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887861 мс[39m
+duplicate_check_0104810272: 0.795ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.865Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922154CW6W91FFD092dGVzdC5qBnaYbLG4glRIUSOvTYW4Qbl74dOoaWtcHKg=[39m
+2026-11-16T09:38:07.865Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887865 мс[39m
+duplicate_check_0104810272: 0.759ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.869Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215fF<KQ91FFD092dGVzdG5FrAHWUNBN8d5ZXX9UJAzDn4a3dVtjSp0Wun4=[39m
+2026-11-16T09:38:07.869Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887869 мс[39m
+duplicate_check_0104810272: 0.666ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.872Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215hdBAh91FFD092dGVzdNC0/sRVuqEVCeea+byN9BKOoxOyrwM4OAtTM1k=[39m
+2026-11-16T09:38:07.872Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887872 мс[39m
+duplicate_check_0104810272: 0.789ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.876Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215A2Du291FFD092dGVzdElVa2QkXTfABeg44xnzRPLhVi1+d2ueaE7LLg0=[39m
+2026-11-16T09:38:07.876Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887876 мс[39m
+#13/24: 5 кодов, строк 60 → 65, коробка 5 (5/15), паллета 1, последняя запись: box=5, pallet=1, 47 мс
+-------------handleMessage raw:  0104810272003892215dhJR<91FFD092dGVzdEXI7mZt/4VQDUD31I7dh0/Q/awrF8GvQk2Jbh4=@@0104810272003892215S=;<R91FFD092dGVzdACs0VglzXKCP4PoJR/9P/kqB3P0z+o3+sy3tEA=@@0104810272003892215KR<p<91FFD092dGVzdDnR5bjUBiK53gifKWkiGdcUELXT51njXIZvW2g=@@0104810272003892215Mqc!P91FFD092dGVzdEB7YwXSrRAzhsGdLGgROpmW4L1x7kkyys6KaTE=@@0104810272003892215J<UeU91FFD092dGVzdA8dGFyoaf8UYYfYkNiRCgb93diO7tchthvLo4g=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215dhJR<91FFD092dGVzdEXI7mZt/4VQDUD31I7dh0/Q/awrF8GvQk2Jbh4=@@0104810272003892215S=;<R91FFD092dGVzdACs0VglzXKCP4PoJR/9P/kqB3P0z+o3+sy3tEA=@@0104810272003892215KR<p<91FFD092dGVzdDnR5bjUBiK53gifKWkiGdcUELXT51njXIZvW2g=@@0104810272003892215Mqc!P91FFD092dGVzdEB7YwXSrRAzhsGdLGgROpmW4L1x7kkyys6KaTE=@@0104810272003892215J<UeU91FFD092dGVzdA8dGFyoaf8UYYfYkNiRCgb93diO7tchthvLo4g=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215dhJR<91FFD092dGVzdEXI7mZt/4VQDUD31I7dh0/Q/awrF8GvQk2Jbh4= -1
+==============extractProductCodesWithCoords 0104810272003892215S=;<R91FFD092dGVzdACs0VglzXKCP4PoJR/9P/kqB3P0z+o3+sy3tEA= -1
+==============extractProductCodesWithCoords 0104810272003892215KR<p<91FFD092dGVzdDnR5bjUBiK53gifKWkiGdcUELXT51njXIZvW2g= -1
+==============extractProductCodesWithCoords 0104810272003892215Mqc!P91FFD092dGVzdEB7YwXSrRAzhsGdLGgROpmW4L1x7kkyys6KaTE= -1
+==============extractProductCodesWithCoords 0104810272003892215J<UeU91FFD092dGVzdA8dGFyoaf8UYYfYkNiRCgb93diO7tchthvLo4g= -1
+productCodes [
+  '0104810272003892215dhJR<\x1D91FFD0\x1D92dGVzdEXI7mZt/4VQDUD31I7dh0/Q/awrF8GvQk2Jbh4=',
+  '0104810272003892215S=;<R\x1D91FFD0\x1D92dGVzdACs0VglzXKCP4PoJR/9P/kqB3P0z+o3+sy3tEA=',
+  '0104810272003892215KR<p<\x1D91FFD0\x1D92dGVzdDnR5bjUBiK53gifKWkiGdcUELXT51njXIZvW2g=',
+  '0104810272003892215Mqc!P\x1D91FFD0\x1D92dGVzdEB7YwXSrRAzhsGdLGgROpmW4L1x7kkyys6KaTE=',
+  '0104810272003892215J<UeU\x1D91FFD0\x1D92dGVzdA8dGFyoaf8UYYfYkNiRCgb93diO7tchthvLo4g='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 1.077ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.816ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.698ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.541ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.505ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.905Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215dhJR<91FFD092dGVzdEXI7mZt/4VQDUD31I7dh0/Q/awrF8GvQk2Jbh4=[39m
+2026-11-16T09:38:07.905Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887905 мс[39m
+2026-11-16T09:38:07.906Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215S=;<R91FFD092dGVzdACs0VglzXKCP4PoJR/9P/kqB3P0z+o3+sy3tEA=[39m
+2026-11-16T09:38:07.906Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887906 мс[39m
+2026-11-16T09:38:07.906Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215KR<p<91FFD092dGVzdDnR5bjUBiK53gifKWkiGdcUELXT51njXIZvW2g=[39m
+2026-11-16T09:38:07.906Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887906 мс[39m
+2026-11-16T09:38:07.907Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Mqc!P91FFD092dGVzdEB7YwXSrRAzhsGdLGgROpmW4L1x7kkyys6KaTE=[39m
+2026-11-16T09:38:07.907Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887907 мс[39m
+2026-11-16T09:38:07.907Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215J<UeU91FFD092dGVzdA8dGFyoaf8UYYfYkNiRCgb93diO7tchthvLo4g=[39m
+2026-11-16T09:38:07.907Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887907 мс[39m
+duplicate_check_0104810272: 0.641ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.911Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215dhJR<91FFD092dGVzdEXI7mZt/4VQDUD31I7dh0/Q/awrF8GvQk2Jbh4=[39m
+2026-11-16T09:38:07.912Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887912 мс[39m
+duplicate_check_0104810272: 0.696ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.915Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215S=;<R91FFD092dGVzdACs0VglzXKCP4PoJR/9P/kqB3P0z+o3+sy3tEA=[39m
+2026-11-16T09:38:07.916Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887916 мс[39m
+duplicate_check_0104810272: 0.61ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.919Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215KR<p<91FFD092dGVzdDnR5bjUBiK53gifKWkiGdcUELXT51njXIZvW2g=[39m
+2026-11-16T09:38:07.920Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887920 мс[39m
+duplicate_check_0104810272: 0.747ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.923Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Mqc!P91FFD092dGVzdEB7YwXSrRAzhsGdLGgROpmW4L1x7kkyys6KaTE=[39m
+2026-11-16T09:38:07.923Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887923 мс[39m
+duplicate_check_0104810272: 0.56ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.926Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215J<UeU91FFD092dGVzdA8dGFyoaf8UYYfYkNiRCgb93diO7tchthvLo4g=[39m
+2026-11-16T09:38:07.927Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887927 мс[39m
+#14/24: 5 кодов, строк 65 → 70, коробка 5 (10/15), паллета 1, последняя запись: box=5, pallet=1, 47 мс
+-------------handleMessage raw:  0104810272003892215O7S>a91FFD092dGVzdP6yJ7cdd22F/YmG2xxll71/DX0YyfqWWglwM4w=@@0104810272003892215LQfLb91FFD092dGVzdJri/pcbcOmM30EhzT7XSjHpw/YSk5nyLFr09QY=@@0104810272003892215=!xmZ91FFD092dGVzdBI2E75msxMSBNebMZqERFs8dnbAFCjjYO5y7kg=@@0104810272003892215mo"pJ91FFD092dGVzdNa3gvkOVtRvpw1XcvPqxlAM6skCNBoNPAoc2kI=@@0104810272003892215mr.,m91FFD092dGVzdELD/Leqsu3UBUTS3a5c4mxVPbFaMpT+njOdIlg=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215O7S>a91FFD092dGVzdP6yJ7cdd22F/YmG2xxll71/DX0YyfqWWglwM4w=@@0104810272003892215LQfLb91FFD092dGVzdJri/pcbcOmM30EhzT7XSjHpw/YSk5nyLFr09QY=@@0104810272003892215=!xmZ91FFD092dGVzdBI2E75msxMSBNebMZqERFs8dnbAFCjjYO5y7kg=@@0104810272003892215mo"pJ91FFD092dGVzdNa3gvkOVtRvpw1XcvPqxlAM6skCNBoNPAoc2kI=@@0104810272003892215mr.,m91FFD092dGVzdELD/Leqsu3UBUTS3a5c4mxVPbFaMpT+njOdIlg=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215O7S>a91FFD092dGVzdP6yJ7cdd22F/YmG2xxll71/DX0YyfqWWglwM4w= -1
+==============extractProductCodesWithCoords 0104810272003892215LQfLb91FFD092dGVzdJri/pcbcOmM30EhzT7XSjHpw/YSk5nyLFr09QY= -1
+==============extractProductCodesWithCoords 0104810272003892215=!xmZ91FFD092dGVzdBI2E75msxMSBNebMZqERFs8dnbAFCjjYO5y7kg= -1
+==============extractProductCodesWithCoords 0104810272003892215mo"pJ91FFD092dGVzdNa3gvkOVtRvpw1XcvPqxlAM6skCNBoNPAoc2kI= -1
+==============extractProductCodesWithCoords 0104810272003892215mr.,m91FFD092dGVzdELD/Leqsu3UBUTS3a5c4mxVPbFaMpT+njOdIlg= -1
+productCodes [
+  '0104810272003892215O7S>a\x1D91FFD0\x1D92dGVzdP6yJ7cdd22F/YmG2xxll71/DX0YyfqWWglwM4w=',
+  '0104810272003892215LQfLb\x1D91FFD0\x1D92dGVzdJri/pcbcOmM30EhzT7XSjHpw/YSk5nyLFr09QY=',
+  '0104810272003892215=!xmZ\x1D91FFD0\x1D92dGVzdBI2E75msxMSBNebMZqERFs8dnbAFCjjYO5y7kg=',
+  '0104810272003892215mo"pJ\x1D91FFD0\x1D92dGVzdNa3gvkOVtRvpw1XcvPqxlAM6skCNBoNPAoc2kI=',
+  '0104810272003892215mr.,m\x1D91FFD0\x1D92dGVzdELD/Leqsu3UBUTS3a5c4mxVPbFaMpT+njOdIlg='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.653ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.501ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.53ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.53ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.453ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.951Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215O7S>a91FFD092dGVzdP6yJ7cdd22F/YmG2xxll71/DX0YyfqWWglwM4w=[39m
+2026-11-16T09:38:07.951Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887951 мс[39m
+2026-11-16T09:38:07.952Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215LQfLb91FFD092dGVzdJri/pcbcOmM30EhzT7XSjHpw/YSk5nyLFr09QY=[39m
+2026-11-16T09:38:07.952Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887952 мс[39m
+2026-11-16T09:38:07.952Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215=!xmZ91FFD092dGVzdBI2E75msxMSBNebMZqERFs8dnbAFCjjYO5y7kg=[39m
+2026-11-16T09:38:07.953Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887953 мс[39m
+2026-11-16T09:38:07.953Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215mo"pJ91FFD092dGVzdNa3gvkOVtRvpw1XcvPqxlAM6skCNBoNPAoc2kI=[39m
+2026-11-16T09:38:07.953Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887953 мс[39m
+2026-11-16T09:38:07.954Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215mr.,m91FFD092dGVzdELD/Leqsu3UBUTS3a5c4mxVPbFaMpT+njOdIlg=[39m
+2026-11-16T09:38:07.954Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887954 мс[39m
+duplicate_check_0104810272: 0.505ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.957Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215O7S>a91FFD092dGVzdP6yJ7cdd22F/YmG2xxll71/DX0YyfqWWglwM4w=[39m
+2026-11-16T09:38:07.958Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887958 мс[39m
+duplicate_check_0104810272: 0.575ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 11,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.962Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215LQfLb91FFD092dGVzdJri/pcbcOmM30EhzT7XSjHpw/YSk5nyLFr09QY=[39m
+2026-11-16T09:38:07.963Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887963 мс[39m
+duplicate_check_0104810272: 0.644ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 12,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.967Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215=!xmZ91FFD092dGVzdBI2E75msxMSBNebMZqERFs8dnbAFCjjYO5y7kg=[39m
+2026-11-16T09:38:07.967Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887967 мс[39m
+duplicate_check_0104810272: 0.516ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 13,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.970Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215mo"pJ91FFD092dGVzdNa3gvkOVtRvpw1XcvPqxlAM6skCNBoNPAoc2kI=[39m
+2026-11-16T09:38:07.971Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887971 мс[39m
+duplicate_check_0104810272: 0.507ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 14,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+5
+2026-11-16T09:38:07.974Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215mr.,m91FFD092dGVzdELD/Leqsu3UBUTS3a5c4mxVPbFaMpT+njOdIlg=[39m
+2026-11-16T09:38:07.975Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887975 мс[39m
+#15/24: 5 кодов, строк 70 → 75, коробка 5 (15/15), паллета 1, последняя запись: box=5, pallet=1, 40 мс
+-------------handleMessage raw:  0104810272003892215*lJL!91FFD092dGVzdEJQg66z9tD95WZXBlcsAqEfEjJy1WKa5l9J6Yk=@@0104810272003892215b)U?L91FFD092dGVzdNkj72ANGc7p4bOCgWTtzULKL95dDi5jGuLx05U=@@0104810272003892215sWV4s91FFD092dGVzdDDrivvke7r8qC2nFnHbxCQt8BG14msHdblMoFg=@@0104810272003892215upE5M91FFD092dGVzdOOC5zqiqtnO4LCq+4HSs2/kiligKPfm+vRNQds=@@0104810272003892215>5SM,91FFD092dGVzdMPoIZsnFbMuAB0g4eVwXmDZCzpzbLVy8V8PK9M=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215*lJL!91FFD092dGVzdEJQg66z9tD95WZXBlcsAqEfEjJy1WKa5l9J6Yk=@@0104810272003892215b)U?L91FFD092dGVzdNkj72ANGc7p4bOCgWTtzULKL95dDi5jGuLx05U=@@0104810272003892215sWV4s91FFD092dGVzdDDrivvke7r8qC2nFnHbxCQt8BG14msHdblMoFg=@@0104810272003892215upE5M91FFD092dGVzdOOC5zqiqtnO4LCq+4HSs2/kiligKPfm+vRNQds=@@0104810272003892215>5SM,91FFD092dGVzdMPoIZsnFbMuAB0g4eVwXmDZCzpzbLVy8V8PK9M=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215*lJL!91FFD092dGVzdEJQg66z9tD95WZXBlcsAqEfEjJy1WKa5l9J6Yk= -1
+==============extractProductCodesWithCoords 0104810272003892215b)U?L91FFD092dGVzdNkj72ANGc7p4bOCgWTtzULKL95dDi5jGuLx05U= -1
+==============extractProductCodesWithCoords 0104810272003892215sWV4s91FFD092dGVzdDDrivvke7r8qC2nFnHbxCQt8BG14msHdblMoFg= -1
+==============extractProductCodesWithCoords 0104810272003892215upE5M91FFD092dGVzdOOC5zqiqtnO4LCq+4HSs2/kiligKPfm+vRNQds= -1
+==============extractProductCodesWithCoords 0104810272003892215>5SM,91FFD092dGVzdMPoIZsnFbMuAB0g4eVwXmDZCzpzbLVy8V8PK9M= -1
+productCodes [
+  '0104810272003892215*lJL!\x1D91FFD0\x1D92dGVzdEJQg66z9tD95WZXBlcsAqEfEjJy1WKa5l9J6Yk=',
+  '0104810272003892215b)U?L\x1D91FFD0\x1D92dGVzdNkj72ANGc7p4bOCgWTtzULKL95dDi5jGuLx05U=',
+  '0104810272003892215sWV4s\x1D91FFD0\x1D92dGVzdDDrivvke7r8qC2nFnHbxCQt8BG14msHdblMoFg=',
+  '0104810272003892215upE5M\x1D91FFD0\x1D92dGVzdOOC5zqiqtnO4LCq+4HSs2/kiligKPfm+vRNQds=',
+  '0104810272003892215>5SM,\x1D91FFD0\x1D92dGVzdMPoIZsnFbMuAB0g4eVwXmDZCzpzbLVy8V8PK9M='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.62ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.483ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.558ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.561ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.44ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:07.991Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215*lJL!91FFD092dGVzdEJQg66z9tD95WZXBlcsAqEfEjJy1WKa5l9J6Yk=[39m
+2026-11-16T09:38:07.992Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887992 мс[39m
+2026-11-16T09:38:07.992Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215b)U?L91FFD092dGVzdNkj72ANGc7p4bOCgWTtzULKL95dDi5jGuLx05U=[39m
+2026-11-16T09:38:07.993Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887993 мс[39m
+2026-11-16T09:38:07.993Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215sWV4s91FFD092dGVzdDDrivvke7r8qC2nFnHbxCQt8BG14msHdblMoFg=[39m
+2026-11-16T09:38:07.993Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887993 мс[39m
+2026-11-16T09:38:07.993Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215upE5M91FFD092dGVzdOOC5zqiqtnO4LCq+4HSs2/kiligKPfm+vRNQds=[39m
+2026-11-16T09:38:07.994Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887994 мс[39m
+2026-11-16T09:38:07.994Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215>5SM,91FFD092dGVzdMPoIZsnFbMuAB0g4eVwXmDZCzpzbLVy8V8PK9M=[39m
+2026-11-16T09:38:07.995Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821887994 мс[39m
+duplicate_check_0104810272: 0.531ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 15,
+  UsedBoxNumber: 5,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 5
+}
+6
+2026-11-16T09:38:07.999Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215*lJL!91FFD092dGVzdEJQg66z9tD95WZXBlcsAqEfEjJy1WKa5l9J6Yk=[39m
+2026-11-16T09:38:07.999Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821887999 мс[39m
+duplicate_check_0104810272: 0.422ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.002Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215b)U?L91FFD092dGVzdNkj72ANGc7p4bOCgWTtzULKL95dDi5jGuLx05U=[39m
+2026-11-16T09:38:08.002Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888002 мс[39m
+duplicate_check_0104810272: 0.605ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.005Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215sWV4s91FFD092dGVzdDDrivvke7r8qC2nFnHbxCQt8BG14msHdblMoFg=[39m
+2026-11-16T09:38:08.006Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888006 мс[39m
+duplicate_check_0104810272: 0.49ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.009Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215upE5M91FFD092dGVzdOOC5zqiqtnO4LCq+4HSs2/kiligKPfm+vRNQds=[39m
+2026-11-16T09:38:08.009Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888009 мс[39m
+duplicate_check_0104810272: 0.565ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.012Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215>5SM,91FFD092dGVzdMPoIZsnFbMuAB0g4eVwXmDZCzpzbLVy8V8PK9M=[39m
+2026-11-16T09:38:08.012Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888012 мс[39m
+#16/24: 5 кодов, строк 75 → 80, коробка 6 (5/15), паллета 1, последняя запись: box=6, pallet=1, 49 мс
+-------------handleMessage raw:  01048102720038922156pbH-91FFD092dGVzdHanbuxuo7v8Qvpmm/NScSRabg/0DBndXmCyM88=@@0104810272003892215(p-Lg91FFD092dGVzdL5KcrfFDxFQriXdeCb9LQInrLtzm43jQdWko50=@@0104810272003892215IG'S&91FFD092dGVzdBg8YyCkoIq/WMn7qdC8BA52jlcKp45ewMwzjQo=@@0104810272003892215fv>9!91FFD092dGVzdB01P/Y0I3ZJB/1CvnOMwBFKsMf0+9XztfGxWkQ=@@0104810272003892215jsNZI91FFD092dGVzdOwjs3b5zyX6VBnNwpI2pvMBDFezr3Z9ejhHLm0=	 Камера 1
+-------------processCompleteMessage:  01048102720038922156pbH-91FFD092dGVzdHanbuxuo7v8Qvpmm/NScSRabg/0DBndXmCyM88=@@0104810272003892215(p-Lg91FFD092dGVzdL5KcrfFDxFQriXdeCb9LQInrLtzm43jQdWko50=@@0104810272003892215IG'S&91FFD092dGVzdBg8YyCkoIq/WMn7qdC8BA52jlcKp45ewMwzjQo=@@0104810272003892215fv>9!91FFD092dGVzdB01P/Y0I3ZJB/1CvnOMwBFKsMf0+9XztfGxWkQ=@@0104810272003892215jsNZI91FFD092dGVzdOwjs3b5zyX6VBnNwpI2pvMBDFezr3Z9ejhHLm0=	 Камера 1
+==============extractProductCodesWithCoords 01048102720038922156pbH-91FFD092dGVzdHanbuxuo7v8Qvpmm/NScSRabg/0DBndXmCyM88= -1
+==============extractProductCodesWithCoords 0104810272003892215(p-Lg91FFD092dGVzdL5KcrfFDxFQriXdeCb9LQInrLtzm43jQdWko50= -1
+==============extractProductCodesWithCoords 0104810272003892215IG'S&91FFD092dGVzdBg8YyCkoIq/WMn7qdC8BA52jlcKp45ewMwzjQo= -1
+==============extractProductCodesWithCoords 0104810272003892215fv>9!91FFD092dGVzdB01P/Y0I3ZJB/1CvnOMwBFKsMf0+9XztfGxWkQ= -1
+==============extractProductCodesWithCoords 0104810272003892215jsNZI91FFD092dGVzdOwjs3b5zyX6VBnNwpI2pvMBDFezr3Z9ejhHLm0= -1
+productCodes [
+  '01048102720038922156pbH-\x1D91FFD0\x1D92dGVzdHanbuxuo7v8Qvpmm/NScSRabg/0DBndXmCyM88=',
+  '0104810272003892215(p-Lg\x1D91FFD0\x1D92dGVzdL5KcrfFDxFQriXdeCb9LQInrLtzm43jQdWko50=',
+  "0104810272003892215IG'S&\x1D91FFD0\x1D92dGVzdBg8YyCkoIq/WMn7qdC8BA52jlcKp45ewMwzjQo=",
+  '0104810272003892215fv>9!\x1D91FFD0\x1D92dGVzdB01P/Y0I3ZJB/1CvnOMwBFKsMf0+9XztfGxWkQ=',
+  '0104810272003892215jsNZI\x1D91FFD0\x1D92dGVzdOwjs3b5zyX6VBnNwpI2pvMBDFezr3Z9ejhHLm0='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.867ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.532ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.479ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.451ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.527ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:08.041Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922156pbH-91FFD092dGVzdHanbuxuo7v8Qvpmm/NScSRabg/0DBndXmCyM88=[39m
+2026-11-16T09:38:08.042Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888042 мс[39m
+2026-11-16T09:38:08.042Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215(p-Lg91FFD092dGVzdL5KcrfFDxFQriXdeCb9LQInrLtzm43jQdWko50=[39m
+2026-11-16T09:38:08.043Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888043 мс[39m
+2026-11-16T09:38:08.043Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215IG'S&91FFD092dGVzdBg8YyCkoIq/WMn7qdC8BA52jlcKp45ewMwzjQo=[39m
+2026-11-16T09:38:08.043Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888043 мс[39m
+2026-11-16T09:38:08.044Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215fv>9!91FFD092dGVzdB01P/Y0I3ZJB/1CvnOMwBFKsMf0+9XztfGxWkQ=[39m
+2026-11-16T09:38:08.044Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888044 мс[39m
+2026-11-16T09:38:08.044Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215jsNZI91FFD092dGVzdOwjs3b5zyX6VBnNwpI2pvMBDFezr3Z9ejhHLm0=[39m
+2026-11-16T09:38:08.045Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888044 мс[39m
+duplicate_check_0104810272: 0.486ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.048Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922156pbH-91FFD092dGVzdHanbuxuo7v8Qvpmm/NScSRabg/0DBndXmCyM88=[39m
+2026-11-16T09:38:08.048Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888048 мс[39m
+duplicate_check_0104810272: 0.565ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.052Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215(p-Lg91FFD092dGVzdL5KcrfFDxFQriXdeCb9LQInrLtzm43jQdWko50=[39m
+2026-11-16T09:38:08.052Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888052 мс[39m
+duplicate_check_0104810272: 0.574ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.056Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215IG'S&91FFD092dGVzdBg8YyCkoIq/WMn7qdC8BA52jlcKp45ewMwzjQo=[39m
+2026-11-16T09:38:08.056Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888056 мс[39m
+duplicate_check_0104810272: 0.532ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.059Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215fv>9!91FFD092dGVzdB01P/Y0I3ZJB/1CvnOMwBFKsMf0+9XztfGxWkQ=[39m
+2026-11-16T09:38:08.060Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888060 мс[39m
+duplicate_check_0104810272: 0.467ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.063Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215jsNZI91FFD092dGVzdOwjs3b5zyX6VBnNwpI2pvMBDFezr3Z9ejhHLm0=[39m
+2026-11-16T09:38:08.063Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888063 мс[39m
+#17/24: 5 кодов, строк 80 → 85, коробка 6 (10/15), паллета 1, последняя запись: box=6, pallet=1, 49 мс
+-------------handleMessage raw:  0104810272003892215Y<'8F91FFD092dGVzdKMv9VvnECnu3VqlC8jkgpnI0PRpbwXrkW+x8j0=@@0104810272003892215pWY1L91FFD092dGVzdHYvpMrrV/I8AZGwkUOPIve1GFrSuRJz5i8yi38=@@0104810272003892215Wr6FK91FFD092dGVzdFO8Y7ZsB+UdY1burLAbOItpLSvYCs+YJ/cfcdM=@@0104810272003892215Laiy+91FFD092dGVzdP40ClnU7GT1ayHPw/y+JI+5hsKoXrFxXHF6ygI=@@0104810272003892215uZSjf91FFD092dGVzdH3Sac46kH8Yg/gzt1I+rtsOZJDmw7n2EybdZcw=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215Y<'8F91FFD092dGVzdKMv9VvnECnu3VqlC8jkgpnI0PRpbwXrkW+x8j0=@@0104810272003892215pWY1L91FFD092dGVzdHYvpMrrV/I8AZGwkUOPIve1GFrSuRJz5i8yi38=@@0104810272003892215Wr6FK91FFD092dGVzdFO8Y7ZsB+UdY1burLAbOItpLSvYCs+YJ/cfcdM=@@0104810272003892215Laiy+91FFD092dGVzdP40ClnU7GT1ayHPw/y+JI+5hsKoXrFxXHF6ygI=@@0104810272003892215uZSjf91FFD092dGVzdH3Sac46kH8Yg/gzt1I+rtsOZJDmw7n2EybdZcw=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215Y<'8F91FFD092dGVzdKMv9VvnECnu3VqlC8jkgpnI0PRpbwXrkW+x8j0= -1
+==============extractProductCodesWithCoords 0104810272003892215pWY1L91FFD092dGVzdHYvpMrrV/I8AZGwkUOPIve1GFrSuRJz5i8yi38= -1
+==============extractProductCodesWithCoords 0104810272003892215Wr6FK91FFD092dGVzdFO8Y7ZsB+UdY1burLAbOItpLSvYCs+YJ/cfcdM= -1
+==============extractProductCodesWithCoords 0104810272003892215Laiy+91FFD092dGVzdP40ClnU7GT1ayHPw/y+JI+5hsKoXrFxXHF6ygI= -1
+==============extractProductCodesWithCoords 0104810272003892215uZSjf91FFD092dGVzdH3Sac46kH8Yg/gzt1I+rtsOZJDmw7n2EybdZcw= -1
+productCodes [
+  "0104810272003892215Y<'8F\x1D91FFD0\x1D92dGVzdKMv9VvnECnu3VqlC8jkgpnI0PRpbwXrkW+x8j0=",
+  '0104810272003892215pWY1L\x1D91FFD0\x1D92dGVzdHYvpMrrV/I8AZGwkUOPIve1GFrSuRJz5i8yi38=',
+  '0104810272003892215Wr6FK\x1D91FFD0\x1D92dGVzdFO8Y7ZsB+UdY1burLAbOItpLSvYCs+YJ/cfcdM=',
+  '0104810272003892215Laiy+\x1D91FFD0\x1D92dGVzdP40ClnU7GT1ayHPw/y+JI+5hsKoXrFxXHF6ygI=',
+  '0104810272003892215uZSjf\x1D91FFD0\x1D92dGVzdH3Sac46kH8Yg/gzt1I+rtsOZJDmw7n2EybdZcw='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 1.055ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.681ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.633ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.697ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.594ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:08.094Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Y<'8F91FFD092dGVzdKMv9VvnECnu3VqlC8jkgpnI0PRpbwXrkW+x8j0=[39m
+2026-11-16T09:38:08.094Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888094 мс[39m
+2026-11-16T09:38:08.095Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215pWY1L91FFD092dGVzdHYvpMrrV/I8AZGwkUOPIve1GFrSuRJz5i8yi38=[39m
+2026-11-16T09:38:08.095Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888095 мс[39m
+2026-11-16T09:38:08.095Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Wr6FK91FFD092dGVzdFO8Y7ZsB+UdY1burLAbOItpLSvYCs+YJ/cfcdM=[39m
+2026-11-16T09:38:08.096Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888096 мс[39m
+2026-11-16T09:38:08.096Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Laiy+91FFD092dGVzdP40ClnU7GT1ayHPw/y+JI+5hsKoXrFxXHF6ygI=[39m
+2026-11-16T09:38:08.096Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888096 мс[39m
+2026-11-16T09:38:08.097Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215uZSjf91FFD092dGVzdH3Sac46kH8Yg/gzt1I+rtsOZJDmw7n2EybdZcw=[39m
+2026-11-16T09:38:08.097Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888097 мс[39m
+duplicate_check_0104810272: 0.703ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.100Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Y<'8F91FFD092dGVzdKMv9VvnECnu3VqlC8jkgpnI0PRpbwXrkW+x8j0=[39m
+2026-11-16T09:38:08.101Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888101 мс[39m
+duplicate_check_0104810272: 0.469ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 11,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.104Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215pWY1L91FFD092dGVzdHYvpMrrV/I8AZGwkUOPIve1GFrSuRJz5i8yi38=[39m
+2026-11-16T09:38:08.104Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888104 мс[39m
+duplicate_check_0104810272: 0.536ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 12,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.107Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Wr6FK91FFD092dGVzdFO8Y7ZsB+UdY1burLAbOItpLSvYCs+YJ/cfcdM=[39m
+2026-11-16T09:38:08.107Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888107 мс[39m
+duplicate_check_0104810272: 0.45ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 13,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.111Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Laiy+91FFD092dGVzdP40ClnU7GT1ayHPw/y+JI+5hsKoXrFxXHF6ygI=[39m
+2026-11-16T09:38:08.111Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888111 мс[39m
+duplicate_check_0104810272: 0.599ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 14,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+6
+2026-11-16T09:38:08.115Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215uZSjf91FFD092dGVzdH3Sac46kH8Yg/gzt1I+rtsOZJDmw7n2EybdZcw=[39m
+2026-11-16T09:38:08.116Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888116 мс[39m
+#18/24: 5 кодов, строк 85 → 90, коробка 6 (15/15), паллета 1, последняя запись: box=6, pallet=1, 47 мс
+-------------handleMessage raw:  0104810272003892215EpWr!91FFD092dGVzdBJDOI4284htkMwHJmbPPSuChn3KR4j3NVjaPUg=@@0104810272003892215Utkhe91FFD092dGVzdEdIBjky6RTJtsymgMeSnkYzQYQrKA/mj9ioG+k=@@0104810272003892215eBMX%91FFD092dGVzdLoSyZHEGwg6rozCFD3eu1evt3iNIIOhJpmSG6E=@@0104810272003892215fWRcF91FFD092dGVzdO1mFqezEGg3Cz+f7iE4Bu1ApbfmkF3TfsaueVA=@@0104810272003892215GStkD91FFD092dGVzdMYvyFqi9PsP/A99r0kmDEYstj/o43wBHXApD+M=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215EpWr!91FFD092dGVzdBJDOI4284htkMwHJmbPPSuChn3KR4j3NVjaPUg=@@0104810272003892215Utkhe91FFD092dGVzdEdIBjky6RTJtsymgMeSnkYzQYQrKA/mj9ioG+k=@@0104810272003892215eBMX%91FFD092dGVzdLoSyZHEGwg6rozCFD3eu1evt3iNIIOhJpmSG6E=@@0104810272003892215fWRcF91FFD092dGVzdO1mFqezEGg3Cz+f7iE4Bu1ApbfmkF3TfsaueVA=@@0104810272003892215GStkD91FFD092dGVzdMYvyFqi9PsP/A99r0kmDEYstj/o43wBHXApD+M=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215EpWr!91FFD092dGVzdBJDOI4284htkMwHJmbPPSuChn3KR4j3NVjaPUg= -1
+==============extractProductCodesWithCoords 0104810272003892215Utkhe91FFD092dGVzdEdIBjky6RTJtsymgMeSnkYzQYQrKA/mj9ioG+k= -1
+==============extractProductCodesWithCoords 0104810272003892215eBMX%91FFD092dGVzdLoSyZHEGwg6rozCFD3eu1evt3iNIIOhJpmSG6E= -1
+==============extractProductCodesWithCoords 0104810272003892215fWRcF91FFD092dGVzdO1mFqezEGg3Cz+f7iE4Bu1ApbfmkF3TfsaueVA= -1
+==============extractProductCodesWithCoords 0104810272003892215GStkD91FFD092dGVzdMYvyFqi9PsP/A99r0kmDEYstj/o43wBHXApD+M= -1
+productCodes [
+  '0104810272003892215EpWr!\x1D91FFD0\x1D92dGVzdBJDOI4284htkMwHJmbPPSuChn3KR4j3NVjaPUg=',
+  '0104810272003892215Utkhe\x1D91FFD0\x1D92dGVzdEdIBjky6RTJtsymgMeSnkYzQYQrKA/mj9ioG+k=',
+  '0104810272003892215eBMX%\x1D91FFD0\x1D92dGVzdLoSyZHEGwg6rozCFD3eu1evt3iNIIOhJpmSG6E=',
+  '0104810272003892215fWRcF\x1D91FFD0\x1D92dGVzdO1mFqezEGg3Cz+f7iE4Bu1ApbfmkF3TfsaueVA=',
+  '0104810272003892215GStkD\x1D91FFD0\x1D92dGVzdMYvyFqi9PsP/A99r0kmDEYstj/o43wBHXApD+M='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 1.331ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.938ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.751ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.518ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.488ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:08.141Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215EpWr!91FFD092dGVzdBJDOI4284htkMwHJmbPPSuChn3KR4j3NVjaPUg=[39m
+2026-11-16T09:38:08.141Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888141 мс[39m
+2026-11-16T09:38:08.141Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Utkhe91FFD092dGVzdEdIBjky6RTJtsymgMeSnkYzQYQrKA/mj9ioG+k=[39m
+2026-11-16T09:38:08.142Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888142 мс[39m
+2026-11-16T09:38:08.142Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215eBMX%91FFD092dGVzdLoSyZHEGwg6rozCFD3eu1evt3iNIIOhJpmSG6E=[39m
+2026-11-16T09:38:08.143Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888143 мс[39m
+2026-11-16T09:38:08.143Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215fWRcF91FFD092dGVzdO1mFqezEGg3Cz+f7iE4Bu1ApbfmkF3TfsaueVA=[39m
+2026-11-16T09:38:08.143Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888143 мс[39m
+2026-11-16T09:38:08.144Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215GStkD91FFD092dGVzdMYvyFqi9PsP/A99r0kmDEYstj/o43wBHXApD+M=[39m
+2026-11-16T09:38:08.144Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888144 мс[39m
+duplicate_check_0104810272: 2.221ms
+Детализация: запрос к БД занял 3 мс, результат: false
+false 3256587 {
+  currectProductInBox: 15,
+  UsedBoxNumber: 6,
+  UsedPalletNumber: 1,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 6
+}
+7
+2026-11-16T09:38:08.150Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215EpWr!91FFD092dGVzdBJDOI4284htkMwHJmbPPSuChn3KR4j3NVjaPUg=[39m
+2026-11-16T09:38:08.151Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888151 мс[39m
+duplicate_check_0104810272: 0.632ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.154Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Utkhe91FFD092dGVzdEdIBjky6RTJtsymgMeSnkYzQYQrKA/mj9ioG+k=[39m
+2026-11-16T09:38:08.154Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888154 мс[39m
+duplicate_check_0104810272: 0.529ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.157Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215eBMX%91FFD092dGVzdLoSyZHEGwg6rozCFD3eu1evt3iNIIOhJpmSG6E=[39m
+2026-11-16T09:38:08.158Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888158 мс[39m
+duplicate_check_0104810272: 0.796ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.161Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215fWRcF91FFD092dGVzdO1mFqezEGg3Cz+f7iE4Bu1ApbfmkF3TfsaueVA=[39m
+2026-11-16T09:38:08.162Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888162 мс[39m
+duplicate_check_0104810272: 0.554ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.166Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215GStkD91FFD092dGVzdMYvyFqi9PsP/A99r0kmDEYstj/o43wBHXApD+M=[39m
+2026-11-16T09:38:08.166Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888166 мс[39m
+#19/24: 5 кодов, строк 90 → 95, коробка 7 (5/15), паллета 2, последняя запись: box=7, pallet=2, 51 мс
+-------------handleMessage raw:  0104810272003892215f)i6<91FFD092dGVzdK/Bw6T/5+3CC3gk7rtErop6+vpz/lFWl4Oi9gI=@@0104810272003892215DjGyj91FFD092dGVzdKgmw8tjWHKOExQTRFxpHBwUbAT1fS3GTLEtVsE=@@0104810272003892215y+9R;91FFD092dGVzdLKQnqZcj6NNxDpN5BMRz0C12XgdUpccG0pNWXg=@@01048102720038922154iurP91FFD092dGVzdK8Su/QeGjSeZBVXJAst3zcIlXGqu79dn/VmCrk=@@0104810272003892215OF_ds91FFD092dGVzdDVxJ9FUIW2e5D0VFzfFR0mlT87DrVfPVgqL0iw=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215f)i6<91FFD092dGVzdK/Bw6T/5+3CC3gk7rtErop6+vpz/lFWl4Oi9gI=@@0104810272003892215DjGyj91FFD092dGVzdKgmw8tjWHKOExQTRFxpHBwUbAT1fS3GTLEtVsE=@@0104810272003892215y+9R;91FFD092dGVzdLKQnqZcj6NNxDpN5BMRz0C12XgdUpccG0pNWXg=@@01048102720038922154iurP91FFD092dGVzdK8Su/QeGjSeZBVXJAst3zcIlXGqu79dn/VmCrk=@@0104810272003892215OF_ds91FFD092dGVzdDVxJ9FUIW2e5D0VFzfFR0mlT87DrVfPVgqL0iw=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215f)i6<91FFD092dGVzdK/Bw6T/5+3CC3gk7rtErop6+vpz/lFWl4Oi9gI= -1
+==============extractProductCodesWithCoords 0104810272003892215DjGyj91FFD092dGVzdKgmw8tjWHKOExQTRFxpHBwUbAT1fS3GTLEtVsE= -1
+==============extractProductCodesWithCoords 0104810272003892215y+9R;91FFD092dGVzdLKQnqZcj6NNxDpN5BMRz0C12XgdUpccG0pNWXg= -1
+==============extractProductCodesWithCoords 01048102720038922154iurP91FFD092dGVzdK8Su/QeGjSeZBVXJAst3zcIlXGqu79dn/VmCrk= -1
+==============extractProductCodesWithCoords 0104810272003892215OF_ds91FFD092dGVzdDVxJ9FUIW2e5D0VFzfFR0mlT87DrVfPVgqL0iw= -1
+productCodes [
+  '0104810272003892215f)i6<\x1D91FFD0\x1D92dGVzdK/Bw6T/5+3CC3gk7rtErop6+vpz/lFWl4Oi9gI=',
+  '0104810272003892215DjGyj\x1D91FFD0\x1D92dGVzdKgmw8tjWHKOExQTRFxpHBwUbAT1fS3GTLEtVsE=',
+  '0104810272003892215y+9R;\x1D91FFD0\x1D92dGVzdLKQnqZcj6NNxDpN5BMRz0C12XgdUpccG0pNWXg=',
+  '01048102720038922154iurP\x1D91FFD0\x1D92dGVzdK8Su/QeGjSeZBVXJAst3zcIlXGqu79dn/VmCrk=',
+  '0104810272003892215OF_ds\x1D91FFD0\x1D92dGVzdDVxJ9FUIW2e5D0VFzfFR0mlT87DrVfPVgqL0iw='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.575ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.616ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.473ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.461ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.57ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:08.189Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215f)i6<91FFD092dGVzdK/Bw6T/5+3CC3gk7rtErop6+vpz/lFWl4Oi9gI=[39m
+2026-11-16T09:38:08.190Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888190 мс[39m
+2026-11-16T09:38:08.190Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215DjGyj91FFD092dGVzdKgmw8tjWHKOExQTRFxpHBwUbAT1fS3GTLEtVsE=[39m
+2026-11-16T09:38:08.190Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888190 мс[39m
+2026-11-16T09:38:08.191Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215y+9R;91FFD092dGVzdLKQnqZcj6NNxDpN5BMRz0C12XgdUpccG0pNWXg=[39m
+2026-11-16T09:38:08.191Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888191 мс[39m
+2026-11-16T09:38:08.191Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922154iurP91FFD092dGVzdK8Su/QeGjSeZBVXJAst3zcIlXGqu79dn/VmCrk=[39m
+2026-11-16T09:38:08.192Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888192 мс[39m
+2026-11-16T09:38:08.192Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215OF_ds91FFD092dGVzdDVxJ9FUIW2e5D0VFzfFR0mlT87DrVfPVgqL0iw=[39m
+2026-11-16T09:38:08.192Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888192 мс[39m
+duplicate_check_0104810272: 0.456ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.195Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215f)i6<91FFD092dGVzdK/Bw6T/5+3CC3gk7rtErop6+vpz/lFWl4Oi9gI=[39m
+2026-11-16T09:38:08.195Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888195 мс[39m
+duplicate_check_0104810272: 0.758ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.199Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215DjGyj91FFD092dGVzdKgmw8tjWHKOExQTRFxpHBwUbAT1fS3GTLEtVsE=[39m
+2026-11-16T09:38:08.199Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888199 мс[39m
+duplicate_check_0104810272: 0.444ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.202Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215y+9R;91FFD092dGVzdLKQnqZcj6NNxDpN5BMRz0C12XgdUpccG0pNWXg=[39m
+2026-11-16T09:38:08.203Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888203 мс[39m
+duplicate_check_0104810272: 0.475ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.206Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922154iurP91FFD092dGVzdK8Su/QeGjSeZBVXJAst3zcIlXGqu79dn/VmCrk=[39m
+2026-11-16T09:38:08.207Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888207 мс[39m
+duplicate_check_0104810272: 0.613ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.210Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215OF_ds91FFD092dGVzdDVxJ9FUIW2e5D0VFzfFR0mlT87DrVfPVgqL0iw=[39m
+2026-11-16T09:38:08.211Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888211 мс[39m
+#20/24: 5 кодов, строк 95 → 100, коробка 7 (10/15), паллета 2, последняя запись: box=7, pallet=2, 51 мс
+-------------handleMessage raw:  0104810272003892215K7Wgk91FFD092dGVzdINx/V3i3qFrg7OcgFPHMy5mbIG96ZnmWkM4/Z8=@@0104810272003892215f>NIH91FFD092dGVzdN2J51UM2w0WTIDZYrNsJ8gwQfnGtEo3UCqfhwU=@@0104810272003892215dhCJK91FFD092dGVzdFkWDnfq0G0t1RRVPwNMJnYVh8wRg7UOtAs4pxo=@@0104810272003892215LkUuP91FFD092dGVzdJKdtg7PP3h1HfNd8eh7y4dXwv5Xfti/ZHoAI7M=@@0104810272003892215G9eix91FFD092dGVzdMHq5wrlR6BD6Zj2FHYKF4TIhkkWqFkd1/SKYJ0=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215K7Wgk91FFD092dGVzdINx/V3i3qFrg7OcgFPHMy5mbIG96ZnmWkM4/Z8=@@0104810272003892215f>NIH91FFD092dGVzdN2J51UM2w0WTIDZYrNsJ8gwQfnGtEo3UCqfhwU=@@0104810272003892215dhCJK91FFD092dGVzdFkWDnfq0G0t1RRVPwNMJnYVh8wRg7UOtAs4pxo=@@0104810272003892215LkUuP91FFD092dGVzdJKdtg7PP3h1HfNd8eh7y4dXwv5Xfti/ZHoAI7M=@@0104810272003892215G9eix91FFD092dGVzdMHq5wrlR6BD6Zj2FHYKF4TIhkkWqFkd1/SKYJ0=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215K7Wgk91FFD092dGVzdINx/V3i3qFrg7OcgFPHMy5mbIG96ZnmWkM4/Z8= -1
+==============extractProductCodesWithCoords 0104810272003892215f>NIH91FFD092dGVzdN2J51UM2w0WTIDZYrNsJ8gwQfnGtEo3UCqfhwU= -1
+==============extractProductCodesWithCoords 0104810272003892215dhCJK91FFD092dGVzdFkWDnfq0G0t1RRVPwNMJnYVh8wRg7UOtAs4pxo= -1
+==============extractProductCodesWithCoords 0104810272003892215LkUuP91FFD092dGVzdJKdtg7PP3h1HfNd8eh7y4dXwv5Xfti/ZHoAI7M= -1
+==============extractProductCodesWithCoords 0104810272003892215G9eix91FFD092dGVzdMHq5wrlR6BD6Zj2FHYKF4TIhkkWqFkd1/SKYJ0= -1
+productCodes [
+  '0104810272003892215K7Wgk\x1D91FFD0\x1D92dGVzdINx/V3i3qFrg7OcgFPHMy5mbIG96ZnmWkM4/Z8=',
+  '0104810272003892215f>NIH\x1D91FFD0\x1D92dGVzdN2J51UM2w0WTIDZYrNsJ8gwQfnGtEo3UCqfhwU=',
+  '0104810272003892215dhCJK\x1D91FFD0\x1D92dGVzdFkWDnfq0G0t1RRVPwNMJnYVh8wRg7UOtAs4pxo=',
+  '0104810272003892215LkUuP\x1D91FFD0\x1D92dGVzdJKdtg7PP3h1HfNd8eh7y4dXwv5Xfti/ZHoAI7M=',
+  '0104810272003892215G9eix\x1D91FFD0\x1D92dGVzdMHq5wrlR6BD6Zj2FHYKF4TIhkkWqFkd1/SKYJ0='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.61ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.579ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.53ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.525ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.469ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:08.241Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215K7Wgk91FFD092dGVzdINx/V3i3qFrg7OcgFPHMy5mbIG96ZnmWkM4/Z8=[39m
+2026-11-16T09:38:08.241Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888241 мс[39m
+2026-11-16T09:38:08.242Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215f>NIH91FFD092dGVzdN2J51UM2w0WTIDZYrNsJ8gwQfnGtEo3UCqfhwU=[39m
+2026-11-16T09:38:08.242Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888242 мс[39m
+2026-11-16T09:38:08.242Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215dhCJK91FFD092dGVzdFkWDnfq0G0t1RRVPwNMJnYVh8wRg7UOtAs4pxo=[39m
+2026-11-16T09:38:08.243Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888243 мс[39m
+2026-11-16T09:38:08.243Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215LkUuP91FFD092dGVzdJKdtg7PP3h1HfNd8eh7y4dXwv5Xfti/ZHoAI7M=[39m
+2026-11-16T09:38:08.243Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888243 мс[39m
+2026-11-16T09:38:08.244Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215G9eix91FFD092dGVzdMHq5wrlR6BD6Zj2FHYKF4TIhkkWqFkd1/SKYJ0=[39m
+2026-11-16T09:38:08.244Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888244 мс[39m
+duplicate_check_0104810272: 0.477ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.248Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215K7Wgk91FFD092dGVzdINx/V3i3qFrg7OcgFPHMy5mbIG96ZnmWkM4/Z8=[39m
+2026-11-16T09:38:08.249Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888249 мс[39m
+duplicate_check_0104810272: 0.648ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 11,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.253Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215f>NIH91FFD092dGVzdN2J51UM2w0WTIDZYrNsJ8gwQfnGtEo3UCqfhwU=[39m
+2026-11-16T09:38:08.253Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888253 мс[39m
+duplicate_check_0104810272: 0.755ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 12,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.257Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215dhCJK91FFD092dGVzdFkWDnfq0G0t1RRVPwNMJnYVh8wRg7UOtAs4pxo=[39m
+2026-11-16T09:38:08.258Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888258 мс[39m
+duplicate_check_0104810272: 0.716ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 13,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.262Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215LkUuP91FFD092dGVzdJKdtg7PP3h1HfNd8eh7y4dXwv5Xfti/ZHoAI7M=[39m
+2026-11-16T09:38:08.262Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888262 мс[39m
+duplicate_check_0104810272: 0.687ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 14,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+1
+2026-11-16T09:38:08.266Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215G9eix91FFD092dGVzdMHq5wrlR6BD6Zj2FHYKF4TIhkkWqFkd1/SKYJ0=[39m
+2026-11-16T09:38:08.266Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888266 мс[39m
+#21/24: 5 кодов, строк 100 → 105, коробка 7 (15/15), паллета 2, последняя запись: box=7, pallet=2, 47 мс
+-------------handleMessage raw:  0104810272003892215CNO*u91FFD092dGVzdD8WfvR6e7Ub451nns1S6fkh38MAReP86N4lvFc=@@0104810272003892215GVpdF91FFD092dGVzdMrAzDr6yaIb2zNFuoe+9vWfn4d0bmFHAzlEbBY=@@01048102720038922154a->t91FFD092dGVzdILVWm4qbKsclwT/Ux5fZ9pr4aGx3iXBeSPQoEw=@@0104810272003892215qCvUW91FFD092dGVzdPnUyQHHh+dGNSmUDXsWHTEEoVQC/NRaNPq7v8o=@@0104810272003892215MPkS(91FFD092dGVzdOnZZnt0VOkfEGDK+C+s41kxP8xOUyZCUAfke5M=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215CNO*u91FFD092dGVzdD8WfvR6e7Ub451nns1S6fkh38MAReP86N4lvFc=@@0104810272003892215GVpdF91FFD092dGVzdMrAzDr6yaIb2zNFuoe+9vWfn4d0bmFHAzlEbBY=@@01048102720038922154a->t91FFD092dGVzdILVWm4qbKsclwT/Ux5fZ9pr4aGx3iXBeSPQoEw=@@0104810272003892215qCvUW91FFD092dGVzdPnUyQHHh+dGNSmUDXsWHTEEoVQC/NRaNPq7v8o=@@0104810272003892215MPkS(91FFD092dGVzdOnZZnt0VOkfEGDK+C+s41kxP8xOUyZCUAfke5M=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215CNO*u91FFD092dGVzdD8WfvR6e7Ub451nns1S6fkh38MAReP86N4lvFc= -1
+==============extractProductCodesWithCoords 0104810272003892215GVpdF91FFD092dGVzdMrAzDr6yaIb2zNFuoe+9vWfn4d0bmFHAzlEbBY= -1
+==============extractProductCodesWithCoords 01048102720038922154a->t91FFD092dGVzdILVWm4qbKsclwT/Ux5fZ9pr4aGx3iXBeSPQoEw= -1
+==============extractProductCodesWithCoords 0104810272003892215qCvUW91FFD092dGVzdPnUyQHHh+dGNSmUDXsWHTEEoVQC/NRaNPq7v8o= -1
+==============extractProductCodesWithCoords 0104810272003892215MPkS(91FFD092dGVzdOnZZnt0VOkfEGDK+C+s41kxP8xOUyZCUAfke5M= -1
+productCodes [
+  '0104810272003892215CNO*u\x1D91FFD0\x1D92dGVzdD8WfvR6e7Ub451nns1S6fkh38MAReP86N4lvFc=',
+  '0104810272003892215GVpdF\x1D91FFD0\x1D92dGVzdMrAzDr6yaIb2zNFuoe+9vWfn4d0bmFHAzlEbBY=',
+  '01048102720038922154a->t\x1D91FFD0\x1D92dGVzdILVWm4qbKsclwT/Ux5fZ9pr4aGx3iXBeSPQoEw=',
+  '0104810272003892215qCvUW\x1D91FFD0\x1D92dGVzdPnUyQHHh+dGNSmUDXsWHTEEoVQC/NRaNPq7v8o=',
+  '0104810272003892215MPkS(\x1D91FFD0\x1D92dGVzdOnZZnt0VOkfEGDK+C+s41kxP8xOUyZCUAfke5M='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.912ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.586ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.679ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.7ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.752ms
+Детализация: запрос к БД занял 1 мс, результат: false
+2026-11-16T09:38:08.289Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215CNO*u91FFD092dGVzdD8WfvR6e7Ub451nns1S6fkh38MAReP86N4lvFc=[39m
+2026-11-16T09:38:08.290Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888290 мс[39m
+2026-11-16T09:38:08.290Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215GVpdF91FFD092dGVzdMrAzDr6yaIb2zNFuoe+9vWfn4d0bmFHAzlEbBY=[39m
+2026-11-16T09:38:08.291Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888291 мс[39m
+2026-11-16T09:38:08.291Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 01048102720038922154a->t91FFD092dGVzdILVWm4qbKsclwT/Ux5fZ9pr4aGx3iXBeSPQoEw=[39m
+2026-11-16T09:38:08.291Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888291 мс[39m
+2026-11-16T09:38:08.292Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215qCvUW91FFD092dGVzdPnUyQHHh+dGNSmUDXsWHTEEoVQC/NRaNPq7v8o=[39m
+2026-11-16T09:38:08.292Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888292 мс[39m
+2026-11-16T09:38:08.292Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215MPkS(91FFD092dGVzdOnZZnt0VOkfEGDK+C+s41kxP8xOUyZCUAfke5M=[39m
+2026-11-16T09:38:08.293Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888293 мс[39m
+duplicate_check_0104810272: 1.216ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 15,
+  UsedBoxNumber: 7,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 1
+}
+2
+2026-11-16T09:38:08.298Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215CNO*u91FFD092dGVzdD8WfvR6e7Ub451nns1S6fkh38MAReP86N4lvFc=[39m
+2026-11-16T09:38:08.299Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888299 мс[39m
+duplicate_check_0104810272: 0.683ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 1,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.303Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215GVpdF91FFD092dGVzdMrAzDr6yaIb2zNFuoe+9vWfn4d0bmFHAzlEbBY=[39m
+2026-11-16T09:38:08.303Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888303 мс[39m
+duplicate_check_0104810272: 0.694ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 2,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.307Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 01048102720038922154a->t91FFD092dGVzdILVWm4qbKsclwT/Ux5fZ9pr4aGx3iXBeSPQoEw=[39m
+2026-11-16T09:38:08.308Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888308 мс[39m
+duplicate_check_0104810272: 0.577ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 3,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.311Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215qCvUW91FFD092dGVzdPnUyQHHh+dGNSmUDXsWHTEEoVQC/NRaNPq7v8o=[39m
+2026-11-16T09:38:08.311Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888311 мс[39m
+duplicate_check_0104810272: 0.521ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 4,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.314Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215MPkS(91FFD092dGVzdOnZZnt0VOkfEGDK+C+s41kxP8xOUyZCUAfke5M=[39m
+2026-11-16T09:38:08.315Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888315 мс[39m
+#22/24: 5 кодов, строк 105 → 110, коробка 8 (5/15), паллета 2, последняя запись: box=8, pallet=2, 53 мс
+-------------handleMessage raw:  0104810272003892215aN5c?91FFD092dGVzdF3vaAUxc+jIxMFJwtHpnn1PhffPp3J/PgQaofM=@@0104810272003892215aqiUZ91FFD092dGVzdG7uekM2ax76zLssQwm4lXOU3AYLbcXO8vWX8GY=@@0104810272003892215W&=ZN91FFD092dGVzdFmd9cjeXtcPRDsFRkPLY/TwecQyNTOJ+jYHYk8=@@0104810272003892215Q7JL_91FFD092dGVzdD59Osu9DhJqpILS7zx4LvSUNbQU726O7X8aw20=@@0104810272003892215M*Qf!91FFD092dGVzdGAcqZS0uil2jtuzaSKTU2ZHY2iDYLCUN8JGinI=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215aN5c?91FFD092dGVzdF3vaAUxc+jIxMFJwtHpnn1PhffPp3J/PgQaofM=@@0104810272003892215aqiUZ91FFD092dGVzdG7uekM2ax76zLssQwm4lXOU3AYLbcXO8vWX8GY=@@0104810272003892215W&=ZN91FFD092dGVzdFmd9cjeXtcPRDsFRkPLY/TwecQyNTOJ+jYHYk8=@@0104810272003892215Q7JL_91FFD092dGVzdD59Osu9DhJqpILS7zx4LvSUNbQU726O7X8aw20=@@0104810272003892215M*Qf!91FFD092dGVzdGAcqZS0uil2jtuzaSKTU2ZHY2iDYLCUN8JGinI=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215aN5c?91FFD092dGVzdF3vaAUxc+jIxMFJwtHpnn1PhffPp3J/PgQaofM= -1
+==============extractProductCodesWithCoords 0104810272003892215aqiUZ91FFD092dGVzdG7uekM2ax76zLssQwm4lXOU3AYLbcXO8vWX8GY= -1
+==============extractProductCodesWithCoords 0104810272003892215W&=ZN91FFD092dGVzdFmd9cjeXtcPRDsFRkPLY/TwecQyNTOJ+jYHYk8= -1
+==============extractProductCodesWithCoords 0104810272003892215Q7JL_91FFD092dGVzdD59Osu9DhJqpILS7zx4LvSUNbQU726O7X8aw20= -1
+==============extractProductCodesWithCoords 0104810272003892215M*Qf!91FFD092dGVzdGAcqZS0uil2jtuzaSKTU2ZHY2iDYLCUN8JGinI= -1
+productCodes [
+  '0104810272003892215aN5c?\x1D91FFD0\x1D92dGVzdF3vaAUxc+jIxMFJwtHpnn1PhffPp3J/PgQaofM=',
+  '0104810272003892215aqiUZ\x1D91FFD0\x1D92dGVzdG7uekM2ax76zLssQwm4lXOU3AYLbcXO8vWX8GY=',
+  '0104810272003892215W&=ZN\x1D91FFD0\x1D92dGVzdFmd9cjeXtcPRDsFRkPLY/TwecQyNTOJ+jYHYk8=',
+  '0104810272003892215Q7JL_\x1D91FFD0\x1D92dGVzdD59Osu9DhJqpILS7zx4LvSUNbQU726O7X8aw20=',
+  '0104810272003892215M*Qf!\x1D91FFD0\x1D92dGVzdGAcqZS0uil2jtuzaSKTU2ZHY2iDYLCUN8JGinI='
+]
+productCoords [ [], [], [], [], [] ]
+duplicate_check_0104810272: 0.644ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.47ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.518ms
+Детализация: запрос к БД занял 1 мс, результат: false
+duplicate_check_0104810272: 0.46ms
+Детализация: запрос к БД занял 0 мс, результат: false
+duplicate_check_0104810272: 0.448ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:08.343Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215aN5c?91FFD092dGVzdF3vaAUxc+jIxMFJwtHpnn1PhffPp3J/PgQaofM=[39m
+2026-11-16T09:38:08.343Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888343 мс[39m
+2026-11-16T09:38:08.344Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215aqiUZ91FFD092dGVzdG7uekM2ax76zLssQwm4lXOU3AYLbcXO8vWX8GY=[39m
+2026-11-16T09:38:08.344Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888344 мс[39m
+2026-11-16T09:38:08.345Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215W&=ZN91FFD092dGVzdFmd9cjeXtcPRDsFRkPLY/TwecQyNTOJ+jYHYk8=[39m
+2026-11-16T09:38:08.345Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888345 мс[39m
+2026-11-16T09:38:08.345Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215Q7JL_91FFD092dGVzdD59Osu9DhJqpILS7zx4LvSUNbQU726O7X8aw20=[39m
+2026-11-16T09:38:08.346Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888346 мс[39m
+2026-11-16T09:38:08.346Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215M*Qf!91FFD092dGVzdGAcqZS0uil2jtuzaSKTU2ZHY2iDYLCUN8JGinI=[39m
+2026-11-16T09:38:08.347Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888347 мс[39m
+duplicate_check_0104810272: 0.573ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 5,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.351Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215aN5c?91FFD092dGVzdF3vaAUxc+jIxMFJwtHpnn1PhffPp3J/PgQaofM=[39m
+2026-11-16T09:38:08.352Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888352 мс[39m
+duplicate_check_0104810272: 0.543ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 6,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.356Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215aqiUZ91FFD092dGVzdG7uekM2ax76zLssQwm4lXOU3AYLbcXO8vWX8GY=[39m
+2026-11-16T09:38:08.356Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888356 мс[39m
+duplicate_check_0104810272: 0.448ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 7,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.359Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215W&=ZN91FFD092dGVzdFmd9cjeXtcPRDsFRkPLY/TwecQyNTOJ+jYHYk8=[39m
+2026-11-16T09:38:08.359Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888359 мс[39m
+duplicate_check_0104810272: 0.514ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 8,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.362Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215Q7JL_91FFD092dGVzdD59Osu9DhJqpILS7zx4LvSUNbQU726O7X8aw20=[39m
+2026-11-16T09:38:08.362Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888362 мс[39m
+duplicate_check_0104810272: 0.437ms
+Детализация: запрос к БД занял 0 мс, результат: false
+false 3256587 {
+  currectProductInBox: 9,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.366Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215M*Qf!91FFD092dGVzdGAcqZS0uil2jtuzaSKTU2ZHY2iDYLCUN8JGinI=[39m
+2026-11-16T09:38:08.366Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888366 мс[39m
+#23/24: 5 кодов, строк 110 → 115, коробка 8 (10/15), паллета 2, последняя запись: box=8, pallet=2, 47 мс
+-------------handleMessage raw:  0104810272003892215fLBeV91FFD092dGVzdFW1xxjQpGVLnqs6HeJpoUAkDbmvRDfGvwr/af8=	 Камера 1
+-------------processCompleteMessage:  0104810272003892215fLBeV91FFD092dGVzdFW1xxjQpGVLnqs6HeJpoUAkDbmvRDfGvwr/af8=	 Камера 1
+==============extractProductCodesWithCoords 0104810272003892215fLBeV91FFD092dGVzdFW1xxjQpGVLnqs6HeJpoUAkDbmvRDfGvwr/af8= -1
+productCodes [
+  '0104810272003892215fLBeV\x1D91FFD0\x1D92dGVzdFW1xxjQpGVLnqs6HeJpoUAkDbmvRDfGvwr/af8='
+]
+productCoords [ [] ]
+duplicate_check_0104810272: 0.567ms
+Детализация: запрос к БД занял 0 мс, результат: false
+2026-11-16T09:38:08.385Z [34minfo[39m: [34mКод: Валидация и сохранение кода: 0104810272003892215fLBeV91FFD092dGVzdFW1xxjQpGVLnqs6HeJpoUAkDbmvRDfGvwr/af8=[39m
+2026-11-16T09:38:08.385Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации: 1794821888385 мс[39m
+duplicate_check_0104810272: 0.479ms
+Детализация: запрос к БД занял 1 мс, результат: false
+false 3256587 {
+  currectProductInBox: 10,
+  UsedBoxNumber: 8,
+  UsedPalletNumber: 2,
+  WeightBox: 0,
+  WeightPallet: 0,
+  currectBoxInPallet: 2
+}
+2
+2026-11-16T09:38:08.388Z [34minfo[39m: [34mКод: Статус кода обновлен для кода: 0104810272003892215fLBeV91FFD092dGVzdFW1xxjQpGVLnqs6HeJpoUAkDbmvRDfGvwr/af8=[39m
+2026-11-16T09:38:08.388Z [34minfo[39m: [34mКод: Время, прошедшее с момента изменения контура до начала валидации 2: 1794821888388 мс[39m
+#24/24: 1 кодов, строк 115 → 116, коробка 8 (11/15), паллета 2, последняя запись: box=8, pallet=2, 31 мс
+
+=== БАЗА ===
+строк: 116
+┌─────────┬────────────┬───────────────┬───────┐
+│ (index) │ box_number │ pallet_number │ codes │
+├─────────┼────────────┼───────────────┼───────┤
+│ 0       │ 1          │ 1             │ 15    │
+│ 1       │ 2          │ 1             │ 15    │
+│ 2       │ 3          │ 1             │ 15    │
+│ 3       │ 4          │ 1             │ 15    │
+│ 4       │ 5          │ 1             │ 15    │
+│ 5       │ 6          │ 1             │ 15    │
+│ 6       │ 7          │ 2             │ 15    │
+│ 7       │ 8          │ 2             │ 11    │
+└─────────┴────────────┴───────────────┴───────┘
+состояние: {
+  lastUsedBoxNumber: 8,
+  cameraState: {
+    currectProductInBox: 11,
+    UsedBoxNumber: 8,
+    UsedPalletNumber: 2,
+    WeightBox: 0,
+    WeightPallet: 0,
+    currectBoxInPallet: 2
+  },
+  productCount: 116,
+  boxCount: 7,
+  palletCount: 0
+}
+убрано за прогоном

@@ -76,6 +76,48 @@ export class CodeRepository {
     );
   }
 
+  async saveCodesToDatabase(
+    tableName: string,
+    codes: string[],
+    boxNumber: number,
+    cameraName?: string,
+    pallet_number?: number,
+  ): Promise<boolean> {
+    if (!codes.length) return false;
+
+    return await this.entityManager.transaction(
+      async (transactionalEntityManager) => {
+        // 1. Массовая вставка всех кодов в целевую таблицу
+        const inserted: { id: number; code: string }[] =
+          await transactionalEntityManager.query(
+            `INSERT INTO "${tableName}" (code, box_number, camera_name, pallet_number)
+           SELECT code, $2, $3, $4
+           FROM unnest($1::text[]) AS code
+           ON CONFLICT (code) DO NOTHING
+           RETURNING id, code`,
+            [codes, boxNumber, cameraName ?? 'Camera1', pallet_number],
+          );
+
+        if (!inserted.length) {
+          return false;
+        }
+
+        // 2. Вставляем в code_entity только те коды, которые реально вставились
+        const insertedCodes = inserted.map((r) => r.code);
+
+        await transactionalEntityManager.query(
+          `INSERT INTO "code_entity" (code, box_number, pallet_number)
+         SELECT code, NULL, NULL
+         FROM unnest($1::text[]) AS code
+         ON CONFLICT (code) DO NOTHING`,
+          [insertedCodes],
+        );
+
+        return true;
+      },
+    );
+  }
+
   async deleteCodesFromTables(
     mainTableName: string,
     codeStrings: string[],
@@ -324,7 +366,10 @@ export class CodeRepository {
     };
   }
 
-  async getLastBoxAndPalletInfo(mainTableName: string): Promise<{
+  async getLastBoxAndPalletInfo(
+    mainTableName: string,
+    cameraName?: string,
+  ): Promise<{
     lastBoxNumber: number;
     lastPalletNumber: number;
     productsInLastBox: number;
@@ -333,48 +378,53 @@ export class CodeRepository {
     countBox: number;
     countPallet: number;
   }> {
-    // Получаем номер последней коробки
+    const filter = cameraName ? 'WHERE camera_name = $1' : '';
+    const filterParams = cameraName ? [cameraName] : [];
+    const andCamera = cameraName ? 'AND camera_name = $2' : '';
+
     const lastBoxResult = await this.entityManager.query(
-      `SELECT MAX(box_number) as last_box_number FROM "${mainTableName}"`,
+      `SELECT MAX(box_number) AS last_box_number FROM "${mainTableName}" ${filter}`,
+      filterParams,
     );
     const lastBoxNumber = lastBoxResult[0].last_box_number || 0;
 
-    // Получаем номер последней паллеты
     const lastPalletResult = await this.entityManager.query(
-      `SELECT MAX(pallet_number) as last_pallet_number FROM "${mainTableName}"`,
+      `SELECT MAX(pallet_number) AS last_pallet_number FROM "${mainTableName}" ${filter}`,
+      filterParams,
     );
     const lastPalletNumber = lastPalletResult[0].last_pallet_number || 0;
 
-    // Получаем количество продуктов в последней коробке
     const productsInLastBoxResult = await this.entityManager.query(
-      `SELECT COUNT(*) as count FROM "${mainTableName}" WHERE box_number = $1`,
-      [lastBoxNumber],
+      `SELECT COUNT(*) AS count FROM "${mainTableName}"
+       WHERE box_number = $1 ${andCamera}`,
+      [lastBoxNumber, ...filterParams],
     );
     const productsInLastBox = parseInt(productsInLastBoxResult[0].count, 10);
 
-    // Получаем количество коробок в последней паллете
     const boxesInLastPalletResult = await this.entityManager.query(
-      `SELECT COUNT(DISTINCT box_number) as count FROM "${mainTableName}" WHERE pallet_number = $1`,
-      [lastPalletNumber],
+      `SELECT COUNT(DISTINCT box_number) AS count FROM "${mainTableName}"
+       WHERE pallet_number = $1 ${andCamera}`,
+      [lastPalletNumber, ...filterParams],
     );
     const boxesInLastPallet = parseInt(boxesInLastPalletResult[0].count, 10);
 
     const allProductsCountResult = await this.entityManager.query(
-      `SELECT COUNT(*) as count FROM "${mainTableName}"`,
+      `SELECT COUNT(*) AS count FROM "${mainTableName}" ${filter}`,
+      filterParams,
     );
+    const allProductsCount = parseInt(allProductsCountResult[0].count, 10);
 
     const countBoxResult = await this.entityManager.query(
-      `SELECT COUNT(DISTINCT box_number)  as count FROM "${mainTableName}"`,
+      `SELECT COUNT(DISTINCT box_number) AS count FROM "${mainTableName}" ${filter}`,
+      filterParams,
     );
     const countBox = parseInt(countBoxResult[0].count, 10);
 
     const countPalletResult = await this.entityManager.query(
-      `SELECT COUNT(DISTINCT pallet_number)  as count FROM "${mainTableName}"`,
+      `SELECT COUNT(DISTINCT pallet_number) AS count FROM "${mainTableName}" ${filter}`,
+      filterParams,
     );
-
     const countPallet = parseInt(countPalletResult[0].count, 10);
-
-    const allProductsCount = parseInt(allProductsCountResult[0].count, 10);
 
     return {
       lastBoxNumber,
@@ -385,6 +435,18 @@ export class CodeRepository {
       countBox,
       countPallet,
     };
+  }
+
+  /** Камеры, которые уже писали коды в таблицу задания */
+  async getCameraNames(mainTableName: string): Promise<string[]> {
+    const rows = await this.entityManager.query(
+      `SELECT DISTINCT camera_name FROM "${mainTableName}"
+       WHERE camera_name IS NOT NULL`,
+    );
+
+    return rows
+      .map((row: any) => row.camera_name)
+      .filter((name: any): name is string => Boolean(name));
   }
 
   async getAllRecords(mainTableName: string): Promise<any[]> {

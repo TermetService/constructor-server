@@ -1,0 +1,12 @@
+﻿const fs = require('fs');
+const p = 'src/code/code-helper.service.spec.ts';
+let s = fs.readFileSync(p, 'utf8');
+s = s.replace("import { CodeHelperService } from './code-helper.service';\n", '');
+const start = s.indexOf("describe('CodeHelperService (фасад)'");
+const end = s.indexOf("describe('CodeTablesService'");
+if (start === -1 || end === -1 || end <= start) throw new Error('boundaries not found');
+s = s.slice(0, start) + s.slice(end);
+s = s.replace(/Тесты хелпера кодов: фасад \+ пять сервисов в `helpers\/`\./, 'Тесты сервисов кодов в `helpers/`.');
+fs.writeFileSync(p, s, 'utf8');
+fs.renameSync(p, 'src/code/code-helpers.spec.ts');
+console.log('ok');

@@ -1,11 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Logger } from 'winston';
 import { AppGateway } from 'src/app.gateway';
-import { IAllCounts, IMonitoringVariables } from 'src/globalTypes';
+import { IAllCounts, IMonitoringVariables, MonitoringStatusActions, RootStatus } from 'src/globalTypes';
 import { getLastLogMessages } from 'src/logger-winston/winston.config';
+import { getCameraIdPanel } from 'src/camera/helper';
+import { CameraNames } from 'src/camera/types';
 import { CodeRepository } from '../code.repository';
 import { IBox, IPallet } from '../types';
 import { CodeTablesService } from './code-tables.service';
+import { CodeCameraStateService } from './code-camera-state.service';
 
 /**
  * Счётчики задания: чтение из in-memory состояния, отправка на фронт,
@@ -17,6 +20,7 @@ export class CodeCountsService {
     private readonly codeRepository: CodeRepository,
     private readonly appGateway: AppGateway,
     private readonly tables: CodeTablesService,
+    private readonly cameraState: CodeCameraStateService,
     @Inject('GLOBAL_MONITORING_VARIABLES')
     private readonly globalMonVar: IMonitoringVariables,
     @Inject('winston') private readonly logger: Logger,
@@ -26,26 +30,74 @@ export class CodeCountsService {
     return this.globalMonVar.tableName;
   }
 
-  getCurrentCounts(): IAllCounts {
+  /**
+   * Единая обработка отказа: статус, лог, счётчики на фронт
+   * и сообщение оператору.
+   */
+  handleValidationError(
+    message: string,
+    status: MonitoringStatusActions = MonitoringStatusActions.Reject,
+  ): void {
+    this.globalMonVar.codeStatus = status;
+    this.logger.error(`Код: ${message}`);
+
+    this.sendCurrentStateToFrontend(this.getCurrentCounts());
+    this.appGateway.sendRootMessage({ status: RootStatus.Error, message });
+  }
+
+  /**
+   * Счётчики для камеры: коробка/паллета и заполненность берутся
+   * из состояния камеры, итоговые счётчики — из глобального состояния.
+   */
+  getCurrentCounts(cameraName: string = 'Camera1'): IAllCounts {
+    const state = this.cameraState.get(cameraName);
+
     return {
       productCount: this.globalMonVar.productCount,
-      productsInCurrentBox: this.globalMonVar.productsInCurrentBox,
-      boxesInCurrentPallet: this.globalMonVar.boxesInCurrentPallet,
+      productsInCurrentBox:
+        state?.currectProductInBox ?? this.globalMonVar.productsInCurrentBox,
+      boxesInCurrentPallet:
+        state?.currectBoxInPallet ?? this.globalMonVar.boxesInCurrentPallet,
       boxCount: this.globalMonVar.boxCount,
       palletCount: this.globalMonVar.palletCount,
-      currentBoxNumber: this.globalMonVar.currentBoxNumber,
-      currentPalletNumber: this.globalMonVar.currentPalletNumber,
+      currentBoxNumber: state?.UsedBoxNumber ?? this.globalMonVar.currentBoxNumber,
+      currentPalletNumber:
+        state?.UsedPalletNumber ?? this.globalMonVar.currentPalletNumber,
     };
   }
 
-  async sendCurrentStateToFrontend(allCounts: IAllCounts): Promise<void> {
-    this.appGateway.sendProductCount(allCounts);
+  async sendCurrentStateToFrontend(
+    allCounts: IAllCounts,
+    cameraName?: string,
+  ): Promise<void> {
+    const port = this.panelPort(cameraName);
+
+    if (port) this.appGateway.sendProductCount(allCounts, port);
+    else this.appGateway.sendProductCount(allCounts);
+
     this.appGateway.sendLogData(getLastLogMessages());
   }
 
-  sendDataToFrontend(allCounts: IAllCounts): void {
-    this.appGateway.sendProductCount(allCounts);
+  sendDataToFrontend(allCounts: IAllCounts, cameraName?: string): void {
+    const port = this.panelPort(cameraName);
+
+    if (port) this.appGateway.sendProductCount(allCounts, port);
+    else this.appGateway.sendProductCount(allCounts);
+
     this.appGateway.sendLogData(getLastLogMessages());
+  }
+
+  /** Порт панели фронта по имени камеры: Camera1 → 3000 */
+  private panelPort(cameraName?: string): string | undefined {
+    if (!cameraName) return undefined;
+
+    if (cameraName.startsWith('Camera')) {
+      return getCameraIdPanel(
+        `Камера ${cameraName.replace('Camera', '')}` as CameraNames,
+      );
+    }
+
+    return getCameraIdPanel(cameraName as CameraNames);
   }
 
   /** Пересчитывает счётчики из базы и отправляет их на фронт */
@@ -102,39 +154,50 @@ export class CodeCountsService {
     }
   }
 
-  /** Последняя коробка и паллета в таблице + перенос их в глобальное состояние */
-  async getLastBoxAndPalletInfo(): Promise<{
+  /**
+   * Последняя коробка/паллета. Без имени камеры — по всей таблице и в
+   * глобальные переменные; с именем — только по этой камере (для её панели).
+   */
+  async getLastBoxAndPalletInfo(cameraName?: string): Promise<{
     lastBoxNumber: number;
     lastPalletNumber: number;
     productsInLastBox: number;
     boxesInLastPallet: number;
+    allProductsCount: number;
+    countBox: number;
+    countPallet: number;
   }> {
     const info = await this.codeRepository.getLastBoxAndPalletInfo(
       this.globalMonVar.tableName,
+      cameraName,
     );
 
-    this.globalMonVar.currentBoxNumber = info.lastBoxNumber;
-    this.globalMonVar.currentPalletNumber = info.lastPalletNumber;
-    this.globalMonVar.productsInCurrentBox = info.productsInLastBox;
-    this.globalMonVar.boxesInCurrentPallet = info.boxesInLastPallet;
-    this.globalMonVar.productCount = info.allProductsCount;
-    this.globalMonVar.boxCount = info.countBox;
-    this.globalMonVar.palletCount = info.countPallet;
+    if (!cameraName) {
+      this.globalMonVar.currentBoxNumber = info.lastBoxNumber;
+      this.globalMonVar.currentPalletNumber = info.lastPalletNumber;
+      this.globalMonVar.productsInCurrentBox = info.productsInLastBox;
+      this.globalMonVar.boxesInCurrentPallet = info.boxesInLastPallet;
+      this.globalMonVar.productCount = info.allProductsCount;
+      this.globalMonVar.boxCount = info.countBox;
+      this.globalMonVar.palletCount = info.countPallet;
+
+      const allCounts: IAllCounts = {
+        productCount: info.allProductsCount,
+        productsInCurrentBox: info.productsInLastBox,
+        boxesInCurrentPallet: info.boxesInLastPallet,
+        boxCount: info.countBox,
+        palletCount: info.countPallet,
+        currentBoxNumber: this.globalMonVar.currentBoxNumber,
+        currentPalletNumber: this.globalMonVar.currentPalletNumber,
+      };
+
+      this.sendDataToFrontend(allCounts);
+    }
+
     this.logger.info(
-      `Код: последняя коробка ${info.lastBoxNumber} (${info.productsInLastBox} кодов), последняя паллета ${info.lastPalletNumber} (${info.boxesInLastPallet} коробок)`,
+      `Код: ${cameraName ?? 'вся таблица'} — последняя коробка ${info.lastBoxNumber} (${info.productsInLastBox} кодов), последняя паллета ${info.lastPalletNumber} (${info.boxesInLastPallet} коробок)`,
     );
 
-    const allCounts: IAllCounts = {
-      productCount: info.allProductsCount,
-      productsInCurrentBox: info.productsInLastBox,
-      boxesInCurrentPallet: info.boxesInLastPallet,
-      boxCount: info.countBox,
-      palletCount: info.countPallet,
-      currentBoxNumber: this.globalMonVar.currentBoxNumber,
-      currentPalletNumber: this.globalMonVar.currentPalletNumber,
-    };
-
-    this.sendDataToFrontend(allCounts);
     return info;
   }
 

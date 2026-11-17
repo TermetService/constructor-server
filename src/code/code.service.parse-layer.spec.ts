@@ -17,7 +17,12 @@ jest.mock('src/monitoring/helper', () => ({
   },
 }));
 jest.mock('src/app.gateway', () => ({ AppGateway: class {} }));
-jest.mock('./code-helper.service', () => ({ CodeHelperService: class {} }));
+jest.mock('src/path.util', () => ({
+  getRecordsTextFilesDirectory: () => 'tmp-records',
+  sha: 'stub',
+}));
+jest.mock('src/template/template.service', () => ({ TemplateService: class {} }));
+jest.mock('src/printers/printer.service', () => ({ PrinterService: class {} }));
 jest.mock('src/NumberBoxETE/numberBoxETE.service', () => ({
   NumberBoxETEService: class {},
 }));
@@ -106,7 +111,12 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
       {} as any, // EntityManager
       {} as any, // EventEmitter2
       appGateway,
-      {} as any, // CodeHelperService
+      { check: jest.fn() } as any, // BoxLabelCheckService
+      {} as any, // CodeTablesService
+      {} as any, // CodeSaveService
+      {} as any, // CodeLabelsService
+      {} as any, // CodeCountsService
+      {} as any, // CodeCameraStateService
       {} as any, // NumberBoxETEService
       layersService,
       globalMonVar,
@@ -123,12 +133,12 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
     expect(appGateway.sendCoordinates).not.toHaveBeenCalled();
   });
 
-  it('3 кода из 5 — слой неполный, координаты отправляются', async () => {
+  it('3 кода из 5 — слой неполный, координаты отправляются, isValid=false', async () => {
     const codes = fiveCodes().slice(0, 3);
 
     const result = await service.ParseLayer(codes, CAMERA);
 
-    expect(result).toEqual({ isValid: true, codes });
+    expect(result).toEqual({ isValid: false, codes: [] });
     expect(appGateway.sendCoordinates).toHaveBeenCalledTimes(1);
     expect(appGateway.sendCoordinates).toHaveBeenCalledWith([[], [], []]);
   });
@@ -174,7 +184,8 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
       CAMERA,
     );
 
-    expect(result).toEqual({ isValid: true, codes: [code1, code2] });
+    // кодов меньше, чем в слое — слой неполный
+    expect(result).toEqual({ isValid: false, codes: [] });
     expect(appGateway.sendCoordinates).toHaveBeenCalledWith([
       ['10,20'],
       ['30,40'],
@@ -186,7 +197,7 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
 
     const result = await service.ParseLayer([`(10,20)${code}`], CAMERA);
 
-    expect(result).toEqual({ isValid: true, codes: [code] });
+    expect(result).toEqual({ isValid: false, codes: [] });
     expect(appGateway.sendCoordinates).toHaveBeenCalledWith([['10,20']]);
   });
 
@@ -195,21 +206,21 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
 
     const result = await service.ParseLayer([...codes, 'short'], CAMERA);
 
-    expect(result).toEqual({ isValid: true, codes });
-    expect(appGateway.sendCoordinates).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ isValid: false, codes: [] });
+    expect(appGateway.sendCoordinates).toHaveBeenCalledWith([[], [], [], []]);
   });
 
-  it('пустой скан — валиден, но слой пустой и координаты отправляются', async () => {
+  it('пустой скан — слой неполный, координаты отправляются', async () => {
     const result = await service.ParseLayer([], CAMERA);
 
-    expect(result).toEqual({ isValid: true, codes: [] });
+    expect(result).toEqual({ isValid: false, codes: [] });
     expect(appGateway.sendCoordinates).toHaveBeenCalledWith([]);
   });
 
   it('пустой скан с пятибуквенным "NoRead" не ломает разбор', async () => {
     const result = await service.ParseLayer(['NoRead'], CAMERA);
 
-    expect(result).toEqual({ isValid: true, codes: [] });
+    expect(result).toEqual({ isValid: false, codes: [] });
     expect(appGateway.sendCoordinates).toHaveBeenCalledWith([]);
   });
 
@@ -222,13 +233,14 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
     expect(result.codes).toHaveLength(5);
   });
 
-  it('текущее поведение: codesInLayer строкой "5" не равен длине массива', async () => {
-    // В задании из 1С значения приходят строками, а сравнение в ParseLayer строгое
+  it('codesInLayer строкой "5" приводится к числу и не шлёт координаты', async () => {
+    // из 1С значения приходят строками, ParseLayer приводит их через +
     globalMonVar.task.codesInLayer = '5';
 
-    await service.ParseLayer(fiveCodes(), CAMERA);
+    const result = await service.ParseLayer(fiveCodes(), CAMERA);
 
-    expect(appGateway.sendCoordinates).toHaveBeenCalledTimes(1);
+    expect(result.isValid).toBe(true);
+    expect(appGateway.sendCoordinates).not.toHaveBeenCalled();
   });
 
   it('знание слоёв: конфигурация и общая вместимость коробки', () => {

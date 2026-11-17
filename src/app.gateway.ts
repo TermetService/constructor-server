@@ -2,8 +2,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
   OnGatewayInit,
+  OnGatewayConnection,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { AppGatewayNames, RootMessage, RootStatuses } from './globalTypes';
 
 @WebSocketGateway({
@@ -13,11 +14,20 @@ import { AppGatewayNames, RootMessage, RootStatuses } from './globalTypes';
     allowedHeaders: ['Content-Type', 'Authorization'],
   },
 })
-export class AppGateway implements OnGatewayInit {
+export class AppGateway implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer()
   server: Server;
 
   afterInit() {}
+
+  /** Клиент может подключиться с ?port=3000 — попадёт в комнату своей панели */
+  handleConnection(client: Socket): void {
+    const port =
+      (client.handshake?.query?.port as string) ??
+      (client.handshake?.auth?.port as string);
+
+    if (port) client.join(String(port));
+  }
 
   sendModbusConnectionStatus(status: string): void {
     this.server.emit(AppGatewayNames.PLCStatus, status);
@@ -41,8 +51,25 @@ export class AppGateway implements OnGatewayInit {
     this.server.emit(AppGatewayNames.ConturNumber, number);
   }
 
-  sendProductCount(productCount: any): void {
+  /**
+   * Счётчики на фронт. Если передан targetPort — только панели этой камеры
+   * (комната с именем порта), иначе всем клиентам.
+   */
+  sendProductCount(productCount: any, targetPort?: string): void {
+    const port = targetPort ? String(targetPort) : null;
+
+    if (port && this.hasRoom(port)) {
+      this.server.to(port).emit(AppGatewayNames.ProductCount, productCount);
+      return;
+    }
+
     this.server.emit(AppGatewayNames.ProductCount, productCount);
+  }
+
+  private hasRoom(room: string): boolean {
+    const sockets = this.server?.sockets?.adapter?.rooms?.get(room);
+
+    return Boolean(sockets && sockets.size > 0);
   }
 
   sendLogData(logData: any): void {

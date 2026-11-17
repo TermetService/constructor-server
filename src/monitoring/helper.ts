@@ -193,7 +193,7 @@ export const isValidCode = async (
       };
     }
   }
-  if (deps.isCodeTask) {
+  if (deps.isCodeTask && task?.codes !== undefined) {
     const inTask = deps.isCodeTask(task?.codes, code);
     if (!inTask) {
       logger?.error?.(`Код: код ${code} не найден в списке допустимых кодов`);

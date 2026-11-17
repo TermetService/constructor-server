@@ -35,6 +35,45 @@ export class CodeLabelsService {
     return 'ss';
   }
 
+  /**
+   * Формирует код этикетки коробки и записывает его в box_label.
+   * Ничего не печатает.
+   */
+  async bindBoxLabel(box_number, label) {
+    await this.entityManager.query(
+      `UPDATE "${this.globalMonVar.tableName}"
+       SET box_label = $1
+       WHERE box_number = $2 AND box_label IS NULL`,
+      [label, box_number],
+    );
+  }
+
+  async assignBoxLabel(boxNumber: number, countInBox: number): Promise<string> {
+    const boxLabel = await this.getFullBoxCode(boxNumber, countInBox);
+
+    await this.entityManager.query(
+      `UPDATE "${this.globalMonVar.tableName}"
+       SET box_label = $1
+       WHERE box_number = $2 AND box_label IS NULL`,
+      [boxLabel, boxNumber],
+    );
+
+    this.logger.info(
+      `Авто: коробка ${boxNumber} закрыта (${countInBox} кодов), label: ${boxLabel}`,
+    );
+
+    return boxLabel;
+  }
+
+  /** Печатает этикетку коробки. В таблицу ничего не пишет. */
+  async printBoxLabel(
+    boxNumber: number,
+    countInBox: number,
+    cameraName?: string,
+  ): Promise<void> {
+    await this.printerService.printBoxLabel(boxNumber, countInBox, cameraName);
+  }
+
   /** Записывает код этикетки коробки в таблицу и печатает её */
   async closeAutoBoxAndPrint(
     boxNumber: number,
@@ -42,24 +81,8 @@ export class CodeLabelsService {
     cameraName?: string,
   ): Promise<void> {
     try {
-      const boxLabel = await this.getFullBoxCode(boxNumber, countInBox);
-
-      await this.entityManager.query(
-        `UPDATE "${this.globalMonVar.tableName}"
-         SET box_label = $1
-         WHERE box_number = $2 AND box_label IS NULL`,
-        [boxLabel, boxNumber],
-      );
-
-      this.logger.info(
-        `Авто: коробка ${boxNumber} закрыта (${countInBox} кодов), label: ${boxLabel}`,
-      );
-
-      await this.printerService.printBoxLabel(
-        boxNumber,
-        countInBox,
-        cameraName,
-      );
+      await this.assignBoxLabel(boxNumber, countInBox);
+      await this.printBoxLabel(boxNumber, countInBox, cameraName);
     } catch (err) {
       this.logger.error(
         `Авто: ошибка при закрытии/печати коробки ${boxNumber}: ${err.message}`,

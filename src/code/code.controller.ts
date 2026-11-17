@@ -12,7 +12,7 @@ import { CodeService } from './code.service';
 import { CodeEntity } from './code.entity';
 import { IBoxResponse, IPalletResponse } from './types';
 import { CodeSearchService } from './code-search.service';
-import { CodeHelperService } from './code-helper.service';
+import { CodeCountsService } from './helpers/code-counts.service';
 import { CodeMigrationService } from './code-migration.service';
 import { HandOperation } from './hand-operation.service';
 
@@ -21,7 +21,7 @@ export class CodeController {
   constructor(
     private readonly codeService: CodeService,
     private readonly handOper: HandOperation,
-    private readonly codeHelperService: CodeHelperService,
+    private readonly counts: CodeCountsService,
     private readonly codeMigrationService: CodeMigrationService,
     private readonly codeSearchService: CodeSearchService,
   ) {}
@@ -238,7 +238,7 @@ export class CodeController {
 
   @Get('currentData')
   async getCurrentData(): Promise<void> {
-    return this.codeHelperService.sendDBDataToFrontend();
+    return this.counts.sendDBDataToFrontend();
   }
 
   @Delete('delete-tables')

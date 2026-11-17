@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CodeHelperService } from './code-helper.service';
+import { CodeTablesService } from './helpers/code-tables.service';
+import { CodeCountsService } from './helpers/code-counts.service';
 import { Logger } from 'winston';
 import {
   codeLogger,
@@ -14,7 +15,8 @@ import { AppGateway } from 'src/app.gateway';
 @Injectable()
 export class HandOperation {
   constructor(
-    private readonly codeHelperService: CodeHelperService,
+    private readonly tables: CodeTablesService,
+    private readonly counts: CodeCountsService,
     private readonly codeRepository: CodeRepository,
     private readonly codeService: CodeService,
     private readonly appGateway: AppGateway,
@@ -31,13 +33,13 @@ export class HandOperation {
     this.logger.info(`Код: Добавление кода ${code} в короб ${boxNumber}`);
     const startT = performance.now();
 
-    await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+    await this.tables.checkTableExists(this.globalMonVar.tableName);
 
     const validation = await this.codeService.validateCode(code);
 
     if (!validation.isValid) {
       if (validation.reason === CodeValidationReason.Duplicate) {
-        this.codeHelperService.handleValidationError(
+        this.counts.handleValidationError(
           validation.message,
           MonitoringStatusActions.Reject,
         );
@@ -88,7 +90,7 @@ export class HandOperation {
       const endT = performance.now();
       const delta = endT - startT;
       console.log('delta ------------ addCodeToBox', delta);
-      await this.codeHelperService.sendDBDataToFrontend();
+      await this.counts.sendDBDataToFrontend();
 
       return result;
     } catch (err) {
@@ -101,7 +103,7 @@ export class HandOperation {
     this.logger.info(`Код: Удаление короба: ${boxNumber}`);
     const startT = performance.now();
 
-    await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+    await this.tables.checkTableExists(this.globalMonVar.tableName);
 
     try {
       // Получаем все коды из коробки
@@ -134,7 +136,7 @@ export class HandOperation {
       const delta = endT - startT;
       console.log('delta ------------ deleteBox', delta);
 
-      await this.codeHelperService.sendDBDataToFrontend();
+      await this.counts.sendDBDataToFrontend();
     } catch (err) {
       this.logger.error('Код: Ошибка при удалении короба', err);
       throw err;
@@ -144,7 +146,7 @@ export class HandOperation {
   async removeBoxFromPallet(boxNumber: number): Promise<void> {
     this.logger.info(`Код: Изъятие короба ${boxNumber} из паллеты`);
 
-    await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+    await this.tables.checkTableExists(this.globalMonVar.tableName);
 
     try {
       // Извлекаем коробку из паллеты
@@ -166,7 +168,7 @@ export class HandOperation {
           this.globalMonVar.limitBoxInPallet;
       }
 
-      await this.codeHelperService.sendDBDataToFrontend();
+      await this.counts.sendDBDataToFrontend();
     } catch (err) {
       this.logger.error('Код: Ошибка при изъятии короба из паллеты', err);
       throw err;
@@ -177,7 +179,7 @@ export class HandOperation {
     this.logger.info(`Код: Удаление паллеты: ${palletNumber}`);
     const startT = performance.now();
 
-    await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+    await this.tables.checkTableExists(this.globalMonVar.tableName);
 
     try {
       // Получаем все коды из паллеты
@@ -218,7 +220,7 @@ export class HandOperation {
           this.globalMonVar.limitProductInBox;
       }
 
-      await this.codeHelperService.sendDBDataToFrontend();
+      await this.counts.sendDBDataToFrontend();
 
       const endT = performance.now();
       const delta = endT - startT;
@@ -239,7 +241,7 @@ export class HandOperation {
     );
 
     // Проверяем, существует ли таблица
-    await this.codeHelperService.checkTableExists(this.globalMonVar.tableName);
+    await this.tables.checkTableExists(this.globalMonVar.tableName);
 
     // Обновляем записи в базе данных для всех кодов в указанной коробке
     await this.codeRepository.moveBoxToPalletInTable(

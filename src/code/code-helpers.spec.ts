@@ -1,5 +1,5 @@
 /**
- * Тесты хелпера кодов: фасад + пять сервисов в `helpers/`.
+ * Тесты сервисов кодов в `helpers/`.
  *
  * Внешнее окружение замокано: path.util (machineIdSync), monitoring.helper,
  * принтер, шаблоны, gateway, winston и файловая система.
@@ -35,7 +35,6 @@ import {
   createTaskTable,
 } from 'src/monitoring/helper';
 import { getLastLogMessages } from 'src/logger-winston/winston.config';
-import { CodeHelperService } from './code-helper.service';
 import { CodeCountsService } from './helpers/code-counts.service';
 import { CodeLabelsService } from './helpers/code-labels.service';
 import { CodeLayersService } from './helpers/code-layers.service';
@@ -136,124 +135,6 @@ const makeDeps = () => {
     logger,
   };
 };
-
-describe('CodeHelperService (фасад)', () => {
-  let deps: ReturnType<typeof makeDeps>;
-  let service: CodeHelperService;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-    (getLastLogMessages as jest.Mock).mockReturnValue([{ message: 'last' }]);
-
-    deps = makeDeps();
-
-    const tables = new CodeTablesService(
-      deps.entityManager,
-      deps.codeRepository,
-      deps.globalMonVar,
-      deps.logger,
-    );
-
-    service = new CodeHelperService(
-      tables,
-      new CodeCountsService(
-        deps.codeRepository,
-        deps.appGateway,
-        tables,
-        deps.globalMonVar,
-        deps.logger,
-      ),
-      new CodeSaveService(
-        deps.codeRepository,
-        deps.globalMonVar,
-        deps.logger,
-      ),
-      new CodeLabelsService(
-        deps.entityManager,
-        deps.templateService,
-        deps.printerService,
-        deps.globalMonVar,
-        deps.logger,
-      ),
-      new CodeReportsService(
-        deps.entityManager,
-        deps.codeRepository,
-        deps.templateService,
-        deps.globalMonVar,
-        deps.logger,
-      ),
-      new CodeScanService(deps.globalMonVar, deps.logger),
-      new CodeWeightsService(
-        deps.entityManager,
-        deps.codeRepository,
-        deps.globalMonVar,
-        deps.logger,
-      ),
-      new CodeRemoteService(deps.logger),
-      new CodeLayersService(deps.globalMonVar, deps.logger),
-      deps.appGateway,
-      deps.globalMonVar,
-      deps.logger,
-    );
-  });
-
-  afterEach(() => jest.restoreAllMocks());
-
-  it('создаётся с зависимостями', () => {
-    expect(service).toBeDefined();
-  });
-
-  it('handleValidationError: статус, лог, счётчики и сообщение', () => {
-    service.handleValidationError('Плохой код');
-
-    expect(deps.globalMonVar.codeStatus).toBe(MonitoringStatusActions.Reject);
-    expect(deps.logger.error).toHaveBeenCalledWith('Код: Плохой код');
-    expect(deps.appGateway.sendProductCount).toHaveBeenCalled();
-    expect(deps.appGateway.sendRootMessage).toHaveBeenCalledWith({
-      status: RootStatus.Error,
-      message: 'Плохой код',
-    });
-  });
-
-  it('handleValidationError: можно передать свой статус', () => {
-    service.handleValidationError('Код слева', MonitoringStatusActions.Left);
-
-    expect(deps.globalMonVar.codeStatus).toBe(MonitoringStatusActions.Left);
-  });
-
-  it('делегирует initializeTables в сервис таблиц', async () => {
-    await service.initializeTables();
-
-    expect(createTableIfNotExists).toHaveBeenCalledWith(
-      deps.entityManager,
-      TABLE,
-    );
-    expect(createTaskTable).toHaveBeenCalledWith(
-      deps.entityManager,
-      TABLE,
-      'task.json',
-    );
-  });
-
-  it('делегирует saveCode в сервис записи', async () => {
-    await service.saveCode(TABLE, 'CODE', 3, 'Camera1', 2);
-
-    expect(deps.codeRepository.saveCodeToDatabase).toHaveBeenCalledWith(
-      TABLE,
-      'CODE',
-      3,
-      'Camera1',
-      2,
-    );
-  });
-
-  it('отдаёт текущие счётчики', () => {
-    Object.assign(deps.globalMonVar, COUNTS);
-
-    expect(service.getCurrentCounts()).toEqual(COUNTS);
-  });
-});
 
 describe('CodeTablesService', () => {
   let deps: ReturnType<typeof makeDeps>;
@@ -423,6 +304,7 @@ describe('CodeTablesService', () => {
 describe('CodeCountsService', () => {
   let deps: ReturnType<typeof makeDeps>;
   let tables: any;
+  let cameraState: any;
   let service: CodeCountsService;
 
   beforeEach(() => {
@@ -430,10 +312,12 @@ describe('CodeCountsService', () => {
     (getLastLogMessages as jest.Mock).mockReturnValue([{ message: 'last' }]);
     deps = makeDeps();
     tables = { checkTableExists: jest.fn().mockResolvedValue(undefined) };
+    cameraState = { get: jest.fn().mockReturnValue(undefined) };
     service = new CodeCountsService(
       deps.codeRepository,
       deps.appGateway,
       tables,
+      cameraState,
       deps.globalMonVar,
       deps.logger,
     );
@@ -449,10 +333,43 @@ describe('CodeCountsService', () => {
     expect(service.getCurrentCounts()).toEqual(COUNTS);
   });
 
-  it('sendCurrentStateToFrontend шлёт счётчики и последние логи', async () => {
+  it('счётчики берут коробку и паллету из состояния камеры', () => {
+    Object.assign(deps.globalMonVar, COUNTS);
+    cameraState.get.mockReturnValue({
+      currectProductInBox: 4,
+      currectBoxInPallet: 2,
+      UsedBoxNumber: 7,
+      UsedPalletNumber: 3,
+    });
+
+    expect(service.getCurrentCounts('Camera1')).toEqual({
+      ...COUNTS,
+      productsInCurrentBox: 4,
+      boxesInCurrentPallet: 2,
+      currentBoxNumber: 7,
+      currentPalletNumber: 3,
+    });
+    expect(cameraState.get).toHaveBeenCalledWith('Camera1');
+  });
+
+  it('для Camera1 отправляет на панель с портом 3000', async () => {
+    await service.sendCurrentStateToFrontend(COUNTS, 'Camera1');
+
+    expect(deps.appGateway.sendProductCount).toHaveBeenCalledWith(
+      COUNTS,
+      '3000',
+    );
+  });
+
+  it('без имени камеры отправляет всем', async () => {
     await service.sendCurrentStateToFrontend(COUNTS);
 
     expect(deps.appGateway.sendProductCount).toHaveBeenCalledWith(COUNTS);
+  });
+
+  it('sendCurrentStateToFrontend шлёт последние логи', async () => {
+    await service.sendCurrentStateToFrontend(COUNTS, 'Camera1');
+
     expect(deps.appGateway.sendLogData).toHaveBeenCalledWith([
       { message: 'last' },
     ]);
@@ -637,6 +554,28 @@ describe('CodeLabelsService', () => {
 
   it('getFullPalletCode возвращает код этикетки', async () => {
     await expect(service.getFullPalletCode(1, 6, 30)).resolves.toBe('ss');
+  });
+
+  it('assignBoxLabel пишет только box_label, без печати', async () => {
+    const label = await service.assignBoxLabel(3, 5);
+
+    expect(label).toBe('close');
+    expect(deps.entityManager.query).toHaveBeenCalledWith(
+      expect.stringContaining('SET box_label'),
+      ['close', 3],
+    );
+    expect(deps.printerService.printBoxLabel).not.toHaveBeenCalled();
+  });
+
+  it('printBoxLabel только печатает, без записи в БД', async () => {
+    await service.printBoxLabel(3, 5, 'Camera1');
+
+    expect(deps.printerService.printBoxLabel).toHaveBeenCalledWith(
+      3,
+      5,
+      'Camera1',
+    );
+    expect(deps.entityManager.query).not.toHaveBeenCalled();
   });
 
   it('closeAutoBoxAndPrint пишет label и печатает', async () => {

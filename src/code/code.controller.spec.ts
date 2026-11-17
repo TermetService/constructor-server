@@ -6,7 +6,9 @@
  */
 jest.mock('./code.service', () => ({ CodeService: class {} }));
 jest.mock('./hand-operation.service', () => ({ HandOperation: class {} }));
-jest.mock('./code-helper.service', () => ({ CodeHelperService: class {} }));
+jest.mock('./helpers/code-counts.service', () => ({
+  CodeCountsService: class {},
+}));
 jest.mock('./code-search.service', () => ({ CodeSearchService: class {} }));
 jest.mock('./code-migration.service', () => ({
   CodeMigrationService: class {},
@@ -18,7 +20,7 @@ describe('CodeController', () => {
   let controller: CodeController;
   let codeService: any;
   let handOper: any;
-  let codeHelperService: any;
+  let counts: any;
   let codeSearchService: any;
   let codeMigrationService: any;
 
@@ -43,7 +45,7 @@ describe('CodeController', () => {
       deletePallet: jest.fn(),
       moveBoxToPallet: jest.fn(),
     };
-    codeHelperService = { sendDBDataToFrontend: jest.fn() };
+    counts = { sendDBDataToFrontend: jest.fn() };
     codeSearchService = {
       search: jest.fn(),
       searchWithPageNumber: jest.fn(),
@@ -57,7 +59,7 @@ describe('CodeController', () => {
     controller = new CodeController(
       codeService,
       handOper,
-      codeHelperService,
+      counts,
       codeMigrationService,
       codeSearchService,
     );

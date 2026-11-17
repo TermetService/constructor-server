@@ -9,7 +9,6 @@ import { codeLogger } from 'src/logger-winston/winston.config';
 import { AppGateway } from 'src/app.gateway';
 import { TemplateModule } from 'src/template/template.module';
 import { PrinterModule } from 'src/printers/printer.module';
-import { CodeHelperService } from './code-helper.service';
 import { IMonitoringVariables } from 'src/globalTypes';
 import { CodeSearchService } from './code-search.service';
 import { CodeMigrationService } from './code-migration.service';
@@ -27,6 +26,9 @@ import { CodeScanService } from './helpers/code-scan.service';
 import { CodeWeightsService } from './helpers/code-weights.service';
 import { CodeRemoteService } from './helpers/code-remote.service';
 import { CodeLayersService } from './helpers/code-layers.service';
+import { CodeCameraStateService } from './helpers/code-camera-state.service';
+import { BoxLabelRepository } from './bind/box-label.repository';
+import { BoxLabelCheckService } from './bind/box-label-check.service';
 
 @Module({
   imports: [
@@ -42,12 +44,13 @@ import { CodeLayersService } from './helpers/code-layers.service';
   controllers: [CodeController],
   providers: [
     CodeService,
+    BoxLabelCheckService,
     CodeRepository,
-    CodeHelperService,
     CodeSearchService,
     CodeMigrationService,
     CodeTablesService,
     CodeCountsService,
+    CodeCameraStateService,
     CodeSaveService,
     CodeLabelsService,
     CodeReportsService,
@@ -55,15 +58,19 @@ import { CodeLayersService } from './helpers/code-layers.service';
     CodeWeightsService,
     CodeRemoteService,
     CodeLayersService,
+    BoxLabelRepository,
     HandOperation,
     { provide: 'winston', useValue: codeLogger },
   ],
   exports: [
     CodeService,
     CodeRepository,
-    CodeHelperService,
     CodeSearchService,
     CodeMigrationService,
+    BoxLabelCheckService,
+    CodeTablesService,
+    CodeCountsService,
+    CodeReportsService,
   ],
 })
 export class CodeModule {}

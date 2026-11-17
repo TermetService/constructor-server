@@ -1,0 +1,13 @@
+compile: начало
+Директория tmp/nomenclature уже существует
+Директория tmp/templates уже существует
+Директория tmp/settings уже существует
+Директория tmp/tasks уже существует
+Директория tmp/records-1 уже существует
+Директория tmp/records-2 уже существует
+Директория tmp/finish уже существует
+Директория tmp/reserve уже существует
+compile: OK
+camera: CameraService
+db: { ok: 1 }
+closed

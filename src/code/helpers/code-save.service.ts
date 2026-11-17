@@ -39,6 +39,21 @@ export class CodeSaveService {
     );
   }
 
+  async saveCodess(
+    tableName: string,
+    codes: string[],
+    boxNumber: number,
+    cameraName?: string,
+    palletNumber?: number,
+  ): Promise<boolean> {
+    return await this.codeRepository.saveCodesToDatabase(
+      tableName,
+      codes,
+      boxNumber,
+      cameraName,
+      palletNumber,
+    );
+  }
   /**
    * Историческое имя: раньше метод ещё и двигал счётчики.
    * Сейчас только сохраняет код — состояние ведёт CodeService.
@@ -48,11 +63,7 @@ export class CodeSaveService {
     code: string,
     boxNumber: number,
   ): Promise<boolean> {
-    return this.codeRepository.saveCodeToDatabase(
-      tableName,
-      code,
-      boxNumber,
-    );
+    return this.codeRepository.saveCodeToDatabase(tableName, code, boxNumber);
   }
 
   /** Сторона, на которую уходит код: зависит от чётности коробки и первой коробки */

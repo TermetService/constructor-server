@@ -70,8 +70,11 @@ export class CameraService implements OnModuleInit {
       this.logger.info(`Connected to the camera at ${this.ip}:${this.port}`);
     });
 
+    // this.client.on('data', (data) => {
+    //   this.handleMessage(data.toString());
+    // });
     this.client.on('data', (data) => {
-      this.handleMessage(data.toString());
+      this.handleMessage(data.toString(), CameraNames.Camera1);
     });
 
     this.client.on('error', (error) => {
@@ -87,8 +90,7 @@ export class CameraService implements OnModuleInit {
     });
   }
 
-  private handleMessage(message: string) {
-    let name = 'q34';
+  private handleMessage(message: string, name) {
     console.log('handleMessage--_____________2', message);
     if (!this.globalMonVar.isMonitoring) {
       this.logger.warn('Камера: мониторинг не запущен');
@@ -107,6 +109,32 @@ export class CameraService implements OnModuleInit {
       `Камера: Время -----------------: ${timeDifference}, для кодов ${lines}`,
     );
     this.codeService.validateAndSaveCode(lines[0], name).catch((err) => {
+      this.logger.error(
+        `Камера: ошибка сохранения кода ${lines[0]}: ${err?.message ?? err}`,
+      );
+    });
+  }
+
+  private handleMessageBind(message: string, name: string) {
+    console.log('handleMessage--_____________2', message);
+    if (!this.globalMonVar.isMonitoring) {
+      this.logger.warn('Камера: мониторинг не запущен');
+      return;
+    }
+    if (this.globalMonVar.isPaused) {
+      this.logger.warn('Камера: мониторинг на паузе');
+      return;
+    }
+    // console.log('handleMessage--_____________2', message);
+    const lines = message.split('@').filter((el) => el.length);
+    // console.log('handleMessage--_____________', lines);
+    const codeStatusUpdateTime = Date.now();
+    const timeDifference = codeStatusUpdateTime - this.globalMonVar.konturTime;
+    this.logger.info(
+      `Камера: Время -----------------: ${timeDifference}, для кодов ${lines}`,
+    );
+
+    this.codeService.BindAgregateCode(lines[0], name).catch((err) => {
       this.logger.error(
         `Камера: ошибка сохранения кода ${lines[0]}: ${err?.message ?? err}`,
       );
@@ -243,13 +271,19 @@ export class CameraService implements OnModuleInit {
       cameraName === CameraNames.Camera3 ||
       cameraName === CameraNames.Camera4
     ) {
+      const start = performance.now();
       const objCodes = await this.codeService.ParseLayer(lines, cameraName);
 
-      if (objCodes.isValid)
-        for (let i = 0; i < objCodes.codes.length; i++) {
-          const element = objCodes.codes[i];
-          this.codeService.validateAndSaveCode(element, cameraName);
-        }
+      if (objCodes.isValid) {
+        // for (let i = 0; i < objCodes.codes.length; i++) {
+        //   const element = objCodes.codes[i];
+        //   await this.codeService.validateAndSaveCode(element, cameraName);
+        // }
+        await this.codeService.saveCodes(objCodes.codes, cameraName);
+      }
+
+      const end = performance.now();
+      console.log(start - end, ';;;;;;;;;');
     }
   }
 
