@@ -1,4 +1,20 @@
 import { CameraNames } from './types';
+import { CameraType, normalizeCameraType } from './camera-types';
+
+/**
+ * Имя камеры в таблице camera_config: «Камера 1», «Камера 2», …
+ * CameraNames.Camera1 = 'Camera1' — для конфига это имя не подходит,
+ * поэтому все поиски конфига идут через этот хелпер.
+ */
+export const getCameraConfigName = (cameraName: CameraNames | string): string => {
+  const digits = String(cameraName).replace(/\D/g, '');
+
+  return digits ? `Камера ${digits}` : 'Камера 1';
+};
+
+/** true — тип «Агрегация» (понимает и старое русское значение) */
+export const isAggregationCameraType = (type?: string | null): boolean =>
+  normalizeCameraType(type) === CameraType.Aggregation;
 
 export const getCameraIdPanel = (cameraName: CameraNames): string => {
   let id = '3000';

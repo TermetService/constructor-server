@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { Inject, Injectable } from '@nestjs/common';
 import { Logger } from 'winston';
 import { IMonitoringVariables } from 'src/globalTypes';
@@ -5,6 +6,8 @@ import { codeLogger } from 'src/logger-winston/winston.config';
 import { Gs1ParserService } from 'src/gs1-parser/gs1-parser.service';
 import { SearchFrom } from 'src/gs1-parser/interfaces/gs1.types';
 import { BoxLabelRepository } from './box-label.repository';
+import { RuntimeFlagsService } from 'src/settings/runtime-flags.service';
+import { ValidationFlag } from 'src/settings/validation-flags';
 
 export enum BoxLabelCheck {
   CodesRecognized = 'codesRecognized',
@@ -59,6 +62,7 @@ export class BoxLabelCheckService {
   constructor(
     private readonly repository: BoxLabelRepository,
     private readonly gs1ParserService: Gs1ParserService,
+    private readonly flags: RuntimeFlagsService,
     @Inject('GLOBAL_MONITORING_VARIABLES')
     private readonly globalMonVar: IMonitoringVariables,
     @Inject('winston') private readonly logger: Logger = codeLogger,
@@ -66,6 +70,8 @@ export class BoxLabelCheckService {
 
   async check(codes: string[]): Promise<IBoxLabelCheckReport> {
     const checks: IBoxLabelCheckResult[] = [];
+    const enabled = (key: ValidationFlag): boolean =>
+      this.flags.isValidationEnabled(key);
     const report = (
       reason: string | undefined,
       partial: Partial<IBoxLabelCheckReport> = {},
@@ -86,11 +92,11 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.CodesRecognized,
-        unknownCodes.length === 0,
+        unknownCodes.length === 0 || !enabled(ValidationFlag.BoxCodesRecognized),
         `Коды не распознаны: ${this.shortenCodes(unknownCodes)}`,
       ),
     );
-    if (unknownCodes.length) {
+    if (enabled(ValidationFlag.BoxCodesRecognized) && unknownCodes.length) {
       return report(`Коды не распознаны: ${this.shortenCodes(unknownCodes)}`, {
         productCodes,
       });
@@ -99,11 +105,11 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.HasProductCodes,
-        productCodes.length >= 1,
+        productCodes.length >= 1 || !enabled(ValidationFlag.BoxHasProductCodes),
         'Нет кодов продуктов с допустимой длиной',
       ),
     );
-    if (productCodes.length < 1) {
+    if (enabled(ValidationFlag.BoxHasProductCodes) && productCodes.length < 1) {
       return report('Нет кодов продуктов с допустимой длиной', {
         productCodes,
       });
@@ -112,27 +118,27 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.SingleBoxLabel,
-        boxCodes.length === 1,
+        boxCodes.length === 1 || !enabled(ValidationFlag.BoxSingleLabel),
         'Должен быть один код коробки',
       ),
     );
-    if (boxCodes.length !== 1) {
+    if (enabled(ValidationFlag.BoxSingleLabel) && boxCodes.length !== 1) {
       return report('Должен быть один код коробки', { productCodes });
     }
 
     const boxLabel = boxCodes[0].code;
-    const isDevelop = process.env.IS_DEVELOP === 'true';
+    const isDevelop = config.IS_DEVELOP === 'true';
 
     checks.push(
       this.result(
         BoxLabelCheck.BoxLabelValid,
-        isDevelop || boxCodes[0].isValid !== false,
+        isDevelop || boxCodes[0].isValid !== false || !enabled(ValidationFlag.BoxLabelValid),
         `Этикетка коробки не соответствует заданию: ${
           boxCodes[0].validationMessage || 'неверный формат'
         }`,
       ),
     );
-    if (!isDevelop && boxCodes[0].isValid === false) {
+    if (enabled(ValidationFlag.BoxLabelValid) && !isDevelop && boxCodes[0].isValid === false) {
       return report(
         `Этикетка коробки не соответствует заданию: ${
           boxCodes[0].validationMessage || 'неверный формат'
@@ -147,11 +153,11 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.TableExists,
-        tableExists,
+        tableExists || !enabled(ValidationFlag.BoxTableExists),
         `Таблица ${tableName} не существует в базе данных`,
       ),
     );
-    if (!tableExists) {
+    if (enabled(ValidationFlag.BoxTableExists) && !tableExists) {
       return report(`Таблица ${tableName} не существует в базе данных`, {
         boxLabel,
         productCodes,
@@ -163,11 +169,11 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.LabelNotUsed,
-        !labelUsed,
+        !labelUsed || !enabled(ValidationFlag.BoxLabelNotUsed),
         'Этикетка коробки уже существует в базе данных',
       ),
     );
-    if (labelUsed) {
+    if (enabled(ValidationFlag.BoxLabelNotUsed) && labelUsed) {
       return report('Этикетка коробки уже существует в базе данных', {
         boxLabel,
         productCodes,
@@ -184,11 +190,11 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.ProductsExist,
-        missingCodes.length === 0,
+        missingCodes.length === 0 || !enabled(ValidationFlag.BoxProductsExist),
         `Коды не найдены в системе: ${this.shortenCodes(missingCodes)}`,
       ),
     );
-    if (missingCodes.length) {
+    if (enabled(ValidationFlag.BoxProductsExist) && missingCodes.length) {
       return report(
         `Коды не найдены в системе: ${this.shortenCodes(missingCodes)}`,
         { boxLabel, productCodes },
@@ -202,13 +208,13 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.SameBox,
-        boxNumbers.length === 1,
+        boxNumbers.length === 1 || !enabled(ValidationFlag.BoxSameBox),
         `Коды продуктов из разных коробок: ${boxNumbers
           .map((number) => `#${number}`)
           .join(', ')}`,
       ),
     );
-    if (boxNumbers.length !== 1) {
+    if (enabled(ValidationFlag.BoxSameBox) && boxNumbers.length !== 1) {
       return report(
         `Коды продуктов из разных коробок: ${boxNumbers
           .map((number) => `#${number}`)
@@ -223,11 +229,11 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.BoxNumberDefined,
-        boxNumberDefined,
+        boxNumberDefined || !enabled(ValidationFlag.BoxNumberDefined),
         'У кодов продукта не определена коробка',
       ),
     );
-    if (!boxNumberDefined) {
+    if (enabled(ValidationFlag.BoxNumberDefined) && !boxNumberDefined) {
       return report('У кодов продукта не определена коробка', {
         boxLabel,
         productCodes,
@@ -243,11 +249,11 @@ export class BoxLabelCheckService {
     checks.push(
       this.result(
         BoxLabelCheck.LabelNotForBox,
-        labelForBox.length === 0,
+        labelForBox.length === 0 || !enabled(ValidationFlag.BoxLabelNotForBox),
         'Этикетка коробки уже существует в базе данных',
       ),
     );
-    if (labelForBox.length > 0) {
+    if (enabled(ValidationFlag.BoxLabelNotForBox) && labelForBox.length > 0) {
       return report('Этикетка коробки уже существует в базе данных', {
         boxLabel,
         boxNumber,

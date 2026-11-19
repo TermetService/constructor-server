@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 // ftp-upload.service.ts
 import { Inject, Injectable } from '@nestjs/common';
 import * as ftp from 'basic-ftp';
@@ -17,10 +18,10 @@ export class FTPService {
     try {
       // Подключаемся
       await client.access({
-        host: process.env.FTP_HOST,
-        user: process.env.FTP_USER,
-        password: process.env.FTP_PASSWORD,
-        port: parseInt(process.env.FTP_PORT) || 21,
+        host: config.FTP_HOST,
+        user: config.FTP_USER,
+        password: config.FTP_PASSWORD,
+        port: parseInt(config.FTP_PORT) || 21,
       });
 
       // Преобразуем данные в поток

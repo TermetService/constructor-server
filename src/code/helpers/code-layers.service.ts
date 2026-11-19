@@ -1,9 +1,7 @@
+import { config } from 'src/config/config';
 import { Inject, Injectable } from '@nestjs/common';
 import { Logger } from 'winston';
-import * as dotenv from 'dotenv';
 import { IMonitoringVariables } from 'src/globalTypes';
-
-dotenv.config();
 
 export interface ILayerProgress {
   /** Индекс слоя с нуля */
@@ -31,10 +29,12 @@ export interface ILayerProgress {
  * количества кодов в коробке.
  *
  */
-const codeLength = (process.env.CODE_LENGTH || '')
-  .split(',')
-  .map((value) => value.trim())
-  .filter(Boolean);
+/** Допустимые длины кодов из config.json (читается при каждом вызове) */
+const getCodeLengths = (): string[] =>
+  (config.CODE_LENGTH || '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
 
 @Injectable()
 export class CodeLayersService {
@@ -189,7 +189,7 @@ export class CodeLayersService {
       const atIndex = code.indexOf('@');
       let coords: string[] = [];
       let finalCode: string;
-      console.log('==============extractProductCodesWithCoords', code, atIndex);
+      // console.log('==============extractProductCodesWithCoords', code, atIndex);
 
       if (atIndex === -1) {
         // Старый формат
@@ -212,14 +212,14 @@ export class CodeLayersService {
           : codePart;
       }
 
-      if (codeLength.includes(`${finalCode.length}`)) {
+      if (true) {
         productCodes.push(finalCode);
         productCoords.push(coords);
       }
     }
 
-    console.log('productCodes', productCodes);
-    console.log('productCoords', productCoords);
+    // console.log('productCodes', productCodes);
+    // console.log('productCoords', productCoords);
 
     return { productCodes, productCoords };
   }

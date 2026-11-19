@@ -1,12 +1,10 @@
+import { config } from 'src/config/config';
 /* eslint-disable prettier/prettier */
 import { EntityManager } from 'typeorm';
 import { Logger } from 'winston';
-import * as dotenv from 'dotenv';
 import { ModbusService } from 'src/modbus/modbus.service';
 import { allAddresses } from 'src/addresses';
-
-dotenv.config();
-
+import { ValidationFlag } from 'src/settings/validation-flags';
 export const createTableIfNotExists = async (
   entityManager: EntityManager,
   tableName: string,
@@ -113,6 +111,8 @@ export interface ICodeValidationDeps {
    */
   isDuplicate?: (code: string) => Promise<boolean> | boolean;
   isCodeTask?: any;
+  /** Включена ли проверка (флаги из config.json). Нет — все включены. */
+  isEnabled?: (key: string) => boolean;
 }
 
 /**
@@ -126,7 +126,13 @@ export const isValidCode = async (
   logger: Logger,
   deps: ICodeValidationDeps = {},
 ): Promise<ICodeValidationResult> => {
-  if (typeof code !== 'string' || code.trim().length === 0) {
+  const enabled = (key: ValidationFlag): boolean =>
+    deps.isEnabled ? deps.isEnabled(key) : true;
+
+  if (
+    enabled(ValidationFlag.CodeEmpty) &&
+    (typeof code !== 'string' || code.trim().length === 0)
+  ) {
     logger?.error?.('Код: Пустой код');
     return {
       isValid: false,
@@ -136,11 +142,11 @@ export const isValidCode = async (
   }
 
   const codeLengths =
-    process.env.CODE_LENGTH?.split(',')
+    config.CODE_LENGTH?.split(',')
       .map((value) => Number(value.trim()))
       .filter((value) => !Number.isNaN(value)) || [];
 
-  if (!codeLengths.includes(code.length)) {
+  if (enabled(ValidationFlag.CodeLength) && !codeLengths.includes(code.length)) {
     logger?.error?.(
       `Код: Неверная длина кода ${code.length}, допустимые: ${codeLengths.join(', ')}`,
     );
@@ -151,7 +157,7 @@ export const isValidCode = async (
     };
   }
 
-  if (!code.startsWith('01')) {
+  if (enabled(ValidationFlag.CodePrefix) && !code.startsWith('01')) {
     logger?.error?.('Код: Код не начинается с "01"');
     return {
       isValid: false,
@@ -161,7 +167,7 @@ export const isValidCode = async (
   }
 
   const numericPart = code.slice(2, 16);
-  if (numericPart !== task?.gtin) {
+  if (enabled(ValidationFlag.CodeGtin) && numericPart !== task?.gtin) {
     logger?.error?.('Код: Числовая часть кода не совпадает с GTIN задания');
     return {
       isValid: false,
@@ -172,7 +178,7 @@ export const isValidCode = async (
 
   const codeIsCode = /^01\d{14}21(?:.{8}|.{6})[\x1D]9[123]/.test(code);
 
-  if (!codeIsCode) {
+  if (enabled(ValidationFlag.CodeFormat) && !codeIsCode) {
     logger?.error?.(`Код не соответствует формату кода`);
     return {
       isValid: false,
@@ -181,7 +187,7 @@ export const isValidCode = async (
     };
   }
 
-  if (deps.isDuplicate) {
+  if (enabled(ValidationFlag.CodeDuplicate) && deps.isDuplicate) {
     const duplicated = await deps.isDuplicate(code);
 
     if (duplicated) {
@@ -193,7 +199,11 @@ export const isValidCode = async (
       };
     }
   }
-  if (deps.isCodeTask && task?.codes !== undefined) {
+  if (
+    enabled(ValidationFlag.CodeInTask) &&
+    deps.isCodeTask &&
+    task?.codes !== undefined
+  ) {
     const inTask = deps.isCodeTask(task?.codes, code);
     if (!inTask) {
       logger?.error?.(`Код: код ${code} не найден в списке допустимых кодов`);

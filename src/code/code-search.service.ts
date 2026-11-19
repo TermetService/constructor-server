@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
@@ -7,15 +8,10 @@ import { IMonitoringVariables } from 'src/globalTypes';
 import { Logger } from 'winston';
 import { codeLogger } from 'src/logger-winston/winston.config';
 import { TemplateService } from 'src/template/template.service';
-import * as dotenv from 'dotenv';
 import { CodeTablesService } from './helpers/code-tables.service';
 import { CodeCountsService } from './helpers/code-counts.service';
 import { getItemsCountInPallet } from 'src/monitoring/helper';
 import { Gs1ParserService } from 'src/gs1-parser/gs1-parser.service';
-
-dotenv.config();
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const isPrint = process.env.IS_PRINT === 'true';
 
 @Injectable()
 export class CodeSearchService {

@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { Inject, Injectable, Optional } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { Logger } from 'winston';
@@ -98,7 +99,7 @@ export class CodeWeightsService {
       }
 
       const GS = '\x1D';
-      const searchMode = process.env.CODE_SEARCH_MODE || '93';
+      const searchMode = config.CODE_SEARCH_MODE || '93';
 
       const extractAfterDivider = (
         source: string,
@@ -137,7 +138,7 @@ export class CodeWeightsService {
         code: `${searchCode}%`,
       });
 
-      const usingOwnDb = process.env.IS_USING_OWN_DB === 'true';
+      const usingOwnDb = config.IS_USING_OWN_DB === 'true';
       if (!result && usingOwnDb) return '1.41';
 
       if (result && result[column] !== undefined) {

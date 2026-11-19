@@ -22,11 +22,11 @@
  * Настройки: CODES_FILE, CODES_LIMIT=116, ETE_SEED=0, KEEP_DB=1.
  */
 import 'reflect-metadata';
-import * as dotenv from 'dotenv';
+import { config, loadConfig } from 'src/config/config';
 import * as fs from 'fs';
 import * as path from 'path';
 
-dotenv.config();
+loadConfig();
 
 const STAMP = new Date()
   .toISOString()
@@ -208,11 +208,11 @@ async function main() {
 
   const ds = new DataSource({
     type: 'postgres',
-    host: process.env.DB_HOST,
-    port: +process.env.DB_PORT,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    host: config.DB_HOST,
+    port: +config.DB_PORT,
+    username: config.DB_USERNAME,
+    password: config.DB_PASSWORD,
+    database: config.DB_DATABASE,
     entities: [CodeEntity, numberBoxETE],
     synchronize: false,
   });
@@ -399,6 +399,7 @@ async function main() {
       labels,
       counts,
       cameraState,
+      { isPalletShared: () => false, isBoxLabel: () => true, isValidationEnabled: () => true } as any,
       numberBoxEte,
       layers,
       globalMonVar,

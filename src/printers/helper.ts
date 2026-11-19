@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { GenerateOptions, LABEL_FORMATS, PrintersTypes } from 'src/printers/types';
 
 export const formatDate = (date: string) => {
@@ -325,7 +326,7 @@ export const generateDatabaseCipher = (
   nettoWeight?: number,
   bruttoWeight?: number
 ): string => {
-  const isZPL = process.env.PRINTER_TYPE === PrintersTypes.ZPL;
+  const isZPL = config.PRINTER_TYPE === PrintersTypes.ZPL;
   const blocks = template.filter(item => item?.trim());
 
   const formatOptions: Record<string, string> = {};

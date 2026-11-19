@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { Inject, Injectable, Optional } from '@nestjs/common';
 import { Logger } from 'winston';
 import { IMonitoringVariables } from 'src/globalTypes';
@@ -27,7 +28,7 @@ export class CodeScanService {
     @Optional()
     @Inject('IS_USING_API')
     private readonly isUsingApi: () => boolean = () =>
-      process.env.IS_USING_API === 'true',
+      config.IS_USING_API === 'true',
   ) {}
 
   getApiStatus(): { isUsingApi: boolean } {

@@ -1,16 +1,13 @@
+import { config } from 'src/config/config';
 /* eslint-disable prettier/prettier */
 import * as path from 'path';
-import * as dotenv from 'dotenv';
-import { machineIdSync } from 'node-machine-id';
-
-dotenv.config();
-export const sha = machineIdSync();
+import { machineIdSync } from 'node-machine-id';export const sha = machineIdSync();
 
 // -------- 1s ------------------
 export const getFilesDirectory1S = (): string => {
-  const filesDirectory1S = process.env.FILES_DIRECTORY_1S;
+  const filesDirectory1S = config.FILES_DIRECTORY_1S;
   if (!filesDirectory1S) {
-    console.log('FILES_DIRECTORY_1S is not defined in .env file');
+    console.log('FILES_DIRECTORY_1S is not defined in config.json');
     return '';
   }
   return filesDirectory1S;
@@ -21,9 +18,9 @@ export const getJsonDirectory1S = (): string => {
 };
 
 export const getFilesDirectory1STemplate = (): string => {
-  const filesDirectory1STemplate = process.env.FILES_DIRECTORY_1S_TEMPLATE;
+  const filesDirectory1STemplate = config.FILES_DIRECTORY_1S_TEMPLATE;
   if (!filesDirectory1STemplate) {
-    console.log('FILES_DIRECTORY_1S_TEMPLATE is not defined in .env file');
+    console.log('FILES_DIRECTORY_1S_TEMPLATE is not defined in config.json');
     return '';
   }
   return filesDirectory1STemplate;
@@ -35,34 +32,34 @@ export const getJsonDirectory1STemplate = (): string => {
 
 // -------------- AvailableFiles -----------------
 export const getRecordsFilesDirectory = (): string => {
-  const filesDirectory = process.env.RECORDS_FILES_DIRECTORY;
+  const filesDirectory = config.RECORDS_FILES_DIRECTORY;
   if (!filesDirectory) {
-    throw new Error('RECORDS_FILES_DIRECTORY is not defined in .env file');
+    throw new Error('RECORDS_FILES_DIRECTORY is not defined in config.json');
   }
   return filesDirectory;
 };
 
 export const getReserveFilesDirectory = (): string => {
-  const filesDirectory = process.env.RESERVE_FILES_DIRECTORY;
+  const filesDirectory = config.RESERVE_FILES_DIRECTORY;
   if (!filesDirectory) {
-    throw new Error('RESERVE_FILES_DIRECTORY is not defined in .env file');
+    throw new Error('RESERVE_FILES_DIRECTORY is not defined in config.json');
   }
   return filesDirectory;
 };
 
 export const getRecordsTextFilesDirectory = (): string => {
-  const filesDirectory = process.env.RECORDS_TEXT_FILE_DIRECTORY;
+  const filesDirectory = config.RECORDS_TEXT_FILE_DIRECTORY;
   if (!filesDirectory) {
-    throw new Error('RECORDS_TEXT_FILE_DIRECTORY is not defined in .env file');
+    throw new Error('RECORDS_TEXT_FILE_DIRECTORY is not defined in config.json');
   }
   return filesDirectory;
 };
 
 // -------------- AvailableFiles -----------------
 export const getAvailableFilesDirectory = (): string => {
-  const filesDirectory = process.env.AVAILABLE_FILES_DIRECTORY;
+  const filesDirectory = config.AVAILABLE_FILES_DIRECTORY;
   if (!filesDirectory) {
-    throw new Error('AVAILABLE_FILES_DIRECTORY is not defined in .env file');
+    throw new Error('AVAILABLE_FILES_DIRECTORY is not defined in config.json');
   }
   return filesDirectory;
 };
@@ -86,18 +83,18 @@ export const getRecordsJsonDirectory = (): string[] => {
 
 // -------------- Task Files -----------------
 // export const getTaskFilesDirectory = (): string => {
-//   const filesDirectory = process.env.TASK_FILES_DIRECTORY;
+//   const filesDirectory = config.TASK_FILES_DIRECTORY;
 //   if (!filesDirectory) {
-//     throw new Error('TASK_FILES_DIRECTORY is not defined in .env file');
+//     throw new Error('TASK_FILES_DIRECTORY is not defined in config.json');
 //   }
 //   return filesDirectory;
 // };
 
 // -------------- Files -----------------
 export const getFilesDirectory = (): string => {
-  const filesDirectory = process.env.FILES_DIRECTORY;
+  const filesDirectory = config.FILES_DIRECTORY;
   if (!filesDirectory) {
-    throw new Error('FILES_DIRECTORY is not defined in .env file');
+    throw new Error('FILES_DIRECTORY is not defined in config.json');
   }
   return filesDirectory;
 };

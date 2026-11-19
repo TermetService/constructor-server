@@ -15,11 +15,11 @@
  * Настройки: CODES_FILE, CODES_LIMIT, KEEP_DB=1.
  */
 import 'reflect-metadata';
-import * as dotenv from 'dotenv';
+import { config, loadConfig } from 'src/config/config';
 import * as fs from 'fs';
 import * as path from 'path';
 
-dotenv.config();
+loadConfig();
 
 const STAMP = new Date()
   .toISOString()
@@ -83,7 +83,7 @@ async function main() {
 
   // --- реальный модуль приложения (DI), без запуска lifecycle-хуков ---
   const { Test } = require('@nestjs/testing');
-  const { AppModule } = require('src/app.module');
+    const { AppModule } = require('src/app.module');
   const { AppGateway } = require('src/app.gateway');
 
   // сокет-сервера в контексте нет — заменяем gateway на пустышку,

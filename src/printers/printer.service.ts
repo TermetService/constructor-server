@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, Inject, OnModuleDestroy } from '@nestjs/common';
 import { PrinterConfigRepository } from './printer-config.repository';
@@ -148,8 +149,8 @@ export class PrinterService implements OnModuleDestroy {
       if (template) {
         boxTemplate = template.find((el) => el.type === 'box')?.template || [];
       }
-      const printerName1 = process.env.PRINTER_NAME_1 || '';
-      const printerName2 = process.env.PRINTER_NAME_1 || '';
+      const printerName1 = config.PRINTER_NAME_1 || '';
+      const printerName2 = config.PRINTER_NAME_1 || '';
 
       let goTo = MonitoringStatusActions.Right;
       if (boxNumber % 2 === 0) {
@@ -215,20 +216,28 @@ export class PrinterService implements OnModuleDestroy {
   async getPrinterStatus(): Promise<any> {
     return new Promise((resolve, reject) => {
       const client = new net.Socket();
+      let settled = false;
+
+      const finish = (fn: (value?: any) => void, value?: any) => {
+        if (settled) return;
+        settled = true;
+        client.destroy();
+        fn(value);
+      };
+
+      client.setTimeout(3000);
       client.connect(this.port, this.host, () => {
         client.write('~HS'); // Команда для получения статуса принтера
       });
-      client.on('data', (data) => {
-        client.destroy();
-        // if (compareArrays(status.split(''))) {
-        //   resolve('true');
-        // } else {
-        //   resolve('false');
-        // }
-      });
-      client.on('error', (err) => {
-        reject(`Ошибка подключения к принтеру: ${err.message}`);
-      });
+
+      client.on('data', (data) => finish(resolve, data.toString()));
+      client.on('timeout', () =>
+        finish(reject, new Error('Таймаут подключения к принтеру')),
+      );
+      client.on('error', (err) =>
+        finish(reject, new Error(`Ошибка подключения к принтеру: ${err.message}`)),
+      );
+      client.on('close', () => finish(resolve, null));
     });
   }
 }

@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prefer-const */
@@ -40,24 +41,15 @@ import { PrinterService } from 'src/printers/printer.service';
 import { CodeTablesService } from 'src/code/helpers/code-tables.service';
 import { CodeCountsService } from 'src/code/helpers/code-counts.service';
 import { CodeReportsService } from 'src/code/helpers/code-reports.service';
-import * as dotenv from 'dotenv';
 import { EntityManager } from 'typeorm';
 import { TasksService } from 'src/tasks/tasks.service';
 import { CodeRepository } from 'src/code/code.repository';
 import { MonitoringHelperService } from './monitoring-helper.service';
 import { TrialPeriodService } from 'src/trail-period/trial-period.service';
 import { FTPService } from 'src/ftp/ftp.service';
-import { CodeService } from 'src/code/code.service';
-
-dotenv.config();
-
+import { CodeService } from 'src/code/code.service';
 let konturArray: { kontyp: number; timestamp: number }[] = [];
 let lastKontur: number | null = null;
-const isPrint = process.env.IS_PRINT === 'true';
-const isPrintZero = process.env.IS_PRINT_ZERO === 'true';
-const isDeleteTask = process.env.IS_DELETE_TASK === 'true';
-const reportType = process.env.REPORT_TYPE;
-const isFTP = process.env.IS_FTP === 'true';
 
 @Injectable()
 export class MonitoringService implements OnModuleInit, OnModuleDestroy {
@@ -84,7 +76,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
   private readonly recordsJsonDirectory = getRecordsJsonDirectory();
   private readonly reserveJsonDirectory = getReserveFilesDirectory();
   private readonly record1SFileDirectory =
-    process.env.FILES_DIRECTORY_1S_RECORD;
+    config.FILES_DIRECTORY_1S_RECORD;
   private readonly oldTaskJsonDirectory = getStartTaskJsonDirectory();
   private readonly taskJsonDirectory = getTaskJsonDirectory();
 
@@ -170,7 +162,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
         // таблица задания должна существовать до первого кода
         await this.tables.initializeTables();
       }
-      if (isPrintZero) {
+      if ((config.IS_PRINT_ZERO === 'true')) {
         this.printerService.printBoxLabel(0, 0);
       }
       // Запрос задержек ПЛК для сброса контуров
@@ -257,7 +249,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
           let units = undefined;
           let header = undefined;
 
-          if (reportType === ReportType.Databy) {
+          if (config.REPORT_TYPE === ReportType.Databy) {
             const res = await this.generateFullReport();
             header = this.reports.createReportHeaderDataby();
             units = res;
@@ -313,7 +305,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
           await this.writeRecordsSafe(finalReport, filePath1);
           await this.writeRecordsSafe(finalReport, filePath2);
           try {
-            if (isFTP) {
+            if ((config.IS_FTP === 'true')) {
               console.log(`Сохраняем на FTP сервер`);
               await this.ftpService.uploadFile(
                 finalReport,
@@ -367,7 +359,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
       );
     }
 
-    if (isDeleteTask && !this.globalMonVar.isOldSorting) {
+    if ((config.IS_DELETE_TASK === 'true') && !this.globalMonVar.isOldSorting) {
       try {
         await this.tasksService.deleteFile(this.globalMonVar.taskName);
         this.logger.info(`Файл задачи ${this.globalMonVar.taskName} удален`);
@@ -379,7 +371,7 @@ export class MonitoringService implements OnModuleInit, OnModuleDestroy {
       }
     } else {
       this.logger.warn(
-        `Файл задачи ${this.globalMonVar.taskName} не удален (isDeleteTask=false или isOldSorting)`,
+        `Файл задачи ${this.globalMonVar.taskName} не удален ((config.IS_DELETE_TASK === 'true')=false или isOldSorting)`,
       );
     }
 

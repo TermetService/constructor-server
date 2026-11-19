@@ -117,6 +117,7 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
       {} as any, // CodeLabelsService
       {} as any, // CodeCountsService
       {} as any, // CodeCameraStateService
+      { isPalletShared: () => false, isBoxLabel: () => true, isValidationEnabled: () => true } as any, // RuntimeFlagsService
       {} as any, // NumberBoxETEService
       layersService,
       globalMonVar,
@@ -201,13 +202,14 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
     expect(appGateway.sendCoordinates).toHaveBeenCalledWith([['10,20']]);
   });
 
-  it('отбрасывает коды неподходящей длины', async () => {
+  it('неподходящая длина не отбрасывается при разборе — её отсеивает validateCode', async () => {
     const codes = fiveCodes().slice(0, 4);
 
     const result = await service.ParseLayer([...codes, 'short'], CAMERA);
 
-    expect(result).toEqual({ isValid: false, codes: [] });
-    expect(appGateway.sendCoordinates).toHaveBeenCalledWith([[], [], [], []]);
+    // извлечение кодов больше не фильтрует по длине (нужно для привязки коробки),
+    // невалидный код отсеивается на этапе validateCode
+    expect(result.codes).toHaveLength(5);
   });
 
   it('пустой скан — слой неполный, координаты отправляются', async () => {
@@ -221,7 +223,7 @@ describe('CodeService.ParseLayer (Camera1, 3 слоя по 5, коробка 15)
     const result = await service.ParseLayer(['NoRead'], CAMERA);
 
     expect(result).toEqual({ isValid: false, codes: [] });
-    expect(appGateway.sendCoordinates).toHaveBeenCalledWith([]);
+    expect(appGateway.sendCoordinates).toHaveBeenCalledWith([[]]);
   });
 
   it('имя камеры не влияет на результат', async () => {

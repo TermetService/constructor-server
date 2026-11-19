@@ -37,7 +37,7 @@ export class CodeRepository {
 
     console.timeEnd(timerLabel);
     console.log(
-      `Детализация: запрос к БД занял ${dbDuration} мс, результат: ${result}`,
+      // `Детализация: запрос к БД занял ${dbDuration} мс, результат: ${result}`,
     );
 
     return result;
@@ -58,13 +58,14 @@ export class CodeRepository {
             `INSERT INTO "${tableName}" (code, box_number,camera_name,pallet_number)
          VALUES ($1, $2,$3,$4) ON CONFLICT (code) DO NOTHING
          RETURNING id`,
-            [code, boxNumber, 'Camera1', pallet_number],
+            [code, boxNumber, cameraName ?? 'Camera1', pallet_number],
           );
 
         if (!inserted.length) {
           return false;
         }
 
+        // code_entity — только после успешной вставки в таблицу задания
         await transactionalEntityManager.query(
           `INSERT INTO "code_entity" (code, box_number, pallet_number)
          VALUES ($1, NULL, NULL) ON CONFLICT (code) DO NOTHING`,
@@ -83,11 +84,12 @@ export class CodeRepository {
     cameraName?: string,
     pallet_number?: number,
   ): Promise<boolean> {
-    if (!codes.length) return false;
+    if (!codes.length) return true;
 
     return await this.entityManager.transaction(
       async (transactionalEntityManager) => {
-        // 1. Массовая вставка всех кодов в целевую таблицу
+        // 1. Сначала таблица задания. ON CONFLICT DO NOTHING вернёт только
+        //    реально вставленные строки — по ним и проверяем полноту вставки.
         const inserted: { id: number; code: string }[] =
           await transactionalEntityManager.query(
             `INSERT INTO "${tableName}" (code, box_number, camera_name, pallet_number)
@@ -98,11 +100,17 @@ export class CodeRepository {
             [codes, boxNumber, cameraName ?? 'Camera1', pallet_number],
           );
 
-        if (!inserted.length) {
-          return false;
+        // Часть кодов уже была в таблице — это не ошибка БД, но для пакетного
+        // сохранения это неполная запись: откатываем транзакцию, чтобы
+        // вызывающий код откатил и счётчики камеры.
+        if (inserted.length !== codes.length) {
+          throw new Error(
+            `Сохранено ${inserted.length} из ${codes.length} кодов — ` +
+              'часть кодов уже есть в таблице, пакет отменён',
+          );
         }
 
-        // 2. Вставляем в code_entity только те коды, которые реально вставились
+        // 2. code_entity — только после успешной вставки в основную таблицу
         const insertedCodes = inserted.map((r) => r.code);
 
         await transactionalEntityManager.query(
@@ -453,5 +461,37 @@ export class CodeRepository {
     return await this.entityManager.query(
       `SELECT code, box_number, pallet_number FROM "${mainTableName}"`,
     );
+  }
+
+  /**
+   * Номера коробок, в которых лежат переданные коды, и количество кодов
+   * в каждой такой коробке.
+   *
+   * Если коды принадлежат двум коробкам — вернёт два элемента.
+   * `codesCount` — сколько всего кодов в коробке (не только из переданных).
+   */
+  async getBoxNumbersByCodes(
+    mainTableName: string,
+    codes: string[],
+  ): Promise<{ boxNumber: number; codesCount: number }[]> {
+    if (!codes?.length) return [];
+
+    const rows = await this.entityManager.query(
+      `SELECT t.box_number AS "boxNumber", COUNT(*)::int AS "codesCount"
+       FROM "${mainTableName}" t
+       WHERE t.box_number IN (
+         SELECT DISTINCT box_number
+         FROM "${mainTableName}"
+         WHERE code = ANY($1::text[])
+       )
+       GROUP BY t.box_number
+       ORDER BY t.box_number`,
+      [codes],
+    );
+
+    return rows.map((row: any) => ({
+      boxNumber: Number(row.boxNumber),
+      codesCount: Number(row.codesCount),
+    }));
   }
 }

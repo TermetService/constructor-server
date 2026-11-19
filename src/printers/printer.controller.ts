@@ -42,9 +42,10 @@ export class PrinterController {
       } else if (label === PrinterLabels.Printer4) {
         name = PrinterNames.Printer4;
       }
-      return await this.printerService.getConfigByName(name);
+      return (await this.printerService.getConfigByName(name)) ?? null;
     } catch (err) {
       console.log('getConfig', err);
+      return null;
     }
   }
 

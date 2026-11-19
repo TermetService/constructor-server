@@ -16,6 +16,7 @@ import { CodeRepository } from './code.repository';
 import { Gs1ParserModule } from 'src/gs1-parser/gs1-parser.module';
 import { numberBoxETEModule } from 'src/NumberBoxETE/numberBoxETE.module';
 import { GatewayModule } from 'src/gateway.moduel';
+import { SettingsModule } from 'src/settings/settings.module';
 import { HandOperation } from './hand-operation.service';
 import { CodeTablesService } from './helpers/code-tables.service';
 import { CodeCountsService } from './helpers/code-counts.service';
@@ -40,6 +41,7 @@ import { BoxLabelCheckService } from './bind/box-label-check.service';
     numberBoxETEModule,
     forwardRef(() => MonitoringModule),
     GatewayModule,
+    SettingsModule,
   ],
   controllers: [CodeController],
   providers: [

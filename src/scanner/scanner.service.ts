@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import {
   Injectable,
   Logger,
@@ -17,17 +18,17 @@ export class ScannerService implements OnModuleInit, OnModuleDestroy {
     new Map();
   private monitoringInterval: NodeJS.Timeout | null = null;
   private inputID: string;
-  // Конфигурация портов из .env
+  // Конфигурация портов из config.json
   private readonly portConfigs = [
     {
-      path: process.env.COM_PORT || 'COM3',
+      path: config.COM_PORT || 'COM3',
       baudRate: 9600,
       dataBits: 8 as 8,
       stopBits: 1 as 1,
       parity: 'none' as 'none',
     },
     // {
-    //   path: process.env.USER_2 || 'COM3',
+    //   path: config.USER_2 || 'COM3',
     //   userId: '2',
     //   baudRate: 9600,
     //   dataBits: 8 as 8,

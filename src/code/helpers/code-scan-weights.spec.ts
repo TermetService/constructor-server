@@ -1,3 +1,5 @@
+import { setConfigOverride } from 'src/config/config';
+import { config } from 'src/config/config';
 /**
  * Тесты методов, перенесённых из удалённого хелпера:
  * разбор скана (CodeScanService), веса (CodeWeightsService)
@@ -37,7 +39,7 @@ describe('CodeScanService', () => {
 
   beforeEach(() => {
     logger = makeLogger();
-    delete process.env.IS_USING_API;
+    setConfigOverride('IS_USING_API', undefined);
   });
 
   it('разбирает пару «баркод + QR» и достаёт веса', () => {
@@ -72,7 +74,7 @@ describe('CodeScanService', () => {
   });
 
   it('при API принимает один обычный код', () => {
-    process.env.IS_USING_API = 'true';
+    setConfigOverride('IS_USING_API', 'true');
     const service = new CodeScanService(makeGlobalMonVar(), logger);
     const barcode =
       '01' + GTIN + '21' + 'ABCDEF' + '\x1D' + '91' + 'X'.repeat(51);
@@ -232,7 +234,7 @@ describe('CodeWeightsService', () => {
       getRemoteTableName: () => 'codes',
       getRemoteCodeColumnName: () => 'code',
     };
-    process.env.CODE_SEARCH_MODE = '93';
+    setConfigOverride('CODE_SEARCH_MODE', '93');
 
     const result = await makeService(remoteDb).getWeightFromRemoteDb(
       'PART93ABC',
@@ -273,7 +275,7 @@ describe('CodeRemoteService', () => {
   beforeEach(() => {
     logger = makeLogger();
     client = { post: jest.fn(), delete: jest.fn() };
-    process.env.IP_SERVER = '127.0.0.1';
+    setConfigOverride('IP_SERVER', '127.0.0.1');
   });
 
   it('saveCurrentCode отправляет код на /code/validate-code', async () => {
@@ -313,7 +315,7 @@ describe('CodeRemoteService', () => {
   });
 
   it('без IP_SERVER бросает понятную ошибку', async () => {
-    delete process.env.IP_SERVER;
+    setConfigOverride('IP_SERVER', undefined);
 
     await expect(
       new CodeRemoteService(logger, client).saveCurrentCode('CODE'),

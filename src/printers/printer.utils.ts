@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 /* eslint-disable prettier/prettier */
 import { Logger } from 'winston';
 // import { Status } from 'src/globalTypes';
@@ -17,11 +18,6 @@ import { EncodingType, LABEL_FORMATS, PrintersTypes } from './types';
 const execAsync = promisify(exec);
 
 // let globalPrinterStatus = Status.Connected;
-const printer1DecodeType = process.env.PRINTER1_DECODE_TYPE || '';
-const printer1EncodeType = process.env.PRINTER1_ENCODE_TYPE || '';
-const printer2DecodeType = process.env.PRINTER2_DECODE_TYPE || '';
-const printer2EncodeType = process.env.PRINTER2_ENCODE_TYPE || '';
-const PCName = process.env.PC_NAME || '';
 
 export async function printLabelBox(
   boxNumber: number,
@@ -33,8 +29,8 @@ export async function printLabelBox(
   printerNameN
 ) {
   const printerName = printerNameN;
-  const encoding = printer1EncodeType === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
-  const decoding = printer1DecodeType === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
+  const encoding = (config.PRINTER1_ENCODE_TYPE || '') === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
+  const decoding = (config.PRINTER1_DECODE_TYPE || '') === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
 
   if (!printer) {
     logger.warn('Принтер: Принтер не подключен');
@@ -128,7 +124,7 @@ export async function printLabelBox(
     );
 
     await fs.promises.writeFile(newFileName, encodedData);
-    const command = `COPY /B ${newFileName} \\\\${PCName}\\${printerName}`;
+    const command = `COPY /B ${newFileName} \\\\${(config.PC_NAME || '')}\\${printerName}`;
     // console.log(command);
     const { stderr } = await execAsync(command);
     if (stderr) {
@@ -158,9 +154,9 @@ export async function printLabelPallet(
   logger: Logger,
   itemsPerPallet: any,
 ) {
-  const printerName = process.env.PRINTER_NAME || '';
-  const encoding = printer2EncodeType === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
-  const decoding = printer2DecodeType === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
+  const printerName = config.PRINTER_NAME || '';
+  const encoding = (config.PRINTER2_ENCODE_TYPE || '') === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
+  const decoding = (config.PRINTER2_DECODE_TYPE || '') === PrintersTypes.ZPL ? EncodingType.UTF8 : EncodingType.WIN1251
 
   if (!printer) {
     logger.warn('Принтер: Принтер не подключен');
@@ -234,7 +230,7 @@ export async function printLabelPallet(
             logger.error('Ошибка записи файла:', writeErr);
             return;
           }
-          const command = `COPY /B ${newFileName} \\\\${PCName}\\${printerName}`;
+          const command = `COPY /B ${newFileName} \\\\${(config.PC_NAME || '')}\\${printerName}`;
           exec(command, (execErr) => {
             if (execErr) {
               logger.error('Ошибка отправки файла на печать:', execErr);

@@ -1,7 +1,7 @@
+import { config } from 'src/config/config';
 import { Inject, Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { Logger } from 'winston';
-import * as dotenv from 'dotenv';
 import { IMonitoringVariables } from 'src/globalTypes';
 import {
   createTableIfNotExists,
@@ -9,9 +9,8 @@ import {
 } from 'src/monitoring/helper';
 import { CodeRepository } from '../code.repository';
 
-dotenv.config();
-
-const tableRetentionDays = +process.env.IS_TABLE_RETENTION;
+/** Срок хранения таблиц из config.json (читается при вызове) */
+const getRetentionDays = (): number => +config.IS_TABLE_RETENTION;
 
 /**
  * Всё, что связано с таблицами задания: создание, проверка существования
@@ -111,11 +110,11 @@ export class CodeTablesService {
    */
   async deleteTablesOlderThan(): Promise<void> {
     this.logger.info(
-      `Поиск таблиц старше ${tableRetentionDays} дней`,
+      `Поиск таблиц старше ${getRetentionDays()} дней`,
     );
 
     const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - tableRetentionDays);
+    cutoffDate.setDate(cutoffDate.getDate() - getRetentionDays());
 
     let deletedCount = 0;
     let errorCount = 0;

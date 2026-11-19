@@ -1,15 +1,18 @@
 import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as net from 'net';
 import * as ping from 'ping';
 import { Logger } from 'winston';
 import { cameraLogger } from 'src/logger-winston/winston.config';
-import { CameraConfigRepository } from './camera-config.repository';
 import { IMonitoringVariables, RootStatus, Status } from 'src/globalTypes';
 import { AppGateway } from 'src/app.gateway';
 import { CameraConfig } from './camera-config.entity';
 import { CodeService } from 'src/code/code.service';
 import { CameraConnection, CameraNames } from './types';
 import { CameraConfigService } from './camera-config.service';
+import { getCameraConfigName } from './helper';
+import { getCameraHandler, normalizeCameraType } from './camera-types';
 
 interface CameraBuffer {
   buffer: string;
@@ -19,8 +22,8 @@ interface CameraBuffer {
 @Injectable()
 export class CameraService implements OnModuleInit {
   constructor(
-    @Inject('CameraConfigRepository')
-    private cameraConfigRepo: CameraConfigRepository,
+    @InjectRepository(CameraConfig)
+    private cameraConfigRepo: Repository<CameraConfig>,
     private readonly appGateway: AppGateway,
     private readonly codeService: CodeService,
     private readonly cameraConfigService: CameraConfigService,
@@ -30,6 +33,8 @@ export class CameraService implements OnModuleInit {
   ) {}
 
   private isConnected = false;
+  private clients: Record<string, net.Socket> = {};
+
   private client: net.Socket;
   private ip = '172.16.16.16';
   private port = 2002;
@@ -49,21 +54,26 @@ export class CameraService implements OnModuleInit {
   };
 
   onModuleInit() {
-    this.connectToCamera();
+    this.connectToCamera('camera1');
     setInterval(() => this.pingCamera(), 1000); // Пинг камеры каждые 1 секунду
     setInterval(() => this.sendConnectionStatus(), 3000); // Отправка состояния каждые 3 секунды
   }
 
-  private async connectToCamera() {
-    const config = await this.getConfigByName('Камера 1');
+  private async connectToCamera(name) {
+    const config = await this.getConfigByName(
+      getCameraConfigName(CameraNames.Camera1),
+    );
+    if (this.clients[name]) {
+      this.clients.name.removeAllListeners();
+    }
     if (!config) {
       this.logger.warn('Камера: Конфигурация для Камара 1 не найдена');
-
       return;
     } else {
       this.ip = config.host;
       this.port = +config.port;
     }
+    this.clients['Camera1'] = new net.Socket();
     this.client = new net.Socket();
 
     this.client.connect(this.port, this.ip, () => {
@@ -74,7 +84,7 @@ export class CameraService implements OnModuleInit {
     //   this.handleMessage(data.toString());
     // });
     this.client.on('data', (data) => {
-      this.handleMessage(data.toString(), CameraNames.Camera1);
+      void this.routeMessage(data.toString());
     });
 
     this.client.on('error', (error) => {
@@ -86,8 +96,39 @@ export class CameraService implements OnModuleInit {
     this.client.on('close', () => {
       // this.logger.warn('Connection to the camera closed');
       // Optionally, you can try to reconnect after a delay
-      setTimeout(() => this.connectToCamera(), 5000);
+      setTimeout(() => this.connectToCamera(name), 5000);
     });
+  }
+
+  /**
+   * Выбор обработчика по типу камеры из настроек устройств:
+   * aggregation / pallet_adding — пакетный handleMessage2,
+   * box_binding — привязка этикетки handleMessageBind,
+   * serialization (и пусто) — поштучный handleMessage.
+   */
+  private async routeMessage(message: string): Promise<void> {
+    const cameraName = CameraNames.Camera1;
+
+    try {
+      const config = await this.cameraConfigRepo.findOne({
+        where: { name: getCameraConfigName(cameraName) },
+      });
+
+      const handler = getCameraHandler(config?.type);
+      console.log(config, handler);
+      if (handler === 'batch') {
+        this.handleMessage2(message, cameraName);
+      } else if (handler === 'boxbinding') {
+        this.handleMessageBind(message, cameraName);
+      } else {
+        this.handleMessage(message, cameraName);
+      }
+    } catch (error) {
+      this.logger.error(
+        `Камера: ошибка выбора обработчика: ${error?.message ?? error}`,
+      );
+      this.handleMessage(message, cameraName);
+    }
   }
 
   private handleMessage(message: string, name) {
@@ -115,8 +156,8 @@ export class CameraService implements OnModuleInit {
     });
   }
 
-  private handleMessageBind(message: string, name: string) {
-    console.log('handleMessage--_____________2', message);
+  private async handleMessageBind(message: string, name: string) {
+    console.log('handleMessage--_____________2', message, '124234');
     if (!this.globalMonVar.isMonitoring) {
       this.logger.warn('Камера: мониторинг не запущен');
       return;
@@ -126,19 +167,44 @@ export class CameraService implements OnModuleInit {
       return;
     }
     // console.log('handleMessage--_____________2', message);
-    const lines = message.split('@').filter((el) => el.length);
-    // console.log('handleMessage--_____________', lines);
-    const codeStatusUpdateTime = Date.now();
-    const timeDifference = codeStatusUpdateTime - this.globalMonVar.konturTime;
-    this.logger.info(
-      `Камера: Время -----------------: ${timeDifference}, для кодов ${lines}`,
-    );
+    // const lines = message.split('@').filter((el) => el.length);
+    // // console.log('handleMessage--_____________', lines);
+    // const codeStatusUpdateTime = Date.now();
+    // const timeDifference = codeStatusUpdateTime - this.globalMonVar.konturTime;
+    // this.logger.info(
+    //   `Камера: Время -----------------: ${timeDifference}, для кодов ${lines}`,
+    // );
+    const cleanMessage = message.trim();
+    const lines = cleanMessage.split('@@').filter((el) => el.length);
 
-    this.codeService.BindAgregateCode(lines[0], name).catch((err) => {
-      this.logger.error(
-        `Камера: ошибка сохранения кода ${lines[0]}: ${err?.message ?? err}`,
-      );
-    });
+    if (
+      name === CameraNames.Camera1 ||
+      name === CameraNames.Camera2 ||
+      name === CameraNames.Camera3 ||
+      name === CameraNames.Camera4
+    ) {
+      const start = performance.now();
+      const objCodes = await this.codeService.ParseLayer(lines, name, true);
+
+      // if (objCodes.isValid) {
+      //   // for (let i = 0; i < objCodes.codes.length; i++) {
+      //   //   const element = objCodes.codes[i];
+      //   //   await this.codeService.validateAndSaveCode(element, cameraName);
+      //   // }
+      //   await this.codeService.saveCodes(objCodes.codes, cameraName);
+      // }
+
+      this.codeService
+        .BindAgregateCodeBox(objCodes.codes, name)
+        .catch((err) => {
+          this.logger.error(
+            `Камера: ошибка сохранения кода ${lines[0]}: ${err?.message ?? err}`,
+          );
+        });
+      const end = performance.now();
+      console.log(start - end, ';;;;;;;;;');
+    }
+    console.log(lines);
   }
 
   private async pingCamera() {
@@ -170,16 +236,28 @@ export class CameraService implements OnModuleInit {
     host: string,
     port: number,
   ): Promise<void> {
-    let config = await this.cameraConfigRepo.findOne({ where: { name } });
+    // храним одно каноническое имя: «Камера 1», «Камера 2», …
+    const configName = getCameraConfigName(name);
+    // и тип в английской нотации (старые русские значения приводим)
+    const cameraType = normalizeCameraType(type) ?? type;
+
+    let config = await this.cameraConfigRepo.findOne({
+      where: { name: configName },
+    });
     if (!config) {
-      config = this.cameraConfigRepo.create({ name, host, type, port });
+      config = this.cameraConfigRepo.create({
+        name: configName,
+        host,
+        type: cameraType,
+        port,
+      });
     } else {
       config.host = host;
       config.port = port;
-      config.type = type;
+      config.type = cameraType;
     }
     await this.cameraConfigRepo.save(config);
-    this.connectToCamera();
+    this.connectToCamera(name);
   }
 
   public getConnectionStatus(): boolean {
@@ -187,7 +265,7 @@ export class CameraService implements OnModuleInit {
   }
 
   private handleMessage2(message: string, cameraName: CameraNames) {
-    console.log('-------------handleMessage raw:', message, cameraName);
+    // console.log('-------------handleMessage raw:', message, cameraName);
 
     const buffer = this.cameraBuffers[cameraName];
     buffer.buffer += message;
@@ -232,7 +310,7 @@ export class CameraService implements OnModuleInit {
     message: string,
     cameraName: CameraNames,
   ) {
-    console.log('-------------processCompleteMessage:', message, cameraName);
+    // console.log('-------------processCompleteMessage:', message, cameraName);
 
     // Убираем начальный пробел и конечный таб
     const cleanMessage = message.trim();
@@ -272,8 +350,12 @@ export class CameraService implements OnModuleInit {
       cameraName === CameraNames.Camera4
     ) {
       const start = performance.now();
-      const objCodes = await this.codeService.ParseLayer(lines, cameraName);
-
+      const objCodes = await this.codeService.ParseLayer(
+        lines,
+        cameraName,
+        false,
+      );
+      console.log(objCodes.isValid, '122121');
       if (objCodes.isValid) {
         // for (let i = 0; i < objCodes.codes.length; i++) {
         //   const element = objCodes.codes[i];

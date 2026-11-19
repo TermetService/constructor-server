@@ -1,3 +1,5 @@
+import { setConfigOverride } from 'src/config/config';
+import { config } from 'src/config/config';
 /**
  * Прямые тесты единственной точки проверки кода: isValidCode.
  * Проверка дубликата и списка задания передаётся снаружи (deps), БД не нужна.
@@ -18,16 +20,12 @@ const task = (overrides: Record<string, unknown> = {}) => ({
 
 describe('isValidCode', () => {
   let logger: any;
-  let previousCodeLength: string | undefined;
-
   beforeAll(() => {
-    previousCodeLength = process.env.CODE_LENGTH;
-    process.env.CODE_LENGTH = '78';
+    setConfigOverride('CODE_LENGTH', '78');
   });
 
   afterAll(() => {
-    if (previousCodeLength === undefined) delete process.env.CODE_LENGTH;
-    else process.env.CODE_LENGTH = previousCodeLength;
+    setConfigOverride('CODE_LENGTH', undefined);
   });
 
   beforeEach(() => {
@@ -66,6 +64,23 @@ describe('isValidCode', () => {
       reason: CodeValidationReason.Length,
       message: 'Неверная длина кода: 16',
     });
+  });
+
+  it('выключенный флаг длины пропускает код другой длины', async () => {
+    const code = VALID_CODE.slice(0, -1); // 77 символов вместо 78
+    const result = await isValidCode(code, task(), logger, {
+      isEnabled: (key) => key !== 'codeLength',
+    });
+
+    expect(result.isValid).toBe(true);
+  });
+
+  it('все проверки можно выключить через isEnabled', async () => {
+    const result = await isValidCode('мусор', task(), logger, {
+      isEnabled: () => false,
+    });
+
+    expect(result.isValid).toBe(true);
   });
 
   it('отклоняет код без префикса 01', async () => {

@@ -28,9 +28,10 @@ export class ModbusController {
         name = PLCNames.PLC2;
       }
 
-      return await this.modbusService.getConfigByName(name);
+      return (await this.modbusService.getConfigByName(name)) ?? null;
     } catch (err) {
       console.log('get PLC Config', err);
+      return null;
     }
   }
 }

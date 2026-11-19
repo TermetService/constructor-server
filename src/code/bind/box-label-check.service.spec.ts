@@ -1,3 +1,5 @@
+import { setConfigOverride } from 'src/config/config';
+import { config } from 'src/config/config';
 /**
  * Проверки перед назначением box_label коробке.
  * Репозиторий и GS1-парсер замоканы: проверяем только правила.
@@ -14,6 +16,7 @@ const TABLE = 'test-table';
 describe('BoxLabelCheckService', () => {
   let repository: any;
   let gs1ParserService: any;
+  let flagsMock: any;
   let service: BoxLabelCheckService;
 
   const parseAs = (
@@ -41,7 +44,7 @@ describe('BoxLabelCheckService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    delete process.env.IS_DEVELOP;
+    setConfigOverride('IS_DEVELOP', undefined);
 
     repository = {
       tableExists: jest.fn().mockResolvedValue(true),
@@ -50,17 +53,19 @@ describe('BoxLabelCheckService', () => {
       findCodesByList: jest.fn().mockResolvedValue([]),
     };
     gs1ParserService = { getContainerNumber: jest.fn() };
+    flagsMock = { isValidationEnabled: jest.fn().mockReturnValue(true) };
 
     service = new BoxLabelCheckService(
       repository,
       gs1ParserService,
+      flagsMock,
       { tableName: TABLE } as IMonitoringVariables,
       { info: jest.fn(), warn: jest.fn(), error: jest.fn() } as any,
     );
   });
 
   afterAll(() => {
-    delete process.env.IS_DEVELOP;
+    setConfigOverride('IS_DEVELOP', undefined);
   });
 
   it('разрешает привязку: продукты из одной коробки, этикетка свободна', async () => {
@@ -151,7 +156,7 @@ describe('BoxLabelCheckService', () => {
   });
 
   it('в IS_DEVELOP пропускает проверку соответствия этикетки', async () => {
-    process.env.IS_DEVELOP = 'true';
+    setConfigOverride('IS_DEVELOP', 'true');
     const products = [product(1)];
     const label = boxLabel(1);
     parseAs({
@@ -237,6 +242,29 @@ describe('BoxLabelCheckService', () => {
     expect(report.reason).toContain('из разных коробок');
     expect(report.reason).toContain('#3');
     expect(report.reason).toContain('#4');
+  });
+
+  it('выключенная проверка «одна коробка» пропускает коды из разных коробок', async () => {
+    flagsMock.isValidationEnabled.mockImplementation(
+      (key: string) => key !== 'boxSameBox',
+    );
+
+    const products = [product(1), product(2)];
+    const label = boxLabel(1);
+    parseAs({
+      [products[0]]: { type: SearchFrom.Code },
+      [products[1]]: { type: SearchFrom.Code },
+      [label]: { type: SearchFrom.Box, isValid: true },
+    });
+    repository.findCodesByList.mockResolvedValue([
+      ...rows([products[0]], 3, 1),
+      ...rows([products[1]], 4, 1),
+    ]);
+
+    const report = await service.check([...products, label]);
+
+    expect(report.ok).toBe(true);
+    expect(report.reason).toBeUndefined();
   });
 
   it('отклоняет, если у продуктов не определена коробка', async () => {

@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Delete,
   Param,
   Body,
@@ -9,10 +10,32 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { SettingsService } from './settings.service';
+import { RuntimeFlagsService } from './runtime-flags.service';
 
 @Controller('settings')
 export class SettingsController {
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly runtimeFlags: RuntimeFlagsService,
+  ) {}
+
+  /** Флаги рантайма + настройки из env для страницы конфигурации */
+  @Get('runtime')
+  getRuntimeSettings() {
+    return this.runtimeFlags.getSettings();
+  }
+
+  /** Изменить флаги (flagInpallet, flagInBoxLable) — применяются сразу */
+  @Put('runtime/flags')
+  async updateRuntimeFlags(@Body() body: Record<string, boolean>) {
+    return this.runtimeFlags.setFlags(body);
+  }
+
+  /** Включить/выключить проверки кодов и этикеток — применяются сразу */
+  @Put('runtime/validation-flags')
+  async updateValidationFlags(@Body() body: Record<string, boolean>) {
+    return this.runtimeFlags.setValidationFlags(body);
+  }
 
   @Get(':filename')
   async getFile(@Param('filename') filename: string, @Res() res: Response) {

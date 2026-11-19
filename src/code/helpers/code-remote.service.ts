@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { Inject, Injectable, Optional } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import { Logger } from 'winston';
@@ -70,10 +71,10 @@ export class CodeRemoteService {
   }
 
   private url(path: string): string {
-    const host = process.env.IP_SERVER;
+    const host = config.IP_SERVER;
     if (!host) {
       throw new Error(
-        'IP_SERVER не задан в .env — внешний сервис кодов недоступен',
+        'IP_SERVER не задан в config.json — внешний сервис кодов недоступен',
       );
     }
 

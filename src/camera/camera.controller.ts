@@ -2,6 +2,8 @@ import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { CameraService } from './camera.service';
 import { CameraLabels } from 'src/printers/types';
 import { CameraNames } from './types';
+import { getCameraConfigName } from './helper';
+import { CAMERA_TYPES } from './camera-types';
 
 @Controller('camera')
 export class CameraController {
@@ -19,6 +21,17 @@ export class CameraController {
     );
   }
 
+  /** Типы камер для фронта: английское значение + русская подпись */
+  @Get('types')
+  getCameraTypes() {
+    return CAMERA_TYPES;
+  }
+
+  @Get('status')
+  async getCameraStatus(): Promise<any> {
+    return this.cameraService.getConnectionStatus();
+  }
+
   @Get(':label')
   async getConfig(@Param('label') label: CameraLabels): Promise<any> {
     try {
@@ -31,14 +44,13 @@ export class CameraController {
         name = CameraNames.Camera4;
       }
 
-      return await this.cameraService.getConfigByName(name);
+      return (
+        (await this.cameraService.getConfigByName(getCameraConfigName(name))) ??
+        null
+      );
     } catch (err) {
-      console.log('get PLC Config', err);
+      console.log('get camera Config', err);
+      return null;
     }
-  }
-
-  @Get('status')
-  async getCameraStatus(): Promise<any> {
-    return this.cameraService.getConnectionStatus();
   }
 }

@@ -1,20 +1,25 @@
+import { config, loadConfig, watchConfig } from 'src/config/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as winston from 'winston';
-import * as dotenv from 'dotenv';
 import { sha } from './path.util';
 
-dotenv.config();
+// Настройки — только из config.json рядом с проектом (или с exe при pkg).
+// watchConfig следит за файлом: меняется — перечитываем без перезапуска.
+loadConfig();
+watchConfig();
 
 async function bootstrap() {
-  const SHA = process.env.SHA_256;
-  // console.log('Уникальный идентификатор машины', SHA); // Уникальный идентификатор машины
-  // console.log('Уникальный идентификатор машины2', sha); // Уникальный идентификатор машины
-  // console.log('Уникальный идентификатор машины3', sha === SHA); // Уникальный идентификатор машины
+  const SHA = config.SHA_256;
+
   if (sha !== SHA) {
     // return;
   }
+
+  // AppModule грузим после конфига, чтобы его модульные чтения конфига
+  // не перетёрли значения из JSON
+  const { AppModule } = await import('./app.module');
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });

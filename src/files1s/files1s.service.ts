@@ -1,15 +1,12 @@
+import { config, onConfigChange } from 'src/config/config';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getJsonDirectory1S, getTaskJsonDirectory } from 'src/path.util';
 import { validateJson } from './validate.json';
-import * as dotenv from 'dotenv';
 import { log } from 'console';
 import { logger1S } from 'src/logger-winston/winston.config';
 import { Logger } from 'winston';
-
-dotenv.config();
-const interval = +process.env.CHECK_1S_INTERVAL || 60000;
 
 @Injectable()
 export class FileService1S implements OnModuleInit {
@@ -22,10 +19,22 @@ export class FileService1S implements OnModuleInit {
     // Первая проверка сразу при старте
     this.checkFilesInDirectory();
 
-    // Затем проверка каждую минуту (60000 мс)
+    this.startInterval();
+
+    // CHECK_1S_INTERVAL изменили в config.json — перезапускаем таймер
+    onConfigChange(() => this.startInterval());
+  }
+
+  private intervalMs(): number {
+    return +config.CHECK_1S_INTERVAL || 60000;
+  }
+
+  private startInterval(): void {
+    if (this.checkInterval) clearInterval(this.checkInterval);
+
     this.checkInterval = setInterval(
       () => this.checkFilesInDirectory(),
-      interval,
+      this.intervalMs(),
     );
   }
 

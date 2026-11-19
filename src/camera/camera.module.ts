@@ -2,7 +2,6 @@ import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CameraConfig } from './camera-config.entity';
 import { AppGateway } from 'src/app.gateway';
-import { CameraConfigRepository } from './camera-config.repository';
 import { cameraLogger } from 'src/logger-winston/winston.config';
 import { CameraService } from './camera.service';
 import { CameraController } from './camera.controller';
@@ -19,7 +18,6 @@ import { CameraConfigService } from './camera-config.service';
     CameraService,
     CameraConfigService,
     AppGateway,
-    CameraConfigRepository,
     { provide: 'winston', useValue: cameraLogger },
   ],
   exports: [CameraService],
